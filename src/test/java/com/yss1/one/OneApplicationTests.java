@@ -28,7 +28,7 @@ public class OneApplicationTests {
 		//assertEquals(ds, null);
 		//assertNotNull("Test: Context is null...", ctx);
 		assertNotNull("Test: DS postgree is null", ds);
-		assertNotNull("Test: null is null", null);
+		//assertNotNull("Test: null is null", null);
 	}
 
 }

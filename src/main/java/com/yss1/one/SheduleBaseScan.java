@@ -41,7 +41,7 @@ public void init() {
 }
 
 
-@Scheduled(fixedRate = 50000)
+@Scheduled(fixedRate = 50000000)
 private void run()
 {
 	pgDS=(DataSource)ctx.getBean("postgressDS");
