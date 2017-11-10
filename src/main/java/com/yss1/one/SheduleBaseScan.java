@@ -76,11 +76,13 @@ private void run()
     {
      //System.out.println("id="+pair.getKey()+" value="+pair.getValue());
     res=Utils.bytes2HexStr(doc.makeDocument1(pair.getValue()));	
-    pst=conn.prepareStatement("update public.spravka set szi_new=?, ts_a=TIMESTAMP ? where id=?");
+    pst=conn.prepareStatement("update public.spravka set szi_new=?,raschet=?, ts_a=TIMESTAMP '"+Utils.getFormattedDate4sql(new Date())+"' where id="+pair.getKey());
     
     pst.setBinaryStream(1, new ByteArrayInputStream(res.getBytes()), res.length());
-    pst.setString(2, Utils.getFormattedDate4sql(new Date()));
-    pst.setInt(3,pair.getKey());
+    res=Utils.bytes2HexStr(doc.makeDocument1("RASCHET FOR:"+pair.getValue()));
+    pst.setBinaryStream(2, new ByteArrayInputStream(res.getBytes()), res.length());
+    //pst.setString(2, Utils.getFormattedDate4sql(new Date()));
+    //pst.setInt(3,pair.getKey());
     System.out.println(pst.toString());
     //System.out.println(pst.);
     pst.executeUpdate();
