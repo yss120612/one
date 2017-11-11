@@ -1,3 +1,9 @@
+ CREATE SEQUENCE spravka_id_seq
+     INCREMENT BY 1
+     NO MAXVALUE
+     NO MINVALUE
+     CACHE 1;
+     
 -- Table: public.spravka
 
 -- DROP TABLE public.spravka;
