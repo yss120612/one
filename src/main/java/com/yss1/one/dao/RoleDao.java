@@ -1,0 +1,27 @@
+package com.yss1.one.dao;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
+
+import com.yss1.one.models.Role;
+
+
+@Component
+public class RoleDao  extends PostgressDao {
+
+	public Role findRoleById(Long id) {
+		Role n=pgDT.queryForObject("select id,rolename from roles where id="+id.toString(), nameRowMapper);
+		return n;
+	}
+	
+	private RowMapper<Role> nameRowMapper=new RowMapper<Role>() {
+		public Role mapRow(ResultSet rs, int rowNum) throws SQLException {
+			Role r = new Role();
+			r.setRoleName(rs.getString("rolename"));
+			r.setId(rs.getLong("id"));
+			return r;
+			}};
+}
