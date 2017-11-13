@@ -32,6 +32,20 @@ public class RoleDao  {
 		return n;
 	}
 	
+	public void addRole(String name) {
+		pgDT.update("insert into public.roles (rolename) values(?)", name);
+	}
+	
+	public void editRole(String name) {
+		pgDT.update("insert into public.roles (rolename) values(?)", name);
+	}
+	
+	public boolean checkExist(String name)
+	{
+		int l=pgDT.queryForObject("select count(*) from public.roles where rolename='"+name+"'",Integer.class);
+		return l>0;
+	}
+	
 	private RowMapper<Role> nameRowMapper=new RowMapper<Role>() {
 		public Role mapRow(ResultSet rs, int rowNum) throws SQLException {
 			Role r = new Role();
