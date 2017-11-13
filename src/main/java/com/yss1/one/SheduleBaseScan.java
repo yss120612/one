@@ -44,7 +44,8 @@ public void init() {
 @Scheduled(fixedRate = 50000000)
 private void run()
 {
-	pgDS=(DataSource)ctx.getBean("postgressDS");
+	//if (pgDS==null) return;
+	//pgDS=(DataSource)ctx.getBean("postgressDS");
 	Document1 doc=new Document1();
 	String res="";
 //	try {

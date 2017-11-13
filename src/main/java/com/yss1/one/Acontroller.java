@@ -32,13 +32,6 @@ public class Acontroller {
 	}
 	
 	
-	@RequestMapping("/login")
-	public String login(Model model) {
-		//String sql = "SELECT articleId, title, category FROM articles";
-	    
-		   
-		//model.addAttribute("name", name);
-		return "login";
-	}
+	
 	
 }
