@@ -6,9 +6,9 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
-<body>
-<h1>Yaaaa</h1>
-<h2 class="warning">${name}</h2>
+<body style="background-color: #CCCCCC">
+<!--h1>Yaaaa</h1>
+<h2 class="warning"></h2-->
 
 <div class="container">    
         <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">                    
@@ -21,7 +21,8 @@
                     <div style="padding-top:30px" class="panel-body" >
 
                         <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
-                            
+						 <#if error??><p class="error-msg">${error}</p></#if>
+						 <#if msg??><p class="success-msg">${msg}</p></#if>	                            
                         <form id="loginform" class="form-horizontal" role="form" action="/login" method="post">
                                     
                             <div style="margin-bottom: 25px" class="input-group">
@@ -39,13 +40,13 @@
                                 
                             
 
-
+								
                                 <div style="margin-top:10px" class="form-group">
                                     <!-- Button -->
 
-                                    <div class="col-sm-12 controls">
+                                    <div class="col-sm-3 controls">
                                       <!--a id="btn-login" href="#" class="btn btn-success">Войти  </a-->
-                                      <button type="submit" id="btn-login" class="btn btn-success block">Войти</button>
+                                      <button type="submit" id="btn-login" class="btn btn-success btn-block"><i class="glyphicon glyphicon-log-in"></i>   Войти</button>
                                     </div>
                                 </div>
                             </form>     

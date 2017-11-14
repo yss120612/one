@@ -1,4 +1,4 @@
-package com.yss1.one;
+package com.yss1.one.models;
 
 import java.util.Date;
 

@@ -7,8 +7,8 @@
 <title>Insert title here</title>
 </head>
 <body>
-<h1>Yaaaa</h1>
-<h2 class="warning">${name}</h2>
+<h1>Welcome!!!</h1>
+<h2 class="warning"></h2>
 <a href="j_spring_security_logout">logout</a>
 </body>
 </html>

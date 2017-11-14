@@ -48,9 +48,17 @@ public class UserDao {
 	}
 	
 	public User getUserByName(String name) {
-		User u= pgDT.queryForObject("select id,username,password,enable,locked from public.users where username="+name,userRowMapper);
+		User u=null;
+		try
+		{
+		u=pgDT.queryForObject("select id,username,password,enable,locked from public.users where username='"+name+"'",userRowMapper);
+		}
+		catch(Exception ex)
+		{
+			
+		}
 		if (u==null) return null;
-		fillRoles(u);
+		//fillRoles(u);
 		return u;
 	}
 	
