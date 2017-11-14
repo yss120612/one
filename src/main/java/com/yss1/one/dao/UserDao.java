@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.yss1.one.models.Role;
@@ -23,6 +25,9 @@ public class UserDao {
 	
 	@Autowired
 	private ApplicationContext ctx;
+	
+	@Autowired
+	private PasswordEncoder bpe;
 	
 	private JdbcTemplate pgDT;
 	@PostConstruct
@@ -59,7 +64,7 @@ public class UserDao {
 	
 	public void addUser(String name,String pass)
 	{
-		pgDT.update("insert into public.users (username,password,enable,locked) values(?,?,true,false)", name,pass);
+		pgDT.update("insert into public.users (username,password,enable,locked) values(?,?,true,false)", name,bpe.encode(pass));
 	}
 	
 	//public boolean addRoles()

@@ -19,11 +19,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-		//.antMatchers("*","/**","/*").permitAll().anyRequest().authenticated();
-		//http.authorizeRequests().antMatchers("**").permitAll()
-				.antMatchers("css/**", "js/**", "fonts/**","idx.html").permitAll()
-				
-				.anyRequest().permitAll()//authenticated()
+				.antMatchers("/css/**", "/js/**", "/fonts/**","/idx.html").permitAll()
+				.anyRequest().authenticated()
 				.and()
 				.formLogin().loginPage("/login").permitAll().failureForwardUrl("/login?error=true").defaultSuccessUrl("/")
 				.and()
@@ -33,14 +30,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UserService userService;
 
-	@Bean
-	public PasswordEncoder passEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+	@Autowired
+	private PasswordEncoder bpe; 
 	
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder amb) throws Exception {
-		amb.userDetailsService(userService).passwordEncoder(passEncoder());
+		amb.userDetailsService(userService).passwordEncoder(bpe);
 	}
 
 }

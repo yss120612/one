@@ -3,6 +3,8 @@ package com.yss1.one.models;
 import org.springframework.security.core.GrantedAuthority;
 
 public class Role implements GrantedAuthority {
+
+	private static final long serialVersionUID = 1L;
 	private long id;
 	private String roleName;
 	public long getId() {

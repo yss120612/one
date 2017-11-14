@@ -14,6 +14,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 //import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 public class OneApplication {
@@ -52,6 +54,12 @@ public class OneApplication {
 	public DataSource dataSource1() {
 	    return dataSourceProperties1().initializeDataSourceBuilder().build();
 	    //return (DataSource) DataSourceBuilder.create().type(DataSource.class).build();
+	}
+	
+	@Bean
+	@Primary
+	public PasswordEncoder passEncoder() {
+		return new BCryptPasswordEncoder();
 	}
 	
 //	@Bean
