@@ -9,5 +9,6 @@
 <body>
 <h1>Yaaaa</h1>
 <h2 class="warning">${name}</h2>
+<a href="j_spring_security_logout">logout</a>
 </body>
 </html>

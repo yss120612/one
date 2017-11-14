@@ -62,6 +62,8 @@ public class UserDao {
 		pgDT.update("insert into public.users (username,password,enable,locked) values(?,?,true,false)", name,pass);
 	}
 	
+	//public boolean addRoles()
+	
 //	public void add role
 //	public void removeUser(long id)
 //	{

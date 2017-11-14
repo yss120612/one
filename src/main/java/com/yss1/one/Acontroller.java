@@ -8,7 +8,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class Acontroller {
@@ -31,7 +33,18 @@ public class Acontroller {
 		return "index";
 	}
 	
-	
-	
-	
+//	@RequestMapping(value = "/css/**", method = RequestMethod.GET)
+//    public ModelAndView resources1() {
+//        return null;
+//    }
+//	
+//	@RequestMapping(value = "/js/**", method = RequestMethod.GET)
+//    public ModelAndView resources2() {
+//        return null;
+//    }
+//	
+//	@RequestMapping(value = "/fonts/**", method = RequestMethod.GET)
+//    public ModelAndView resources3() {
+//        return null;
+//    }
 }
