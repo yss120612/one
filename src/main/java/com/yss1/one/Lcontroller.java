@@ -14,10 +14,14 @@ public class Lcontroller {
 		if (error!=null)
 		{
 			model.addAttribute("error","Имя или пароль не верны!");
+			model.addAttribute("username","");
+			model.addAttribute("password","");
 		}
 		if (logout!=null)
 		{
 			model.addAttribute("messa","Выход успешно осуществлен!");
+			model.addAttribute("username","");
+			model.addAttribute("password","");
 		}
 		
 		//model.addAttribute("name", "Yhhhh");

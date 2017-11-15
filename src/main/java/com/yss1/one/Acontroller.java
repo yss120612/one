@@ -33,8 +33,18 @@ public class Acontroller {
 		
 		model.addAttribute("name", name);
 		model.addAttribute("auth", au.isAuthenticated()+"");
-		return "index";
+		return "start";
 	}
+	
+//	@RequestMapping("/")
+//	public String index(Model model,@RequestParam(value="name", required=false, defaultValue="World") String name) {
+//		String sql = "SELECT articleId, title, category FROM articles";
+//		Authentication au=SecurityContextHolder.getContext().getAuthentication();
+//		
+//		model.addAttribute("name", name);
+//		model.addAttribute("auth", au.isAuthenticated()+"");
+//		return "index";
+//	}
 	
 	/*@RequestMapping("/login")
 	public String login(Model model) {
