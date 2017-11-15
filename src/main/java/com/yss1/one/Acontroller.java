@@ -4,6 +4,8 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -27,9 +29,10 @@ public class Acontroller {
 	@RequestMapping("/")
 	public String index(Model model,@RequestParam(value="name", required=false, defaultValue="World") String name) {
 		String sql = "SELECT articleId, title, category FROM articles";
-	    
-		   
+		Authentication au=SecurityContextHolder.getContext().getAuthentication();
+		
 		model.addAttribute("name", name);
+		model.addAttribute("auth", au.isAuthenticated()+"");
 		return "index";
 	}
 	

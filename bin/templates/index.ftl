@@ -8,7 +8,8 @@
 </head>
 <body>
 <h1>Welcome!!!</h1>
+<h1>auth=${auth}</h1>
 <h2 class="warning"></h2>
-<a href="j_spring_security_logout">logout</a>
+<a href="${springMacroRequestContext.contextPath}/login?logout">logout</a>
 </body>
 </html>

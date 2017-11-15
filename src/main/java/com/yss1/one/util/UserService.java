@@ -6,7 +6,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import com.yss1.one.dao.RoleDao;
 import com.yss1.one.dao.UserDao;
+import com.yss1.one.models.Role;
 import com.yss1.one.models.User;
 
 @Service
@@ -14,12 +17,19 @@ public class UserService implements UserDetailsService {
 
 	@Autowired
 	private UserDao userDao;
-
+	private RoleDao roleDao;
+	
 	@PostConstruct
 	public void init() {
-		if (userDao.getUserByName("user") == null)
+
+	if (userDao.getUserByName("user") == null)
 		{
-			userDao.addUser("user", "1111");
+			Role r=roleDao.findRoleByName("USER");
+			//if ()
+			User u=userDao.addUser("user", "1111");
+			if (r!=null) { 
+				u.addRole(r);
+			}
 		}
 	}
 	

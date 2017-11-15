@@ -7,10 +7,11 @@ import java.util.Set;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public class User implements UserDetails{
-	
+public class User implements UserDetails {
+
 	private static final long serialVersionUID = 1L;
 	private long id;
+
 	public long getId() {
 		return id;
 	}
@@ -21,20 +22,46 @@ public class User implements UserDetails{
 
 	private Set<Role> roles = new HashSet<Role>();
 	private String username;
-	private String password; 
-	private boolean locked=false;
-	private boolean enabled=true;
+	private String password;
+	private boolean locked = false;
+	private boolean enabled = true;
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
 		return roles;
 	}
 
-	public  void setAuthorities(Set<Role> ro) {
-		roles=ro;
+	public boolean addRole(Role r) {
+		if (!this.hasRole(r)) {
+			roles.add(r);
+			return true;
+		}
+		return false;
 	}
-	
-	
+
+	public boolean hasRole(Role r) {
+		for (Role ro : roles) {
+			if (ro.getId() == r.getId()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean hasRole(String name) {
+		for (Role ro : roles) {
+			if (ro.getRoleName().equals(name)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void setAuthorities(Set<Role> ro) {
+		roles = ro;
+	}
+
 	public void setUsername(String username) {
 		this.username = username;
 	}

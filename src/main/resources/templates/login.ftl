@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="/css/bootstrap.min.css">
-<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" href="${springMacroRequestContext.contextPath}/css/bootstrap.min.css">
+<script type="text/javascript" src="${springMacroRequestContext.contextPath}/js/bootstrap.min.js"></script>
+
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Insert title heree</title>
 </head>
 <body style="background-color: #CCCCCC">
-<!--h1>Yaaaa</h1>
+
+<!--h1>Yaaaa ${springMacroRequestContext}</h1>
 <h2 class="warning"></h2-->
 
 <div class="container">    
@@ -22,8 +25,8 @@
 
                         <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
 						 <#if error??><p class="error-msg">${error}</p></#if>
-						 <#if msg??><p class="success-msg">${msg}</p></#if>	                            
-                        <form id="loginform" class="form-horizontal" role="form" action="/login" method="post">
+						 <#if messa??><p class="success-msg">${messa}</p></#if>	                            
+                        <form id="loginform" class="form-horizontal" role="form" action="${springMacroRequestContext.contextPath}/login" method="post">
                                     
                             <div style="margin-bottom: 25px" class="input-group">
                                         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
@@ -40,7 +43,7 @@
                                 
                             
 
-								
+								<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
                                 <div style="margin-top:10px" class="form-group">
                                     <!-- Button -->
 
