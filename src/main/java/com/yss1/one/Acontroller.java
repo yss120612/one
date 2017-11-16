@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.yss1.one.models.User;
+
 @Controller
 public class Acontroller {
 	
@@ -30,8 +32,10 @@ public class Acontroller {
 	public String index(Model model,@RequestParam(value="name", required=false, defaultValue="World") String name) {
 		String sql = "SELECT articleId, title, category FROM articles";
 		Authentication au=SecurityContextHolder.getContext().getAuthentication();
-		
-		model.addAttribute("name", name);
+		if (au.isAuthenticated())
+		{
+		model.addAttribute("name", ((User)au.getPrincipal()).getUsername());
+		}
 		model.addAttribute("auth", au.isAuthenticated()+"");
 		return "start";
 	}

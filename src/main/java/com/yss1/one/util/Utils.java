@@ -32,6 +32,20 @@ public class Utils {
 		return sdf.format(d);
 	}
 	
+	public static String getFormattedDate4period(Date d) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy0MM0dd");
+		return sdf.format(d);
+	}
+	
+	
+	public static Period calcPeriod(Date ds,Date df)
+	{
+		
+		return new Period(0,0,0);
+		
+	}
+	
+	
 	public static String getFormattedDate4sql(Date d) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		return sdf.format(d);

@@ -19,12 +19,9 @@
             <div class="panel panel-info" >
                     <div class="panel-heading">
                         <div class="panel-title">Вход в систему</div>
-                        <!--div style="float:right; font-size: 80%; position: relative; top:-10px"><a href="#">Forgot password?</a></div-->
-                    </div>     
-
+                    </div>
+                         
                     <div style="padding-top:30px" class="panel-body" >
-
-                        <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
 						 <#if error??><div id="error" class="alert alert-danger" role="alert">${error}</div></#if>
 						 <#if messa??><div id="logout" class="alert alert-success" role="alert">${messa}</div></#if>	                            
                         <form id="loginform" class="form-horizontal" role="form" action="${springMacroRequestContext.contextPath}/login" method="post">
@@ -47,20 +44,14 @@
 								<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
                                 <div style="margin-top:10px" class="form-group">
                                     <!-- Button -->
-
                                     <div class="col-sm-3 controls">
-                                      <!--a id="btn-login" href="#" class="btn btn-success">Войти  </a-->
                                       <button type="submit" id="btn-login" class="btn btn-success btn-block"><i class="glyphicon glyphicon-log-in"></i>   Войти</button>
                                     </div>
                                 </div>
                             </form>     
-
-
-
                         </div>                     
                     </div>  
         </div>
-        
     </div>
     
 <script language="Javascript">
