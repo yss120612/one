@@ -34,13 +34,7 @@ public class RoleDao {
 		Role n = null;
 		try
 		{
-			System.out.println("ASK DB");
-		n = pgDT.queryForObject("select id,rolename from public.roles where rolename='" + name + "'", nameRowMapper);
-		if (n==null)
-		{
-			System.out.println("n is NULL");
-		}
-
+			n = pgDT.queryForObject("select id,rolename from public.roles where rolename='" + name.trim().toUpperCase() + "'", nameRowMapper);
 		}
 		catch(Exception ex)
 		{
@@ -55,41 +49,42 @@ public class RoleDao {
 
 	public boolean deleteRole(long id) {
 		Role r = findRoleById(id);
-		if (r == null)
-			return false;
-		pgDT.update("delete from public.roles where id=?", id);
-		pgDT.update("delete from public.users_roles id_role=?", id);
-		return true;
+		return deleteRole(r);
 	}
 
 	public boolean deleteRole(String name) {
 		Role r = findRoleByName(name);
+		return deleteRole(r);
+		
+	}
+
+	private boolean deleteRole(Role r) {
 		if (r == null)
 			return false;
 		long id = r.getId();
+		pgDT.update("delete from public.users_roles where id_role=?", id);
 		pgDT.update("delete from public.roles where id=?", id);
-		pgDT.update("delete from public.users_roles id_role=?", id);
 		return true;
 	}
-
-	public boolean addRole(String name) {
-		if (checkExist(name)) {
-			return false;
+	
+	
+	public Role addRole(String name) {
+		if (!checkExist(name)) {
+			pgDT.update("insert into public.roles (rolename) values(?)", name.trim().toUpperCase());	
 		}
-		pgDT.update("insert into public.roles (rolename) values(?)", name);
-		return true;
+		return findRoleByName(name);
 	}
 
-	public boolean editRole(Role r, String name) {
-		if (checkExist(name)) {
+	public boolean editRole(Role r, String newName) {
+		if (checkExist(newName)) {
 			return false;
 		}
-		pgDT.update("update public.roles set rolename=? where id=?", name, r.getId());
+		pgDT.update("update public.roles set rolename=? where id=?", newName.trim().toUpperCase(), r.getId());
 		return true;
 	}
 
 	public boolean checkExist(String name) {
-		int l = pgDT.queryForObject("select count(*) from public.roles where rolename='" + name + "'", Integer.class);
+		int l = pgDT.queryForObject("select count(*) from public.roles where rolename='" + name.trim().toUpperCase() + "'", Integer.class);
 		return l > 0;
 	}
 

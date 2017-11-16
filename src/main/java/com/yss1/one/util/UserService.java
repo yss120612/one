@@ -17,19 +17,25 @@ public class UserService implements UserDetailsService {
 
 	@Autowired
 	private UserDao userDao;
+	@Autowired
 	private RoleDao roleDao;
 	
 	@PostConstruct
 	public void init() {
-
-	if (userDao.getUserByName("user") == null)
-		{
-			Role r=roleDao.findRoleByName("USER");
-			//if ()
-			User u=userDao.addUser("user", "1111");
-			if (r!=null) { 
-				u.addRole(r);
+		//Если никого нет делаем юзера с 2я ролями
+		if (userDao.getAllUsers().isEmpty()) {
+			User u =userDao.addUser("user", "1111");
+			Role r = roleDao.findRoleByName("ADMIN");
+			if (r == null) {
+				r = roleDao.addRole("ADMIN");
 			}
+			u.addRole(r);
+			r = roleDao.findRoleByName("USER");
+			if (r == null) {
+				r = roleDao.addRole("USER");
+			}
+			u.addRole(r);
+			userDao.saveUser(u);
 		}
 	}
 	
