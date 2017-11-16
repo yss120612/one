@@ -32,15 +32,16 @@ public class Utils {
 		return sdf.format(d);
 	}
 	
-	public static String getFormattedDate4period(Date d) {
+	public static Integer getFormattedDate4period(Date d) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy0MM0dd");
-		return sdf.format(d);
+		return Integer.parseInt(sdf.format(d));
 	}
 	
 	
 	public static Period calcPeriod(Date ds,Date df)
 	{
-		
+		int diff=getFormattedDate4period(df)-getFormattedDate4period(ds);
+		int month=diff%100;
 		return new Period(0,0,0);
 		
 	}

@@ -57,7 +57,7 @@
 <script language="Javascript">
 function onCh()
 {
-$('#error,#logout').hide();
+$('#error1,#logout1').hide();
 }
 </script>
 
