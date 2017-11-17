@@ -6,6 +6,10 @@ public Period(int years, int months, int days) {
 		this.months = months;
 		this.days = days;
 	}
+@Override
+public String toString() {
+	return "Period [years=" + years + ", months=" + months + ", days=" + days + "]";
+}
 public int getYears() {
 		return years;
 	}

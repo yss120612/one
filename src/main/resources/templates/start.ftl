@@ -21,7 +21,7 @@
      <div class="navbar-inner">
      <ul class="nav navbar-nav">
         <li class="active"><a href="#">Link </a></li>
-        <li><a href="#">Link</a></li>
+        <li><a href="${springMacroRequestContext.contextPath}/calc">Run</a></li>
          <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
                     <ul class="dropdown-menu">
@@ -47,5 +47,8 @@
   </div>
 </nav>
 
+<#if rest??>
+<h2>${rest}</h2>
+</#if>
 </body>
 </html>
