@@ -10,10 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
-
 import com.yss1.one.models.User;
 
 @Controller
@@ -30,7 +27,7 @@ public class Acontroller {
 	
 	@RequestMapping("/")
 	public String index(Model model,@RequestParam(value="name", required=false, defaultValue="World") String name) {
-		String sql = "SELECT articleId, title, category FROM articles";
+		//String sql = "SELECT articleId, title, category FROM articles";
 		Authentication au=SecurityContextHolder.getContext().getAuthentication();
 		if (au.isAuthenticated())
 		{

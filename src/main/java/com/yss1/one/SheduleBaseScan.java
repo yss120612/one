@@ -41,7 +41,7 @@ public void init() {
 }
 
 
-@Scheduled(fixedRate = 50000000)
+@Scheduled(fixedRate = 5000000)
 private void run()
 {
 	//if (pgDS==null) return;

@@ -3,8 +3,9 @@
 <head>
 
 <link rel="stylesheet" href="${springMacroRequestContext.contextPath}/css/bootstrap.min.css">
-<script type="text/javascript" src="${springMacroRequestContext.contextPath}/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="${springMacroRequestContext.contextPath}/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="${springMacroRequestContext.contextPath}/js/bootstrap.min.js"></script>
+
 
 <meta charset="UTF-8">
 <title>Insert title heree</title>
@@ -57,7 +58,7 @@
 <script language="Javascript">
 function onCh()
 {
-$('#error1,#logout1').hide();
+$('#error,#logout').hide();
 }
 </script>
 

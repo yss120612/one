@@ -35,9 +35,9 @@ public class Lcontroller {
 	
 	@RequestMapping(value= {"/calc"})
 	public String calc(Model model) throws SQLException {
-		AS400Data asd=new AS400Data();
-		asd.load("049711721");
-		model.addAttribute("rest", asd.getRes());
+//		AS400Data asd=new AS400Data();
+//		asd.load("049711721");
+//		model.addAttribute("rest", asd.getRes());
 		return "start";
 	}
 	

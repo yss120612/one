@@ -14,7 +14,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
-import com.yss1.one.models.Staj;
+
 import com.yss1.one.models.User;
 import com.yss1.one.util.Utils;
 
@@ -54,31 +54,31 @@ public class AS400Data {
 		JdbcTemplate jt=new JdbcTemplate(sds);
 		
 		jt.update("call OPFRSOFT.PFRBAT0201('R002000016/"+snils+"/')");
-		List<Staj> stajes=jt.query("select * FROM QTEMP.R002000016",stajRowMapper);
+		//List<Staj> stajes=jt.query("select * FROM QTEMP.R002000016",stajRowMapper);
 		
 		res="START\n";
-		for (Staj s:stajes)	{
-			res=res+s+"/n";
-		}
+//		for (Staj s:stajes)	{
+//			res=res+s+"/n";
+//		}
 		res=res+"FINISH";
 		sds.getConnection().close();
 		return true;
 	}
 	
-	private RowMapper<Staj> stajRowMapper = new RowMapper<Staj>() {
-		public Staj mapRow(ResultSet rs, int rowNum) throws SQLException {
-			Staj staj = new Staj();
-			staj.setStartDate(Utils.makeDate(rs.getString("pfwbeg"),"\\."));
-			staj.setEndDate(Utils.makeDate(rs.getString("pfwend"),"\\."));
-			staj.setCggext(rs.getString("cggext"));
-			staj.setCspext(rs.getString("cspext"));
-			staj.setCtpext(rs.getString("ctpext"));
-			staj.setCwcext(rs.getString("cwcext"));
-			staj.setDopctpext(rs.getString("dopctpext"));
-			staj.setDopcspext(rs.getString("dopcspext"));
-			return staj;
-		}
-	};
+//	private RowMapper<Staj> stajRowMapper = new RowMapper<Staj>() {
+//		public Staj mapRow(ResultSet rs, int rowNum) throws SQLException {
+//			Staj staj = new Staj();
+//			staj.setStartDate(Utils.makeDate(rs.getString("pfwbeg"),"\\."));
+//			staj.setEndDate(Utils.makeDate(rs.getString("pfwend"),"\\."));
+//			staj.setCggext(rs.getString("cggext"));
+//			staj.setCspext(rs.getString("cspext"));
+//			staj.setCtpext(rs.getString("ctpext"));
+//			staj.setCwcext(rs.getString("cwcext"));
+//			staj.setDopctpext(rs.getString("dopctpext"));
+//			staj.setDopcspext(rs.getString("dopcspext"));
+//			return staj;
+//		}
+//	};
 
 	private String res;
 	public String getRes() {

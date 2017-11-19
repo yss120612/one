@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
+@ComponentScan
 public class OneApplication {
 
 	public static void main(String[] args) {
@@ -40,7 +42,10 @@ public class OneApplication {
 //        dataSource.setPassword( passPG );
 //        return dataSource;
 //    }
-//	
+
+	
+	
+	
 	@Bean
 	@Primary
 	@ConfigurationProperties("app.datasource.postgressdb")
@@ -56,11 +61,21 @@ public class OneApplication {
 	    //return (DataSource) DataSourceBuilder.create().type(DataSource.class).build();
 	}
 	
+	@Bean(name = "postgressJdbcTemplate")
+	public JdbcTemplate postgressJdbcTemplate()
+	{
+		DataSource ds=dataSource1();
+		return new JdbcTemplate(ds);
+	}
+	
 	@Bean
 	@Primary
 	public PasswordEncoder passEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+
+	
+	
 	
 //	@Bean
 //	@Primary
@@ -78,12 +93,7 @@ public class OneApplication {
 	
 	
 	
-	@Bean(name = "postgressJdbcTemplate")
-	public JdbcTemplate postgressJdbcTemplate()
-	{
-		DataSource ds=dataSource1();
-		return new JdbcTemplate(ds);
-	}
+
 	
 	
 	
