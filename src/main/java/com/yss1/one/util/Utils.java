@@ -49,10 +49,25 @@ public class Utils {
 		return new GregorianCalendar(y, m - 1, d).getTime();
 	}
 
+	
+	
 	public static Date makeDate(String s,String sep) {
 		String [] as=s.trim().split(sep);
 		if (as.length<3) return null;
-		return makeDate(Integer.parseInt(as[2]),Integer.parseInt(as[1]),Integer.parseInt(as[0]));
+		//System.out.println("s="+s+" year="+Integer.parseInt(as[2]));
+		int year=Integer.parseInt(as[2]);
+		if (year<1000)
+		{
+			if (year<30)
+			{
+				year+=2000;
+			}
+			else
+			{
+				year+=1900;
+			}
+		}
+		return makeDate(year,Integer.parseInt(as[1]),Integer.parseInt(as[0]));
 	}
 	
 	
@@ -61,7 +76,7 @@ public class Utils {
 		int day = Integer.parseInt(sdiff.substring(sdiff.length() - 3, sdiff.length()));
 		int month = Integer.parseInt(sdiff.substring(sdiff.length() - 6, sdiff.length() - 3));
 		int year = Integer.parseInt(sdiff.substring(0, sdiff.length() - 6));
-		System.out.println("sdiff=" + sdiff + " day=" + day + " month=" + month + " year=" + year);
+		//System.out.println("sdiff=" + sdiff + " day=" + day + " month=" + month + " year=" + year);
 		if (day > 30)
 			day = day - 970;
 		if (month > 12)
@@ -70,7 +85,7 @@ public class Utils {
 		year = year + (month + day / 30) / 12;
 		month = (month + day / 30) % 12;
 		day = day % 30;
-		System.out.println("2day=" + day + " month=" + month + " year=" + year);
+		//System.out.println("2day=" + day + " month=" + month + " year=" + year);
 		return new Period(year, month, day);
 	}
 

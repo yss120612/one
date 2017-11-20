@@ -8,7 +8,7 @@ public Period(int years, int months, int days) {
 	}
 @Override
 public String toString() {
-	return "Period [years=" + years + ", months=" + months + ", days=" + days + "]";
+	return "{y:" + years + " m:" + months + " d:" + days + "}";
 }
 public int getYears() {
 		return years;
@@ -28,6 +28,21 @@ public int getYears() {
 	public void setDays(int days) {
 		this.days = days;
 	}
+	
+public void addPeriod(Period p)
+{
+	if (p==null) {
+		
+		return;
+	}
+	this.years+=p.getYears();
+	this.months+=p.getMonths();
+	this.days+=p.getDays();
+	
+	years=years+(months+days/30)/12;
+	months=(months+days/30)%12;
+	days=days%30;
+}
 private int years;
 private int months;
 private int days;

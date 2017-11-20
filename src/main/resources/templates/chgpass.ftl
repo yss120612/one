@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
-<link rel="stylesheet" href="/css/bootstrap.min.css">
-<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="${springMacroRequestContext.contextPath}/css/bootstrap.min.css">
+<script type="text/javascript" src="${springMacroRequestContext.contextPath}/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="${springMacroRequestContext.contextPath}/js/bootstrap.min.js"></script>
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
@@ -11,7 +12,9 @@
         <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">                    
             <div class="panel panel-info" >
                     <div class="panel-heading">
-                        <div class="panel-title">Вход в систему</div>
+                    <#if name??>
+                        <div class="panel-title">Смена пароля пользователя ${name}</div>
+                    </#if>>
                     </div>     
 
                     <div style="padding-top:30px" class="panel-body" >
@@ -19,7 +22,7 @@
                         
 						<#if messa??>
 						 <div id="ok" class="alert alert-success" role="alert">${messa}</div>
-						  <form id="successform" class="form-horizontal" role="form" action="${springMacroRequestContext.contextPath}/" method="post">
+						  <form id="chgpassOKform" class="form-horizontal" role="form" action="${springMacroRequestContext.contextPath}/" method="post">
 						   <div style="margin-bottom: 25px" class="input-group" >
 						    <button type="submit" id="btn-login" class="btn btn-success btn-block"><i class="glyphicon glyphicon-ok"></i> OK </button>
 						    <input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
@@ -29,7 +32,7 @@
                         
 						 <#if error??><div id="error" class="alert alert-danger" role="alert">${error}</div></#if>
 						 
-                        <form id="loginform" class="form-horizontal" role="form" action="${springMacroRequestContext.contextPath}/chgpwd" method="post">
+                        <form id="chgpassform" class="form-horizontal" role="form" action="${springMacroRequestContext.contextPath}/chgpwd" method="post">
                                     
                             <div style="margin-bottom: 25px" class="input-group" >
                                         <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>

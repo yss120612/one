@@ -2,6 +2,9 @@ package com.yss1.one;
 
 import java.sql.SQLException;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.yss1.one.calc.AS400Data;
+import com.yss1.one.dao.UserDao;
+import com.yss1.one.models.User;
 
 @Controller
 public class Lcontroller {
@@ -35,9 +40,57 @@ public class Lcontroller {
 	
 	@RequestMapping(value= {"/calc"})
 	public String calc(Model model) throws SQLException {
-//		AS400Data asd=new AS400Data();
-//		asd.load("049711721");
-//		model.addAttribute("rest", asd.getRes());
+		AS400Data asd=new AS400Data();
+		String err=asd.load("049711721");
+		Authentication au=SecurityContextHolder.getContext().getAuthentication();
+		if (au.isAuthenticated())
+		{
+			model.addAttribute("name", ((User)au.getPrincipal()).getUsername());
+		}
+		model.addAttribute("rest", asd.getRes());
+		model.addAttribute("err", err);
+		return "start";
+	}
+	
+	
+	@RequestMapping(value= {"/chgpwd"},method = RequestMethod.GET)
+	public String chgpwdGET(Model model) {
+		Authentication au=SecurityContextHolder.getContext().getAuthentication();
+		if (au.isAuthenticated())
+		{
+			model.addAttribute("name", ((User)au.getPrincipal()).getUsername());
+		}
+		
+		
+		return "chgpass";
+	}
+	
+	@Autowired
+	UserDao ud;
+	
+	@RequestMapping(value= {"/chgpwd"},method = RequestMethod.POST)
+	public String chgpwdPOST(Model model,
+							@RequestParam(value="password_old",required=true) String lpo,
+							@RequestParam(value="password_new",required=true) String lpn,
+							@RequestParam(value="password_new2",required=true) String lpn2) {
+		User u=null;
+		Authentication au=SecurityContextHolder.getContext().getAuthentication();
+		String result="";
+		
+		if (au.isAuthenticated())
+		{
+			u=(User)au.getPrincipal();
+			result=ud.changePassword(u, lpo, lpn);	
+		}
+		
+		if (result.isEmpty())
+		{
+			model.addAttribute("messa","Пароль успешно сменен");
+			
+		}
+		else {
+			model.addAttribute("error",result);
+		}
 		return "start";
 	}
 	
