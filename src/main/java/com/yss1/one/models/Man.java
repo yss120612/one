@@ -11,7 +11,7 @@ import com.yss1.one.util.Period;
 import com.yss1.one.util.Utils;
 
 public class Man {
-	
+
 	String name;
 	String family;
 	String otch;
@@ -21,67 +21,112 @@ public class Man {
 	List<Staj> staj;
 	List<Staj> stajKonv;
 	public String res;
-	
-	public void calcStaj()
-	{
-		if (staj==null || staj.isEmpty())
-		{
-			return;
-		}
-		
-		sort();
-		List<Staj> tmp=new ArrayList<>();
-		Staj last=null;
-		for (Staj st:staj) {
-			
-			if (st.getDopctpext()!=null && (st.getDopctpext().contains("АДМИНИСТР") || st.getDopctpext().contains("АДМИНИСТР")) && st.getEndDate().after(Utils.makeDate(2001, 12 ,31))) {
-				if (st.getStartDate().before(Utils.makeDate(2002, 1 ,1))) {
-					st.setEndDate(Utils.makeDate(2001, 12 ,31));
-				}else
-				{
-				continue;	
-				}
-			}
-			if (st.getVidDeyat().contains("ДВСТО")) {
-				continue;
-			}
-			
-			
-			if (last==null || last.getEndDate().before(st.getStartDate()))
-			{
-				if (last!=null) tmp.add(last);
-				last=st;
-			}else {
-				last.setStartDate(last.getStartDate().before(st.getStartDate())?last.getStartDate():st.getStartDate());
-				last.setEndDate(last.getEndDate().after(st.getEndDate())?last.getEndDate():st.getEndDate());
+
+	private boolean skipThis(Staj s) {
+		if (s.getDopctpext() != null
+				&& (s.getDopctpext().contains("АДМИНИСТР") || s.getDopctpext().contains("АДМИНИСТР"))
+				&& s.getEndDate().after(Utils.makeDate(2001, 12, 31))) {
+			if (s.getStartDate().before(Utils.makeDate(2002, 1, 1))) {
+				s.setEndDate(Utils.makeDate(2001, 12, 31));
+			} else {
+				return true;
 			}
 		}
-		Staj end;
-		if (staj.size()>0)
-		{
-		end=staj.get(staj.size()-1);
-		if (end!=last)
-		{
-		last.setStartDate(last.getStartDate().before(end.getStartDate())?last.getStartDate():end.getStartDate());
-		last.setEndDate(last.getEndDate().after(end.getEndDate())?last.getEndDate():end.getEndDate());
-		tmp.add(last);
+		if (s.getVidDeyat()!=null && s.getVidDeyat().contains("ДВСТО")) {
+			return true;
 		}
-		}
-		
-		Collections.sort(tmp);
-		period=new Period(0,0,0);
-		//String res;
-		res="";
-		for (Staj st:tmp)
-		{
-			period.addPeriod(Utils.calcPeriod(st.getStartDate(),st.getEndDate()));
-			res=res+st.toString()+"<br>";
-		}
-		
-		
-		
+		return false;
 	}
 	
+	public boolean mergeStajes(Staj s1,Staj s2) {
+		if (Utils.intersect(s1.getStartDate(),s1.getEndDate(),s2.getStartDate(),s2.getEndDate()))
+		{
+		s1.setStartDate(s1.getStartDate().before(s2.getStartDate()) ? s1.getStartDate() : s2.getStartDate());
+		s1.setEndDate(s1.getEndDate().after(s2.getEndDate()) ? s1.getEndDate() : s2.getEndDate());
+		return true;
+		}
+		return false;
+	}
+	
+//	public Staj cutStajes(Staj s1,Staj s2) {//из s1 выкусываем s2
+//		if (Utils.intersect(s1.getStartDate(),s1.getEndDate(),s2.getStartDate(),s2.getEndDate()))
+//		{
+//		if (Utils.included(s2.getStartDate(),s2.getEndDate(),s1.getStartDate(),s1.getEndDate())
+//				{
+//					s1.setEndDate(s1.getStartDate().);
+//				}
+//		if (s1.getStartDate().before(s2.getStartDate()))	
+//		s1.setStartDate(s1.getStartDate().before(s2.getStartDate()) ? s1.getStartDate() : s2.getStartDate());
+//		s1.setEndDate(s1.getEndDate().after(s2.getEndDate()) ? s1.getEndDate() : s2.getEndDate());
+//		return true;
+//		}
+//		return null;
+//	}
+	
+	
+	public void calcStaj() {
+		if (staj == null || staj.isEmpty()) {
+			return;
+		}
+
+		sort();
+		List<Staj> tmp = new ArrayList<>();
+		Staj last = null;
+		Staj end=null;
+		if (!staj.isEmpty()) {
+			end = staj.get(staj.size() - 1);
+		}
+		for (Staj st : staj) {
+
+			if (skipThis(st)) continue;
+
+			if (last == null || last.getEndDate().before(st.getStartDate())) {
+				if (last != null) tmp.add(last);
+				    last = st;
+			} else {
+				mergeStajes(last, st);
+			}
+			if (st==end) tmp.add(last);
+		}
+
+		last = null;
+		end=null;
+		if (!stajKonv.isEmpty()) {
+			end = stajKonv.get(staj.size() - 1);
+		}
+		
+		for (Staj st : stajKonv) {
+			if (skipThis(st)) continue;
+			
+			
+			
+			
+			
+			
+			
+			if (last == null || last.getEndDate().before(st.getStartDate())) {
+				if (last != null) tmp.add(last);
+				    last = st;
+			} else {
+				mergeStajes(last, st);
+			}
+			if (st==end) tmp.add(last);
+		}
+		
+
+		
+		
+		Collections.sort(tmp);
+		period = new Period(0, 0, 0);
+		// String res;
+		res = "";
+		for (Staj st : tmp) {
+			period.addPeriod(Utils.calcPeriod(st.getStartDate(), st.getEndDate()));
+			res = res + st.toString() + "<br>";
+		}
+
+	}
+
 	public Period getPeriod() {
 		return period;
 	}
@@ -92,8 +137,9 @@ public class Man {
 
 	public void sort() {
 		Collections.sort(staj);
+		Collections.sort(stajKonv);
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -142,7 +188,6 @@ public class Man {
 		}
 	}
 
-	
 	public List<Staj> getStaj() {
 		return staj;
 	}

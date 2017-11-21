@@ -22,8 +22,7 @@
      <ul class="nav navbar-nav">
         <li class="active"><a href="#">Link </a></li>
         <li><a href="${springMacroRequestContext.contextPath}/calc">Run</a></li>
-        
-      </ul>
+     </ul>
        
        <#if name??>
        <ul class="nav navbar-nav navbar-right">
@@ -36,15 +35,6 @@
         </li>                
       </ul>
       </#if>
-      
-        <li><a href="#">Link1</a></li>
-        
-            <li><a href="${springMacroRequestContext.contextPath}/login?logout">Пользователь:${name}</a></li>
-            <li><a href="#">Something else here</a></li>
-        
-      </ul>
-      
-      
     </div>
   </div>
 </nav>

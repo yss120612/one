@@ -114,5 +114,29 @@ public class Utils {
 			e.printStackTrace();
 		}
 	}
+	
+	public static boolean beforeOrEqual(Date d1, Date d2) {//d1 before or equal d2
+		return !d1.after(d2);
+	}
 
+	public static boolean afterOrEqual(Date d1, Date d2) {//d1 after or equal d2
+		return !d1.before(d2);
+	}
+	
+	public static boolean intersect(Date s1,Date f1,Date s2,Date f2) {//пересеккаются ли диапазоны дат s1..f1 и s2..f2
+		return (afterOrEqual(s1, s2) && beforeOrEqual(s1, f2)) || (afterOrEqual(f1, s2) && beforeOrEqual(f1, f2))
+				|| included(s1,f1,s2,f2) || included(s2,f2,s1,f1);
+	}
+	
+	public static boolean included(Date s1,Date f1,Date s2,Date f2) {//включают ли диапазон дат s1..f1 диапазон s2..f2
+		return beforeOrEqual(s1, s2) && afterOrEqual(f1, f2);
+	}
+	
+	public static Date addDay(Date d, int days)
+	{
+		GregorianCalendar gc= new GregorianCalendar();
+		gc.setTime(d);
+		gc.add(GregorianCalendar.DATE,days);
+		return gc.getTime();
+	}
 }

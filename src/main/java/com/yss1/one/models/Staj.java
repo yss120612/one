@@ -41,6 +41,37 @@ private String  dopcspext;
 //вид деятельности
 private String vidDeyat;
 
+
+//день прибавляем?
+private int addDay;
+
+
+public int getAddDay() {
+	return addDay;
+}
+
+public void setAddDay(int addDay) {
+	this.addDay = addDay;
+}
+
+public Staj() {
+	addDay=1;
+}
+
+public Staj(Staj s) {
+	this.startDate = s.startDate;
+	this.endDate = s.endDate;
+	this.period = s.period;
+	this.cggext = s.cggext;
+	this.cwcext = s.cwcext;
+	this.ctpext = s.ctpext;
+	this.dopctpext = s.dopctpext;
+	this.cspext = s.cspext;
+	this.dopcspext = s.dopcspext;
+	this.vidDeyat = s.vidDeyat;
+	addDay=1;
+}
+
 public String getVidDeyat() {
 	return vidDeyat;
 }

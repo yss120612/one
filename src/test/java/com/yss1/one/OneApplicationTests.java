@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
@@ -92,7 +93,7 @@ public class OneApplicationTests {
 
 	@Test
 	public void snilsTest() {
-			assertEquals(Utils.rawSNILS("000-000-000 00"), "000000000");
+		assertEquals(Utils.rawSNILS("000-000-000 00"), "000000000");
 		assertEquals(Utils.rawSNILS("000-111-222 33"), "000111222");
 		assertEquals(Utils.rawSNILS("33311122244"), "333111222");
 		assertEquals(Utils.rawSNILS("555444333"), "555444333");
@@ -100,5 +101,28 @@ public class OneApplicationTests {
 		
 	}
 	
+	
+	@Test
+	public void dateTest() {
+		
+		assertTrue(Utils.beforeOrEqual(Utils.makeDate(1999,3,15),Utils.makeDate(1999,3,15)));
+		assertTrue(Utils.beforeOrEqual(Utils.makeDate(1999,3,15),Utils.makeDate(1999,3,16)));
+		assertTrue(!Utils.beforeOrEqual(Utils.makeDate(1999,3,15),Utils.makeDate(1999,3,14)));
+		
+		assertTrue(Utils.afterOrEqual(Utils.makeDate(1999,3,15),Utils.makeDate(1999,3,15)));
+		assertTrue(!Utils.afterOrEqual(Utils.makeDate(1999,3,15),Utils.makeDate(1999,3,16)));
+		assertTrue(Utils.afterOrEqual(Utils.makeDate(1999,3,15),Utils.makeDate(1999,3,14)));
+		
+		Date d1=new Date(2010,1,1);
+		Date d2=new Date(2009,12,31);
+		
+		
+		assertEquals(d1.getTime(),Utils.addDay(d2,1).getTime());
+		assertEquals(d2.getTime(),Utils.addDay(d1,-1).getTime());
+		//assertEquals(d2.getTime(),Utils.addDay(d1,-2).getTime());
+		
+		//System.out.println("test4="+Utils.getFormattedDate(Utils.addDay(d1,-1)));
+		
+	}
 	
 }

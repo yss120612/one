@@ -55,7 +55,7 @@
                                 <div style="margin-top:10px" class="form-group">
                                     <!-- Button -->
 
-                                    <div class="col-sm-3 controls">
+                                    <div class="col-sm-4 controls">
                                       <button type="submit" id="btn-login" class="btn btn-success btn-block"><i class="glyphicon glyphicon-random"></i> Сменить пароль</button>
                                     </div>
                                 </div>

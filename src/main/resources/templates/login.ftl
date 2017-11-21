@@ -45,7 +45,7 @@
 								<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
                                 <div style="margin-top:10px" class="form-group">
                                     <!-- Button -->
-                                    <div class="col-sm-5 controls">
+                                    <div class="col-sm-3 controls">
                                       <button type="submit" id="btn-login" class="btn btn-success btn-block"><i class="glyphicon glyphicon-log-in"></i>   Войти</button>
                                     </div>
                                 </div>
