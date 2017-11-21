@@ -32,38 +32,54 @@ public class Man {
 				return true;
 			}
 		}
-		if (s.getVidDeyat()!=null && s.getVidDeyat().contains("ДВСТО")) {
+		if (s.getVidDeyat() != null && s.getVidDeyat().contains("ДВСТО")) {
 			return true;
 		}
 		return false;
 	}
-	
-	public boolean mergeStajes(Staj s1,Staj s2) {
-		if (Utils.intersect(s1.getStartDate(),s1.getEndDate(),s2.getStartDate(),s2.getEndDate()))
-		{
-		s1.setStartDate(s1.getStartDate().before(s2.getStartDate()) ? s1.getStartDate() : s2.getStartDate());
-		s1.setEndDate(s1.getEndDate().after(s2.getEndDate()) ? s1.getEndDate() : s2.getEndDate());
-		return true;
+
+	public boolean mergeStajes(Staj s1, Staj s2) {
+		if (Utils.intersect(s1.getStartDate(), s1.getEndDate(), s2.getStartDate(), s2.getEndDate())) {
+			s1.setStartDate(s1.getStartDate().before(s2.getStartDate()) ? s1.getStartDate() : s2.getStartDate());
+			s1.setEndDate(s1.getEndDate().after(s2.getEndDate()) ? s1.getEndDate() : s2.getEndDate());
+			return true;
 		}
 		return false;
 	}
-	
-//	public Staj cutStajes(Staj s1,Staj s2) {//из s1 выкусываем s2
-//		if (Utils.intersect(s1.getStartDate(),s1.getEndDate(),s2.getStartDate(),s2.getEndDate()))
-//		{
-//		if (Utils.included(s2.getStartDate(),s2.getEndDate(),s1.getStartDate(),s1.getEndDate())
-//				{
-//					s1.setEndDate(s1.getStartDate().);
-//				}
-//		if (s1.getStartDate().before(s2.getStartDate()))	
-//		s1.setStartDate(s1.getStartDate().before(s2.getStartDate()) ? s1.getStartDate() : s2.getStartDate());
-//		s1.setEndDate(s1.getEndDate().after(s2.getEndDate()) ? s1.getEndDate() : s2.getEndDate());
-//		return true;
-//		}
-//		return null;
-//	}
-	
-	
+
+	public boolean cutStajes(Staj s1, Staj s2, Staj so2) {// из s1 выкусываем s2 получаем 0 1 или 2 отрезка
+
+		if (Utils.intersect(s1.getStartDate(), s1.getEndDate(), s2.getStartDate(), s2.getEndDate())) {
+			if (Utils.included(s2.getStartDate(), s2.getEndDate(), s1.getStartDate(), s1.getEndDate())) {
+				s1.setStartDate(s1.getEndDate());
+				so2 = null;
+				return false;
+			} else if (Utils.included(s1.getStartDate(), s1.getEndDate(), s2.getStartDate(), s2.getEndDate())) {
+				Staj s0 = new Staj(s1);
+				s0.setEndDate(Utils.addDay(s2.getStartDate(), -1));
+				s0.setAddDay(0);
+				s1.setStartDate(Utils.addDay(s2.getEndDate(), 1));
+				s1.setAddDay(0);
+				if (s0.getStartDate().before(s0.getEndDate()))
+					so2 = s0;
+				if (s1.getStartDate().before(s1.getEndDate()))
+					return true;
+			} else if (s1.getStartDate().before(s2.getStartDate())) {
+				s1.setEndDate(Utils.addDay(s2.getStartDate(), -1));
+				s1.setAddDay(0);
+				so2 = null;
+				return true;
+			} else {// s1.getEndDate().after(s2.getEndDate())
+				s1.setStartDate(Utils.addDay(s2.getEndDate(), 1));
+				s1.setAddDay(0);
+				so2 = null;
+				return true;
+			}
+		}
+		so2 = null;
+		return true;
+	}
+
 	public void calcStaj() {
 		if (staj == null || staj.isEmpty()) {
 			return;
@@ -72,53 +88,50 @@ public class Man {
 		sort();
 		List<Staj> tmp = new ArrayList<>();
 		Staj last = null;
-		Staj end=null;
+		Staj end = null;
 		if (!staj.isEmpty()) {
 			end = staj.get(staj.size() - 1);
 		}
 		for (Staj st : staj) {
 
-			if (skipThis(st)) continue;
+			if (skipThis(st))
+				continue;
 
 			if (last == null || last.getEndDate().before(st.getStartDate())) {
-				if (last != null) tmp.add(last);
-				    last = st;
+				if (last != null)
+					tmp.add(last);
+				last = st;
 			} else {
 				mergeStajes(last, st);
 			}
-			if (st==end) tmp.add(last);
+			if (st == end)
+				tmp.add(last);
 		}
 
-		last = null;
-		end=null;
-		if (!stajKonv.isEmpty()) {
-			end = stajKonv.get(staj.size() - 1);
-		}
-		
-		for (Staj st : stajKonv) {
-			if (skipThis(st)) continue;
-			
-			
-			
-			
-			
-			
-			
-			if (last == null || last.getEndDate().before(st.getStartDate())) {
-				if (last != null) tmp.add(last);
-				    last = st;
-			} else {
-				mergeStajes(last, st);
+		List<Staj> current = new ArrayList<>(stajKonv);
+		stajKonv.clear();
+
+		while (current.size() > 0) {
+			stajKonv.addAll(current);
+			current.clear();
+			for (Staj stKonv : stajKonv) {
+				if (skipThis(stKonv))
+					continue;
+				for (Staj st : tmp) {
+					cutStajes(stKonv, st, last);
+					if (last != null && !current.contains(last))
+						current.add(last);
+				}
 			}
-			if (st==end) tmp.add(last);
 		}
-		
 
-		
-		
+		for (Staj stKonv : stajKonv) {
+			if (stKonv.getEndDate().after(stKonv.getStartDate())&& !skipThis(stKonv))
+				tmp.add(stKonv);
+		}
+
 		Collections.sort(tmp);
 		period = new Period(0, 0, 0);
-		// String res;
 		res = "";
 		for (Staj st : tmp) {
 			period.addPeriod(Utils.calcPeriod(st.getStartDate(), st.getEndDate()));
