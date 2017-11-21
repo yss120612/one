@@ -14,7 +14,7 @@
                     <div class="panel-heading">
                     <#if name??>
                         <div class="panel-title">Смена пароля пользователя ${name}</div>
-                    </#if>>
+                    </#if>
                     </div>     
 
                     <div style="padding-top:30px" class="panel-body" >
@@ -33,22 +33,29 @@
 						 <#if error??><div id="error" class="alert alert-danger" role="alert">${error}</div></#if>
 						 
                         <form id="chgpassform" class="form-horizontal" role="form" action="${springMacroRequestContext.contextPath}/chgpwd" method="post">
-                                    
+                        
+                            <div class="form-group">
+                                			<label for="login-password-old">Старый пароль</label>
                             <div style="margin-bottom: 25px" class="input-group" >
                                         <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
                                         <input id="login-password-old" type="password" class="form-control" name="password_old" placeholder="старый пароль"  onChange="onCh()">
                                     </div>
-                                
-                            <div style="margin-bottom: 25px" class="input-group" >
-                                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                        <input id="login-password-new" type="password" class="form-control" name="password_new" placeholder="новый пароль"  onChange="onCh()">
                                     </div>
-                                    
+                                <div class="form-group">
+                                <label for="login-password-new">Новый пароль повтор</label>
                             <div style="margin-bottom: 25px" class="input-group" >
-                                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                        <input id="login-password-new2" type="password" class="form-control" name="password_new2" placeholder="старый пароль повтор"  onChange="onCh()">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                    <input id="login-password-new" type="password" class="form-control" name="password_new" placeholder="новый пароль"  onChange="onCh()">
+                                   </div>
                                     </div>
-                                    
+							<div class="form-group">
+										<label for="login-password-new">Новый пароль повтор</label>                                    
+                            <div style="margin-bottom: 25px" class="input-group" >
+                            
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                        <input id="login-password-new2" type="password" class="form-control" name="password_new2" placeholder="новый пароль повтор"  onChange="onCh()">
+                                    </div>
+                                    </div>
                                 <div width="100%" style="border-top: 1px solid#888; padding-top:15px"></div>    
 
 								<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
@@ -59,6 +66,7 @@
                                       <button type="submit" id="btn-login" class="btn btn-success btn-block"><i class="glyphicon glyphicon-random"></i> Сменить пароль</button>
                                     </div>
                                 </div>
+                                
                             </form>  
                          </#if>      
                         </div>                     
