@@ -77,12 +77,12 @@ public class OneApplicationTests {
 		//Date d2=com.yss1.one.util.Utils.makeDate(1980,1,31);
 		
 		//Period p=com.yss1.one.util.Utils.calcPeriod(makeDate(1979,2,1),makeDate(1980,1,31));
-		Period p=Utils.calcPeriod(Utils.makeDate(1979,2,1),Utils.makeDate(1980,1,31));
+		Period p=Utils.calcPeriod(Utils.makeDate(1979,2,1),Utils.makeDate(1980,1,31),1);
 		
 		assertEquals(p.getDays(), 1);
 		assertEquals(p.getMonths(), 0);
 		assertEquals(p.getYears(), 1);
-		p=Utils.calcPeriod(Utils.makeDate(1999,3,15),Utils.makeDate(2000,4,10));
+		p=Utils.calcPeriod(Utils.makeDate(1999,3,15),Utils.makeDate(2000,4,10),1);
 		System.out.println(p.toString());
 		assertEquals(p.getDays(), 26);
 		assertEquals(p.getMonths(), 0);

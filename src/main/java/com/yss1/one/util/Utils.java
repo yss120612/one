@@ -71,17 +71,16 @@ public class Utils {
 	}
 	
 	
-	public static Period calcPeriod(Date ds, Date df) {
+	public static Period calcPeriod(Date ds, Date df, int ad) {
 		String sdiff = String.format("%010d", getFormattedDate4period(df) - getFormattedDate4period(ds));
 		int day = Integer.parseInt(sdiff.substring(sdiff.length() - 3, sdiff.length()));
 		int month = Integer.parseInt(sdiff.substring(sdiff.length() - 6, sdiff.length() - 3));
 		int year = Integer.parseInt(sdiff.substring(0, sdiff.length() - 6));
-		//System.out.println("sdiff=" + sdiff + " day=" + day + " month=" + month + " year=" + year);
 		if (day > 30)
 			day = day - 970;
 		if (month > 12)
 			month = month - 988;
-		day++;
+		day+=ad;
 		year = year + (month + day / 30) / 12;
 		month = (month + day / 30) % 12;
 		day = day % 30;
@@ -123,7 +122,7 @@ public class Utils {
 		return !d1.before(d2);
 	}
 	
-	public static boolean intersect(Date s1,Date f1,Date s2,Date f2) {//пересеккаются ли диапазоны дат s1..f1 и s2..f2
+	public static boolean intersect(Date s1,Date f1,Date s2,Date f2) {//пересекаются ли диапазоны дат s1..f1 и s2..f2
 		return (afterOrEqual(s1, s2) && beforeOrEqual(s1, f2)) || (afterOrEqual(f1, s2) && beforeOrEqual(f1, f2))
 				|| included(s1,f1,s2,f2) || included(s2,f2,s1,f1);
 	}
@@ -136,7 +135,7 @@ public class Utils {
 	{
 		GregorianCalendar gc= new GregorianCalendar();
 		gc.setTime(d);
-		gc.add(GregorianCalendar.DATE,days);
+		gc.add(GregorianCalendar.DAY_OF_MONTH,days);
 		return gc.getTime();
 	}
 }

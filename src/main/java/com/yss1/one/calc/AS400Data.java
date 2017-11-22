@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
 import com.yss1.one.models.Man;
+import com.yss1.one.models.Platej;
 import com.yss1.one.models.Staj;
 import com.yss1.one.util.Utils;
 
@@ -71,10 +72,12 @@ public class AS400Data {
 			dateFpos=14;
 			jt.update("call OPFRSOFT.PFRBAT0201('R002000291/"+snils+"/')");
 			man.setStajKonv(jt.query("select * FROM QTEMP.R002000291",stajRowMapper));
-			System.out.println("HEREEEE");
+			System.out.println("HEREEEE Konv="+man.getStajKonv().size() +" Staj="+man.getStaj().size());
 		}
 		
-		
+		jt.update("call OPFRSOFT.PFRBAT0201('R002000014/"+snils+"/')");
+		man.setPlateg20002001(jt.query("select * FROM QTEMP.R002000014 where ctmcod like('2000') or ctmcod like('2001')",platejRowMapper));
+				
 		
 		}
 		catch(Exception ex)
@@ -82,9 +85,9 @@ public class AS400Data {
 			sds.getConnection().close();
 			return "Ошибка запроса к AS400!"+"\n"+ex.getMessage();
 		}
-		res=man.getFamily()+" "+man.getName()+" "+man.getOtch()+" "+man.getFormattedBirthday()+" "+man.getSNILS()+"<br>";
+		res=man.getFamily()+" "+man.getName()+" "+man.getOtch()+" "+man.getSex()+" "+man.getFormattedBirthday()+" "+man.getSNILS()+"<br>";
 		man.calcStaj();
-		res=res+man.getPeriod().toString()+"<br>";
+		res=res+man.getPeriod().toString()+"<br>"+"Platejes length="+man.getPlateg20002001().size()+"<br>";
 		res+=man.res;
 		sds.getConnection().close();
 		return "";
@@ -107,12 +110,30 @@ public class AS400Data {
 		}
 	};
 	
+	private RowMapper<Platej> platejRowMapper = new RowMapper<Platej>() {
+		public Platej mapRow(ResultSet rs, int rowNum) throws SQLException {
+			Platej platej = new Platej();
+			platej.setdStart(Utils.makeDate(rs.getString("ctmbeg"),"\\."));
+			platej.setdEnd(Utils.makeDate(rs.getString("ctmend"),"\\."));
+			String [] astr=rs.getString("dcinmb").split("-");
+			if (astr.length>0 && astr[0].length()>3)
+			{
+				String ss=astr[0];
+				platej.setRegion(Integer.parseInt(ss.substring(ss.length()-3)));
+				platej.setRaion(Integer.parseInt(ss.substring(0,ss.length()-3)));	
+			}
+			platej.setSumma(rs.getFloat("pfssum"));
+			return platej;
+		}
+	};
+	
 	private RowMapper<Man> manRowMapper = new RowMapper<Man>() {
 		public Man mapRow(ResultSet rs, int rowNum) throws SQLException {
 			Man m = new Man();
 			m.setBirthDay(Utils.makeDate(rs.getString("prnbrd"),"\\."));
 			m.setFio(rs.getString("fio"));
 			m.setSNILS(rs.getString("insnmb"));
+			m.setSex(rs.getString("prnsex"));
 			return m;
 		}
 	};

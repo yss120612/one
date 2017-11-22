@@ -38,19 +38,7 @@ public class Lcontroller {
 		return "login";
 	}
 	
-	@RequestMapping(value= {"/calc"})
-	public String calc(Model model) throws SQLException {
-		AS400Data asd=new AS400Data();
-		String err=asd.load("049711721");
-		Authentication au=SecurityContextHolder.getContext().getAuthentication();
-		if (au.isAuthenticated())
-		{
-			model.addAttribute("name", ((User)au.getPrincipal()).getUsername());
-		}
-		model.addAttribute("rest", asd.getRes());
-		model.addAttribute("err", err);
-		return "start";
-	}
+	
 	
 	
 	@RequestMapping(value= {"/chgpwd"},method = RequestMethod.GET)
@@ -83,13 +71,18 @@ public class Lcontroller {
 			result=ud.changePassword(u, lpo, lpn);	
 		}
 		
+		if (u!=null)
+		{
+			model.addAttribute("name",u.getUsername());
+		}
+		
 		if (result.isEmpty())
 		{
-			model.addAttribute("messa","Пароль успешно сменен");
+			model.addAttribute("rest","Пароль успешно сменен");
 			
 		}
 		else {
-			model.addAttribute("error",result);
+			model.addAttribute("err",result);
 		}
 		return "start";
 	}

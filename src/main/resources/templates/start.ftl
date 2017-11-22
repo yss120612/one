@@ -2,6 +2,15 @@
 <html>
 <head>
 
+<#if apage??>
+<#assign page= apage>
+<#else>
+<#assign page="home">
+</#if>
+
+
+  
+  
 <link rel="stylesheet" href="${springMacroRequestContext.contextPath}/css/bootstrap.min.css">
 <script type="text/javascript" src="${springMacroRequestContext.contextPath}/js/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="${springMacroRequestContext.contextPath}/js/bootstrap.min.js"></script>
@@ -16,12 +25,12 @@
   <div class="container">
 
      <div class="navbar-header">
-     	<a class="navbar-brand" href="#">Brand</a>
+     	<a class="navbar-brand <#if page=="home">disabled</#if>" href="${springMacroRequestContext.contextPath}/">Brand</a>
      </div>
      <div class="navbar-inner">
      <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Link </a></li>
-        <li><a href="${springMacroRequestContext.contextPath}/calc">Run</a></li>
+        <li ><a href="#">Link </a></li>
+        <li <#if page=="calc">class="active"</#if> ><a href="${springMacroRequestContext.contextPath}/calc">Run</a></li>
      </ul>
        
        <#if name??>
@@ -40,7 +49,7 @@
 </nav>
 
 <#if rest??>
-<h3>${rest}</h3>
+<h4>${rest}</h4>
 </#if>
 <#if err??>
 <h3 class="danger">${err}</h3>

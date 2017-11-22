@@ -34,21 +34,22 @@
 						 
                         <form id="chgpassform" class="form-horizontal" role="form" action="${springMacroRequestContext.contextPath}/chgpwd" method="post">
                         
-                            <div class="form-group">
+                            <div class="control-group">
                                 			<label for="login-password-old">Старый пароль</label>
                             <div style="margin-bottom: 25px" class="input-group" >
                                         <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
                                         <input id="login-password-old" type="password" class="form-control" name="password_old" placeholder="старый пароль"  onChange="onCh()">
                                     </div>
                                     </div>
-                                <div class="form-group">
+                                <div class="control-group">
                                 <label for="login-password-new">Новый пароль повтор</label>
                             <div style="margin-bottom: 25px" class="input-group" >
                                     <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
                                     <input id="login-password-new" type="password" class="form-control" name="password_new" placeholder="новый пароль"  onChange="onCh()">
                                    </div>
                                     </div>
-							<div class="form-group">
+                                    
+							<div class="control-group">
 										<label for="login-password-new">Новый пароль повтор</label>                                    
                             <div style="margin-bottom: 25px" class="input-group" >
                             

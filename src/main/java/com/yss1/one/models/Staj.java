@@ -9,7 +9,7 @@ public class Staj implements Comparable<Staj>{
 	
 @Override
 	public String toString() {
-		period=Utils.calcPeriod(startDate,endDate);
+		period=Utils.calcPeriod(startDate,endDate,addDay);
 		return "Staj [startDate=" + Utils.getFormattedDate(startDate) + ", endDate=" + Utils.getFormattedDate(endDate) + "\ncggext=" + cggext + ", cwcext=" + cwcext
 				+ ", ctpext=" + ctpext + ", dopctpext=" + dopctpext + ", cspext=" + cspext + ", vidDeyat=" + vidDeyat + " period="+period.toString()+"]";
 				
