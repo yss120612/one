@@ -80,9 +80,13 @@ public class UserDao {
 		return getUserByName(name);
 	}
 
-	public String changePassword(User u, String oldpass, String newpass) {
-		if (!u.getPassword().equals(bpe.encode(oldpass))) {
-			return "Неверный старый пароль";
+	public String changePassword(String un, String oldpass, String newpass) {
+		User u=getUserByName(un);
+		if (u==null) {
+			return "Пользователь "+un+" не найден!";
+		}
+		if (!bpe.matches(oldpass, u.getPassword())) {
+			return "Неверный старый пароль!";
 		}
 		if (newpass.equals(oldpass)) {
 			return "Старый пароль совпадает с новым";

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.yss1.one.calc.AS400Data;
 import com.yss1.one.dao.UserDao;
 import com.yss1.one.models.User;
+import com.yss1.one.util.WebUtils;
 
 @Controller
 public class Lcontroller {
@@ -32,12 +33,21 @@ public class Lcontroller {
 			model.addAttribute("username","");
 			model.addAttribute("password","");
 		}
-		
-		//model.addAttribute("name", "Yhhhh");
-		//request.setAttribute("fw", new FW(request));
 		return "login";
 	}
 	
+	
+	@RequestMapping(value= {"/userslist"},method=RequestMethod.GET)
+	public String uList(Model model,@RequestParam(value="error",required=false) String error,@RequestParam(value="logout",required=false) String logout) {
+		model.addAttribute("name", WebUtils.getLogin());
+		model.addAttribute("radmin",WebUtils.hasRole("ADMIN"));
+		model.addAttribute("ruser",WebUtils.hasRole("USER"));
+		model.addAttribute("rest", "Список пользователей");
+		model.addAttribute("apage","ulist");
+		model.addAttribute("users",ud.getAllUsers());
+		//model.addAttribute("isadmin",WebUtils.hasRole("ADMIN"));
+		return "start";
+	}
 	
 	
 	
@@ -48,8 +58,6 @@ public class Lcontroller {
 		{
 			model.addAttribute("name", ((User)au.getPrincipal()).getUsername());
 		}
-		
-		
 		return "chgpass";
 	}
 	
@@ -68,7 +76,7 @@ public class Lcontroller {
 		if (au.isAuthenticated())
 		{
 			u=(User)au.getPrincipal();
-			result=ud.changePassword(u, lpo, lpn);	
+			result=ud.changePassword(u.getUsername(), lpo, lpn);	
 		}
 		
 		if (u!=null)

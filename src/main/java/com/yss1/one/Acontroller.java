@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.yss1.one.calc.AS400Data;
+import com.yss1.one.dao.UserDao;
 import com.yss1.one.models.User;
+import com.yss1.one.util.WebUtils;
 
 @Controller
 public class Acontroller {
@@ -28,16 +30,25 @@ public class Acontroller {
 	@Autowired
 	ApplicationContext aCtx;
 	DataSource ds1;
+//
+//	private String getLogin()
+//	{	
+//		Authentication au=SecurityContextHolder.getContext().getAuthentication();
+//		if (au.isAuthenticated())
+//		{
+//		return ((User)au.getPrincipal()).getUsername();
+//		}
+//		return null;
+//	}
+	
+	@Autowired
+	UserDao ud;
 	
 	@RequestMapping("/")
 	public String index(Model model,@RequestParam(value="name", required=false, defaultValue="World") String name) {
-		//String sql = "SELECT articleId, title, category FROM articles";
-		Authentication au=SecurityContextHolder.getContext().getAuthentication();
-		if (au.isAuthenticated())
-		{
-		model.addAttribute("name", ((User)au.getPrincipal()).getUsername());
-		}
-		model.addAttribute("auth", au.isAuthenticated()+"");
+		model.addAttribute("name", WebUtils.getLogin());
+		model.addAttribute("radmin",WebUtils.hasRole("ADMIN"));
+		model.addAttribute("ruser",WebUtils.hasRole("USER"));
 		model.addAttribute("rest", "home");
 		return "start";
 	}
@@ -57,38 +68,4 @@ public class Acontroller {
 		model.addAttribute("apage", "calc");
 		return "start";
 	}
-	
-//	@RequestMapping("/")
-//	public String index(Model model,@RequestParam(value="name", required=false, defaultValue="World") String name) {
-//		String sql = "SELECT articleId, title, category FROM articles";
-//		Authentication au=SecurityContextHolder.getContext().getAuthentication();
-//		
-//		model.addAttribute("name", name);
-//		model.addAttribute("auth", au.isAuthenticated()+"");
-//		return "index";
-//	}
-	
-	/*@RequestMapping("/login")
-	public String login(Model model) {
-		//String sql = "SELECT articleId, title, category FROM articles";
-	    
-		   
-		//model.addAttribute("name", name);
-		return "login";
-	}*/
-	
-//	@RequestMapping(value = "/css/**", method = RequestMethod.GET)
-//    public ModelAndView resources1() {
-//        return null;
-//    }
-//	
-//	@RequestMapping(value = "/js/**", method = RequestMethod.GET)
-//    public ModelAndView resources2() {
-//        return null;
-//    }
-//	
-//	@RequestMapping(value = "/fonts/**", method = RequestMethod.GET)
-//    public ModelAndView resources3() {
-//        return null;
-//    }
 }

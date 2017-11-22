@@ -33,6 +33,21 @@
         <li <#if page=="calc">class="active"</#if> ><a href="${springMacroRequestContext.contextPath}/calc">Run</a></li>
      </ul>
        
+       <#if radmin??>
+       ${radmin?c}
+       </#if>
+       
+       <ul class="nav navbar-nav">
+        <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Администрирование <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li <#if page=="ulist">class="active"</#if> ><a href="${springMacroRequestContext.contextPath}/userslist">Пользователи</a></li>
+                        <li><a href="${springMacroRequestContext.contextPath}/roleslist">Роли</a></li>
+                     </ul>
+        </li>                
+      </ul>
+      
+       
        <#if name??>
        <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
@@ -54,5 +69,19 @@
 <#if err??>
 <h3 class="danger">${err}</h3>
 </#if>
+<#if page=="ulist">
+UsersList
+<table>
+<tr>
+<th>id</th>
+<th>name</th>
+</tr>
+<#list users as user>
+<tr>
+<td>${user.id}</td>
+<td>${user.username}</td>
+</tr>
+</#list>
+</table></#if>
 </body>
 </html>
