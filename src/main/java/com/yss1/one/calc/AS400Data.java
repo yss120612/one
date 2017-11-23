@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 
+import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
@@ -22,6 +23,7 @@ public class AS400Data {
 	 private String fieldCtp;
 	 private int dateSpos;
 	 private int dateFpos;
+	 
 	 public DataSource dataSource2(){
 		SingleConnectionDataSource dataSource = new SingleConnectionDataSource();
        dataSource.setDriverClassName("com.ibm.as400.access.AS400JDBCDriver");
@@ -30,6 +32,10 @@ public class AS400Data {
        dataSource.setPassword("PD495100");
        return dataSource;
    }
+	
+	
+	 
+	
 	
 	public String load(String snils) throws SQLException
 	{
@@ -53,6 +59,7 @@ public class AS400Data {
 			sds.getConnection().close();
 			return "Снилс "+snils+" не найден!";
 		}
+		
 		
 		fieldCtp="ctpext";
 		fieldCsp="cspext";
@@ -119,8 +126,8 @@ public class AS400Data {
 			if (astr.length>0 && astr[0].length()>3)
 			{
 				String ss=astr[0];
-				platej.setRegion(Integer.parseInt(ss.substring(ss.length()-3)));
-				platej.setRaion(Integer.parseInt(ss.substring(0,ss.length()-3)));	
+				platej.setRaion(Integer.parseInt(ss.substring(ss.length()-3)));
+				platej.setRegion(Integer.parseInt(ss.substring(0,ss.length()-3)));	
 			}
 			platej.setSumma(rs.getFloat("pfssum"));
 			return platej;

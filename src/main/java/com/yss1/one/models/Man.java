@@ -1,32 +1,46 @@
 package com.yss1.one.models;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Service;
+
+import com.yss1.one.calc.RkCalculator;
+import com.yss1.one.util.ApplicationContextUtil;
 import com.yss1.one.util.Period;
 import com.yss1.one.util.Utils;
 
+
 public class Man {
 
-	String name;
-	String family;
-	String otch;
-	String sex;
-	Date birthDay;
-	String SNILS;
-	Period periodAll, period1991, period2002, period2015;
-	List<Staj> staj;
-	List<Staj> stajKonv;
+	private String name;
+	private String family;
+	private String otch;
+	private String sex;
+	private Date birthDay;
+	private String SNILS;
+	private Period periodAll, period1991, period2002, period2015;
+	private List<Staj> staj;
+	private List<Staj> stajKonv;
 	public String res;
-	float kVal;
-	float stajK;
-	float dopStajK;
-	List<Platej> plateg20002001;
+	private float kVal;
+	private float stajK;
+	private float dopStajK;
+	private float rk2001;
+	private List<Platej> plateg20002001;
 	
+	@Autowired
+	RkCalculator rkCalc;
+	
+	public Man() {
+		
+	}
+	
+	 
 	
 	public List<Platej> getPlateg20002001() {
 		return plateg20002001;
@@ -37,7 +51,7 @@ public class Man {
 	}
 
 	private boolean skipThis(Staj s) {
-		if (s.getDopctpext() != null && (s.getDopctpext().contains("АДМИНИСТР") || s.getDopctpext().contains("НЕОПЛ"))
+		if (s.getDopctpext() != null && s.getDopctpext().contains("АДМИНИСТР") 
 				&& s.getEndDate().after(Utils.makeDate(2001, 12, 31))) {
 			if (s.getStartDate().before(Utils.makeDate(2002, 1, 1))) {
 				s.setEndDate(Utils.makeDate(2001, 12, 31));
@@ -45,7 +59,7 @@ public class Man {
 				return true;
 			}
 		}
-		if (s.getVidDeyat() != null && s.getVidDeyat().contains("ДВСТО")) {
+		if (s.getVidDeyat() != null && s.getVidDeyat().contains("ДВСТО") || s.getDopctpext()!=null && s.getDopctpext().contains("НЕОПЛ")) {
 			return true;
 		}
 		return false;
@@ -107,6 +121,9 @@ public class Man {
 		return per;
 	}
 
+	@Autowired 
+	
+	
 	public void calcStaj() {
 		if (staj == null || staj.isEmpty()) {
 			return;
@@ -166,10 +183,15 @@ public class Man {
 		period2015 = getStajBefore(tmp, Utils.makeDate(2014, 12, 31));
 		calcKVal();
 		calcStajK();
-		res = "p1991=" + period1991 + " p2002=" + period2002 + " p2015=" + period2015+" KVal="+kVal+" StajK="+stajK+" ponStajK="+dopStajK+"<br>";
+		rkCalc=(RkCalculator)ApplicationContextUtil.getApplicationContext().getBean(RkCalculator.class);
+		rk2001=rkCalc.calc(plateg20002001);
+		
+		
+		res = "p1991=" + period1991 + " p2002=" + period2002 + " p2015=" + period2015+" KVal="+kVal+" StajK="+stajK+" ponStajK="+dopStajK+" RK="+rk2001+"<br>";
 		for (Platej pl : plateg20002001) {
 			res = res + pl.toString() + "<br>";
 		}
+		
 		for (Staj st : tmp) {
 			periodAll.addPeriod(Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
 			res = res + st.toString() + "<br>";

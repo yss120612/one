@@ -2,12 +2,14 @@ package com.yss1.one;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
@@ -18,14 +20,20 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.yss1.one.util.ApplicationContextUtil;
+
 @SpringBootApplication
-@ComponentScan
 public class OneApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(OneApplication.class, args);
+		
+		
+		
+		
 	}
 	
+
 	
 //	@Value("${app.datasource.postgressdb.username}")
 //	String userPG;
@@ -62,6 +70,7 @@ public class OneApplication {
 	}
 	
 	@Bean(name = "postgressJdbcTemplate")
+	@Primary
 	public JdbcTemplate postgressJdbcTemplate()
 	{
 		DataSource ds=dataSource1();

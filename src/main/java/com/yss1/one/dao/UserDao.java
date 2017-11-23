@@ -5,35 +5,33 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import com.yss1.one.models.Role;
 import com.yss1.one.models.User;
 
-@Component
+@Repository
 public class UserDao {
 	@Autowired
 	RoleDao roleDao;
 
-	@Autowired
-	private ApplicationContext ctx;
+//	@Autowired
+//	private ApplicationContext ctx;
 
 	@Autowired
 	private PasswordEncoder bpe;
 
+	@Autowired
 	private JdbcTemplate pgDT;
 
-	@PostConstruct
-	private void init() {
-		pgDT = (JdbcTemplate) ctx.getBean("postgressJdbcTemplate");
-	}
+//	@PostConstruct
+//	private void init() {
+//		pgDT = (JdbcTemplate) ctx.getBean("postgressJdbcTemplate");
+//	}
 
 	private void fillRoles(User us) {
 		List<Long> rl = pgDT.query("select id_role from public.users_roles where id_user=" + us.getId(), idRowMapper);

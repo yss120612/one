@@ -1,8 +1,9 @@
 package com.yss1.one;
 
-import java.sql.SQLException;
+import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -11,14 +12,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.yss1.one.calc.AS400Data;
 import com.yss1.one.dao.UserDao;
 import com.yss1.one.models.User;
+import com.yss1.one.util.ApplicationContextUtil;
 import com.yss1.one.util.WebUtils;
 
 @Controller
 public class Lcontroller {
 
+	@Autowired
+	ApplicationContext actx;
+	
+	@PostConstruct
+	public void init()
+	{
+		ApplicationContextUtil acu=new ApplicationContextUtil();
+		acu.setApplicationContext(actx);
+	//	System.out.println("ACTX="+actx);
+	}
+	
+	
 	@RequestMapping(value= {"/login"})
 	public String login1(Model model,@RequestParam(value="error",required=false) String error,@RequestParam(value="logout",required=false) String logout) {
 		if (error!=null)

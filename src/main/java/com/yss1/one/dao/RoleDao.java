@@ -4,26 +4,26 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import com.yss1.one.models.Role;
 
-@Component
+@Repository
 public class RoleDao {
 
 	@Autowired
-	private ApplicationContext ctx;
 	private JdbcTemplate pgDT;
 
-	@PostConstruct
-	private void init() {
-		pgDT = (JdbcTemplate) ctx.getBean("postgressJdbcTemplate");
-	}
+	
+//	@Autowired
+//	private ApplicationContext ctx;
+//	@PostConstruct
+//	private void init() {
+//		pgDT = (JdbcTemplate) ctx.getBean("postgressJdbcTemplate");
+//	}
 
 	public Role findRoleById(Long id) {
 		Role n = pgDT.queryForObject("select id,rolename from public.roles where id=" + id.toString(), nameRowMapper);

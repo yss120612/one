@@ -6,8 +6,6 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.yss1.one.calc.AS400Data;
 import com.yss1.one.dao.UserDao;
-import com.yss1.one.models.User;
 import com.yss1.one.util.WebUtils;
 
 @Controller
