@@ -71,7 +71,9 @@
 </#if>
 <#if page=="ulist">
 UsersList
-<table>
+<div class="row">
+<div class="col-md-6">
+<table class="table">
 <tr>
 <th>id</th>
 <th>name</th>
@@ -82,6 +84,9 @@ UsersList
 <td>${user.username}</td>
 </tr>
 </#list>
-</table></#if>
+</table>
+</div>
+</div>
+</#if>
 </body>
 </html>

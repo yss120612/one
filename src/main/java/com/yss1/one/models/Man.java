@@ -121,7 +121,6 @@ public class Man {
 		return per;
 	}
 
-	@Autowired 
 	
 	
 	public void calcStaj() {
