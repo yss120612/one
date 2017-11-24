@@ -73,17 +73,32 @@
 UsersList
 <div class="row">
 <div class="col-md-6">
-<table class="table">
-<tr>
+<table class="table table-bordered">
+<thead>
 <th>id</th>
-<th>name</th>
+<th>Логин</th>
+<th>Доступ</th>
+<th>Роли</th>
 </tr>
 <#list users as user>
 <tr>
 <td>${user.id}</td>
 <td>${user.username}</td>
-</tr>
+<td>
+<#if user.enabled>
+<i class="glyphicon glyphicon-ok"></i>
+<#else>
+<i class="glyphicon glyphicon-cancel"></i>
+</#if>
+</td>
+<td>
+${user.authorities}
+
+</td>
+</thead>
+<tbody>
 </#list>
+</tbody>
 </table>
 </div>
 </div>

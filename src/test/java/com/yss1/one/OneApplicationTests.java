@@ -19,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.yss1.one.dao.DojityeDao;
 import com.yss1.one.dao.RoleDao;
 import com.yss1.one.dao.UserDao;
 import com.yss1.one.models.Role;
@@ -51,8 +52,8 @@ public class OneApplicationTests {
 //	@Autowired
 //	private UserDao userDao;
 //	
-//	@Autowired
-//	private RoleDao roleDao;
+	@Autowired
+	private DojityeDao dojDao;
 
 	@Test
 	public void userServiceTest() {
@@ -87,10 +88,24 @@ public class OneApplicationTests {
 		assertEquals(p.getDays(), 26);
 		assertEquals(p.getMonths(), 0);
 		assertEquals(p.getYears(), 1);
-		System.out.println("test3");
+		System.out.println("test2");
 		
 	}
 
+	@Test
+	public void dojityeTest() {
+		assertEquals(dojDao.getPeriod(1945, false),144);
+		assertEquals(dojDao.getPeriod(2014, false),228);
+		assertEquals(dojDao.getPeriod(2014, true),240);
+		assertEquals(dojDao.getPeriod(2018, false),228);
+		assertEquals(dojDao.getPeriod(2018, true),252);
+		assertEquals(dojDao.getPeriod(2016, false),228);
+		assertEquals(dojDao.getPeriod(2016, true),252);
+		
+		
+	}
+	
+	
 	@Test
 	public void snilsTest() {
 		assertEquals(Utils.rawSNILS("000-000-000 00"), "000000000");

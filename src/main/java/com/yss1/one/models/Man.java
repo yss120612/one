@@ -1,44 +1,68 @@
 package com.yss1.one.models;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Service;
-
 import com.yss1.one.calc.RkCalculator;
+import com.yss1.one.calc.RpRpkCalculator;
+import com.yss1.one.calc.StajCalculator;
 import com.yss1.one.util.ApplicationContextUtil;
 import com.yss1.one.util.Period;
 import com.yss1.one.util.Utils;
 
 
 public class Man {
-
+	//имя
 	private String name;
+	//фамилия
 	private String family;
+	//отчество
 	private String otch;
+	//пол
 	private String sex;
+	//дата рождения
 	private Date birthDay;
+	//СНИЛС
 	private String SNILS;
+	//периоды деятельности общий и на даты
 	private Period periodAll, period1991, period2002, period2015;
+	//Записи о стажах
 	private List<Staj> staj;
+	//Записи о стажах из конвертации
 	private List<Staj> stajKonv;
 	public String res;
+	//коэффициент валоризации
 	private float kVal;
+	//коэффициент стажевый
 	private float stajK;
+	//коэффициент стажевый понижающий
 	private float dopStajK;
+	//коэффициент районный на 2001 год
 	private float rk2001;
+	//Записи о зарплате за 2000-2001 годы
 	private List<Platej> plateg20002001;
+	//коэффициент зарплатный за 2000-2001 годы
+	private float kSal;
 	
-	@Autowired
+	//расчетная пенсия на 1 янв. 2002 года
+	private float rP;
+	
+	//расчетный пенсионный капиталл
+	private float rPK;
+	
+	
 	RkCalculator rkCalc;
+	StajCalculator stCalc;
+	RpRpkCalculator rpRpkCalc;
+	
 	
 	public Man() {
-		
-	}
+
+		rkCalc=(RkCalculator)ApplicationContextUtil.getApplicationContext().getBean(RkCalculator.class);
+		stCalc=(StajCalculator)ApplicationContextUtil.getApplicationContext().getBean(StajCalculator.class);
+		rpRpkCalc=(RpRpkCalculator)ApplicationContextUtil.getApplicationContext().getBean(RpRpkCalculator.class);
+	}	
 	
 	 
 	
@@ -50,78 +74,9 @@ public class Man {
 		this.plateg20002001 = plateg20002001;
 	}
 
-	private boolean skipThis(Staj s) {
-		if (s.getDopctpext() != null && s.getDopctpext().contains("АДМИНИСТР") 
-				&& s.getEndDate().after(Utils.makeDate(2001, 12, 31))) {
-			if (s.getStartDate().before(Utils.makeDate(2002, 1, 1))) {
-				s.setEndDate(Utils.makeDate(2001, 12, 31));
-			} else {
-				return true;
-			}
-		}
-		if (s.getVidDeyat() != null && s.getVidDeyat().contains("ДВСТО") || s.getDopctpext()!=null && s.getDopctpext().contains("НЕОПЛ")) {
-			return true;
-		}
-		return false;
-	}
-
-	private boolean mergeStajes(Staj s1, Staj s2) {
-		if (Utils.intersect(s1.getStartDate(), s1.getEndDate(), s2.getStartDate(), s2.getEndDate())) {
-			s1.setStartDate(s1.getStartDate().before(s2.getStartDate()) ? s1.getStartDate() : s2.getStartDate());
-			s1.setEndDate(s1.getEndDate().after(s2.getEndDate()) ? s1.getEndDate() : s2.getEndDate());
-			return true;
-		}
-		return false;
-	}
-
-	private Staj cutStajes(Staj s1, Staj s2) {// из s1 выкусываем s2 получаем 0 1 или 2 отрезка возвращаем кусок, если
-												// образовался
-		if (Utils.intersect(s1.getStartDate(), s1.getEndDate(), s2.getStartDate(), s2.getEndDate())) {
-			if (Utils.included(s2.getStartDate(), s2.getEndDate(), s1.getStartDate(), s1.getEndDate())) {// поглащен
-				s1.setStartDate(s1.getEndDate());
-				return null;
-			} else if (Utils.included(s1.getStartDate(), s1.getEndDate(), s2.getStartDate(), s2.getEndDate())) {// внутри
-																												// -
-																												// разбиваем
-																												// на 2
-				Staj s0 = new Staj(s1);
-				s0.setEndDate(Utils.addDay(s2.getStartDate(), -1));
-				s0.setAddDay(0);
-				if (!s0.getStartDate().before(s0.getEndDate()))
-					s0 = null;
-
-				s1.setStartDate(Utils.addDay(s2.getEndDate(), 1));
-				s1.setAddDay(1);
-
-				return s0;
-			} else if (s1.getStartDate().before(s2.getStartDate())) {
-				s1.setEndDate(Utils.addDay(s2.getStartDate(), -1));
-				s1.setAddDay(0);
-				return null;
-			} else {// s1.getEndDate().after(s2.getEndDate())
-				s1.setStartDate(Utils.addDay(s2.getEndDate(), 1));
-				s1.setAddDay(1);
-				return null;
-			}
-		}
-		return null;
-	}
-
-	private Period getStajBefore(List<Staj> ls, Date bd) {
-		Period per = new Period(0, 0, 0);
-		for (Staj st : ls) {
-			if (st.getStartDate().after(bd))
-				continue;
-			if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
-				per.addPeriod(Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
-			} else {
-				per.addPeriod(Utils.calcPeriod(st.getStartDate(), bd, 0));
-			}
-		}
-		return per;
-	}
-
 	
+
+		
 	
 	public void calcStaj() {
 		if (staj == null || staj.isEmpty()) {
@@ -130,69 +85,31 @@ public class Man {
 
 		sort();
 
-		List<Staj> tmp = new ArrayList<>();
-		Staj last = null;
-		Staj end = null;
-		if (!staj.isEmpty()) {
-			end = staj.get(staj.size() - 1);
-		}
-		for (Staj st : staj) {
-
-			if (skipThis(st))
-				continue;
-
-			if (last == null || last.getEndDate().before(st.getStartDate())) {
-				if (last != null)
-					tmp.add(last);
-				last = st;
-			} else {
-				mergeStajes(last, st);
-			}
-			if (st == end)
-				tmp.add(last);
-		}
-
-		List<Staj> current = new ArrayList<>(stajKonv);
-		stajKonv.clear();
-
-		while (current.size() > 0) {
-			stajKonv.addAll(current);
-			current.clear();
-			for (Staj stKonv : stajKonv) {
-				if (skipThis(stKonv) || !(stKonv.getStartDate().before(stKonv.getEndDate())))
-					continue;
-				for (Staj st : tmp) {
-					last = cutStajes(stKonv, st);
-					if (last != null && !current.contains(last))
-						current.add(last);
-				}
-			}
-		}
-
-		for (Staj stKonv : stajKonv) {
-			if (stKonv.getEndDate().after(stKonv.getStartDate()) && !skipThis(stKonv))
-				tmp.add(stKonv);
-		}
-
-		Collections.sort(tmp);
-		periodAll = new Period(0, 0, 0);
+		List<Staj> tmp = stCalc.orderStajRecords(staj,stajKonv);
 		res = "";
-		period1991 = getStajBefore(tmp, Utils.makeDate(1990, 12, 31));
-		period2002 = getStajBefore(tmp, Utils.makeDate(2001, 12, 31));
-		period2015 = getStajBefore(tmp, Utils.makeDate(2014, 12, 31));
+		
+		period1991 = stCalc.getStajBefore(tmp, Utils.makeDate(1990, 12, 31));
+		period2002 = stCalc.getStajBefore(tmp, Utils.makeDate(2001, 12, 31));
+		period2015 = stCalc.getStajBefore(tmp, Utils.makeDate(2014, 12, 31));
+		periodAll  = stCalc.getStajAll(tmp);
+
 		calcKVal();
 		calcStajK();
-		rkCalc=(RkCalculator)ApplicationContextUtil.getApplicationContext().getBean(RkCalculator.class);
+		// rk2001 считается до SalK т.к. он его ограничивает 
 		rk2001=rkCalc.calc(plateg20002001);
+		calcSalK();
+		rP=rpRpkCalc.CalcRp(stajK, kSal);
+		rPK=rpRpkCalc.CalcRpk(dopStajK, rP,);
 		
 		
-		res = "p1991=" + period1991 + " p2002=" + period2002 + " p2015=" + period2015+" KVal="+kVal+" StajK="+stajK+" ponStajK="+dopStajK+" RK="+rk2001+"<br>";
+		
+		res = "p1991=" + period1991 + " p2002=" + period2002 + " p2015=" + period2015+" KVal="+kVal+" StajK="+stajK+" ponStajK="+dopStajK+" RK="+rk2001+" Зар.К="+kSal+" RP="+rP+" RPK="+rPK+"<br>";
 		for (Platej pl : plateg20002001) {
 			res = res + pl.toString() + "<br>";
 		}
 		
 		for (Staj st : tmp) {
-			periodAll.addPeriod(Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
+			//periodAll.addPeriod(Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
 			res = res + st.toString() + "<br>";
 		}
 		
@@ -200,6 +117,7 @@ public class Man {
 
 	}
 
+	//расчет коэффициента валоризации
 	public void calcKVal() {
 		kVal = 0.1f;
 		if (period1991 == null)
@@ -207,6 +125,7 @@ public class Man {
 		kVal = (0.1f + 0.01f * period1991.getYears());
 	}
 
+	//расчет стажевого и понижающего стажевого козффициентов
 	public void calcStajK() {
 		stajK = 0.55f;
 		dopStajK = 1f;
@@ -219,7 +138,20 @@ public class Man {
 			dopStajK = (period2002.getYears() * 12 + period2002.getMonths() + period2002.getDays() / 30f) / (need * 12f);
 		}
 	}
-
+	
+	//1494,50 =(1194,00*1324,00*1254,00*1257,00*1257,00*1257,00*1413,00*1411,00*1325,00*1528,00*1457,00*1584,00*1523,00*1523,00*1523,00*1724,00*1653,00*1635,00*1896,00*1550,00*1567,00*1671,00*1671,00*1671,00)/24
+	//расчет зарплатного коэффициента
+	public void calcSalK() {
+		kSal=0f;
+		int mon= period2002.getYears()*12+period2002.getMonths();
+		if (mon>24) mon=24;
+		float sal=0;
+		if (plateg20002001==null || mon==0) return;
+		for (Platej pl: plateg20002001) sal+=pl.getSumma();
+		kSal=sal/mon/1494.5f;
+		if (kSal>rk2001) kSal=rk2001;
+	}
+	
 	public Period getPeriod() {
 		return periodAll;
 	}
