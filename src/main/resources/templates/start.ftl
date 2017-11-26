@@ -8,18 +8,20 @@
 <#assign page="home">
 </#if>
 
-
-  
-  
+    
 <link rel="stylesheet" href="${springMacroRequestContext.contextPath}/css/bootstrap.min.css">
 <script type="text/javascript" src="${springMacroRequestContext.contextPath}/js/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="${springMacroRequestContext.contextPath}/js/bootstrap.min.js"></script>
 
 
 <meta charset="UTF-8">
-<title>Insert title heree</title>
+<#if title??>
+<title>${title}</title>
+</#if>
 </head>
 <body style="background-color: #CCCCCC">
+
+
 
 <nav class="navbar navbar-default navbar-static-top">
   <div class="container">
@@ -32,10 +34,7 @@
         <li ><a href="#">Link </a></li>
         <li <#if page=="calc">class="active"</#if> ><a href="${springMacroRequestContext.contextPath}/calc">Run</a></li>
      </ul>
-       
-       <#if radmin??>
-       ${radmin?c}
-       </#if>
+    
        
        <ul class="nav navbar-nav">
         <li class="dropdown">
@@ -63,45 +62,25 @@
   </div>
 </nav>
 
-<#if rest??>
-<h4>${rest}</h4>
-</#if>
-<#if err??>
-<h3 class="danger">${err}</h3>
-</#if>
-<#if page=="ulist">
-UsersList
-<div class="row">
-<div class="col-md-6">
-<table class="table table-bordered">
-<thead>
-<th>id</th>
-<th>Логин</th>
-<th>Доступ</th>
-<th>Роли</th>
-</tr>
-<#list users as user>
-<tr>
-<td>${user.id}</td>
-<td>${user.username}</td>
-<td>
-<#if user.enabled>
-<i class="glyphicon glyphicon-ok"></i>
-<#else>
-<i class="glyphicon glyphicon-cancel"></i>
-</#if>
-</td>
-<td>
-${user.authorities}
+<div class="container">
 
-</td>
-</thead>
-<tbody>
-</#list>
-</tbody>
-</table>
-</div>
+
+<#if rest??>
+<div class="alert alert-info" role="alert">
+<h4>${rest}</h4>
 </div>
 </#if>
+
+<#if err??>
+<div class="alert alert-danger">
+<h3>${err}</h3>
+</div>
+</#if>
+
+<#if page=="ulist">
+<#include "/inc/ulist.ftl">
+</#if>
+
+</div>
 </body>
 </html>

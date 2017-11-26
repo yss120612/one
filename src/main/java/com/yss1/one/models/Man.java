@@ -51,20 +51,22 @@ public class Man {
 	//расчетный пенсионный капиталл
 	private float rPK;
 	
+	//дата права
+	private Date datePrav;
 	
+	//льготный выход на пенсию
+	private int lgota;
+	
+	//калькуляторы
 	RkCalculator rkCalc;
 	StajCalculator stCalc;
 	RpRpkCalculator rpRpkCalc;
 	
-	
 	public Man() {
-
 		rkCalc=(RkCalculator)ApplicationContextUtil.getApplicationContext().getBean(RkCalculator.class);
 		stCalc=(StajCalculator)ApplicationContextUtil.getApplicationContext().getBean(StajCalculator.class);
 		rpRpkCalc=(RpRpkCalculator)ApplicationContextUtil.getApplicationContext().getBean(RpRpkCalculator.class);
 	}	
-	
-	 
 	
 	public List<Platej> getPlateg20002001() {
 		return plateg20002001;
@@ -74,7 +76,27 @@ public class Man {
 		this.plateg20002001 = plateg20002001;
 	}
 
-	
+	public Date getDatePrav() {
+		return datePrav;
+	}
+
+
+
+	public void setDatePrav(Date datePrav) {
+		this.datePrav = datePrav;
+	}
+
+
+
+	public int getLgota() {
+		return lgota;
+	}
+
+
+
+	public void setLgota(int lgota) {
+		this.lgota = lgota;
+	}
 
 		
 	
@@ -99,7 +121,7 @@ public class Man {
 		rk2001=rkCalc.calc(plateg20002001);
 		calcSalK();
 		rP=rpRpkCalc.CalcRp(stajK, kSal);
-		rPK=rpRpkCalc.CalcRpk(dopStajK, rP,);
+		rPK=rpRpkCalc.CalcRpk(dopStajK, rP,datePrav.getYear(),lgota==0);
 		
 		
 		

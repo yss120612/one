@@ -2,6 +2,8 @@ package com.yss1.one.calc;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.GregorianCalendar;
+
 import javax.sql.DataSource;
 
 import org.springframework.context.ApplicationContext;
@@ -12,6 +14,7 @@ import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import com.yss1.one.models.Man;
 import com.yss1.one.models.Platej;
 import com.yss1.one.models.Staj;
+import com.yss1.one.util.ApplicationContextUtil;
 import com.yss1.one.util.Utils;
 
 
@@ -23,20 +26,13 @@ public class AS400Data {
 	 private String fieldCtp;
 	 private int dateSpos;
 	 private int dateFpos;
-	 
-	 public DataSource dataSource2(){
-		SingleConnectionDataSource dataSource = new SingleConnectionDataSource();
-       dataSource.setDriverClassName("com.ibm.as400.access.AS400JDBCDriver");
-       dataSource.setUrl("jdbc:as400://10.48.0.14");
-       dataSource.setUsername("PD485100");
-       dataSource.setPassword("PD495100");
-       return dataSource;
-   }
-	
-	
+	 SingleConnectionDataSource sds;
 	 
 	
-	
+	 public AS400Data() {
+		 sds=(SingleConnectionDataSource)ApplicationContextUtil.getApplicationContext().getBean("as400DataSource");
+	 }
+	 
 	public String load(String snils) throws SQLException
 	{
 		snils=Utils.rawSNILS(snils);
@@ -46,7 +42,7 @@ public class AS400Data {
 			return "Пустой или не правильный снилс!";
 		}
 		
-		SingleConnectionDataSource sds = (SingleConnectionDataSource )dataSource2();
+		
 		JdbcTemplate jt=new JdbcTemplate(sds);
 		man=null;
 		
@@ -60,6 +56,16 @@ public class AS400Data {
 			return "Снилс "+snils+" не найден!";
 		}
 		
+		int age=60;
+		if (man.getSex().contains("Ж")) {
+			age=55;
+		}
+		
+		GregorianCalendar gc=new GregorianCalendar();
+		gc.setTime(man.getBirthDay());
+		gc.add(GregorianCalendar.YEAR, age);
+		man.setDatePrav(gc.getTime());
+		man.setLgota(0);
 		
 		fieldCtp="ctpext";
 		fieldCsp="cspext";
@@ -96,7 +102,7 @@ public class AS400Data {
 		man.calcStaj();
 		res=res+man.getPeriod().toString()+"<br>"+"Platejes length="+man.getPlateg20002001().size()+"<br>";
 		res+=man.res;
-		sds.getConnection().close();
+		jt.getDataSource().getConnection().close();
 		return "";
 	}
 	
@@ -147,14 +153,6 @@ public class AS400Data {
 
 	private String res;
 	public String getRes() {
-		// TODO Auto-generated method stub
 		return res;
 	}
-	
-	
-	
-	
-	
-	
-	
 }

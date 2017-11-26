@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.yss1.one.dao.RkDao;
 import com.yss1.one.models.Platej;
 import com.yss1.one.util.Utils;
-
+//калькулятор районного коэффициента
 @Service
 public class RkCalculator {
 

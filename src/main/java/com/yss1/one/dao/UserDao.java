@@ -17,21 +17,15 @@ import com.yss1.one.models.User;
 @Repository
 public class UserDao {
 	@Autowired
+	private JdbcTemplate pgDT;
+	
+	@Autowired
 	RoleDao roleDao;
-
-//	@Autowired
-//	private ApplicationContext ctx;
 
 	@Autowired
 	private PasswordEncoder bpe;
 
-	@Autowired
-	private JdbcTemplate pgDT;
-
-//	@PostConstruct
-//	private void init() {
-//		pgDT = (JdbcTemplate) ctx.getBean("postgressJdbcTemplate");
-//	}
+	
 
 	private void fillRoles(User us) {
 		List<Long> rl = pgDT.query("select id_role from public.users_roles where id_user=" + us.getId(), idRowMapper);
@@ -46,9 +40,7 @@ public class UserDao {
 	public User getUserByName(String name) {
 		User u = null;
 		try {
-			u = pgDT.queryForObject(
-					"select id,username,password,enable,locked from public.users where username='" + name + "'",
-					userRowMapper);
+			u = pgDT.queryForObject("select id,username,password,enable,locked from public.users where username='" + name + "'",userRowMapper);
 		} catch (Exception ex) {
 
 		}
@@ -59,8 +51,12 @@ public class UserDao {
 	}
 
 	public List<User> getAllUsers() {
-		return new ArrayList<User>(
+		List<User> ul = new ArrayList<User>(
 				pgDT.query("select id,username,password,enable,locked from public.users", userRowMapper));
+		for (User u : ul) {
+			fillRoles(u);
+		}
+		return ul;
 	}
 
 	public User getUserById(long id) {
@@ -79,9 +75,9 @@ public class UserDao {
 	}
 
 	public String changePassword(String un, String oldpass, String newpass) {
-		User u=getUserByName(un);
-		if (u==null) {
-			return "Пользователь "+un+" не найден!";
+		User u = getUserByName(un);
+		if (u == null) {
+			return "Пользователь " + un + " не найден!";
 		}
 		if (!bpe.matches(oldpass, u.getPassword())) {
 			return "Неверный старый пароль!";
@@ -128,7 +124,7 @@ public class UserDao {
 		if (u == null) {
 			return false;
 		}
-		pgDT.update("delete from public.users_roles id_user=?", u.getId());
+		pgDT.update("delete from public.users_roles where id_user=?", u.getId());
 		pgDT.update("delete public.users where id=?", u.getId());
 		return true;
 	}

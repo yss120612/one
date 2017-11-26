@@ -17,16 +17,16 @@ import com.yss1.one.dao.UserDao;
 import com.yss1.one.util.WebUtils;
 
 @Controller
-public class Acontroller {
+public class UsersCcontroller {
 	
 	@InitBinder
 	public void initBind()
 	{
-		ds1=(DataSource)aCtx.getBean("postgressDS");
+	//	ds1=(DataSource)aCtx.getBean("postgressDS");
 	}
-	@Autowired
-	ApplicationContext aCtx;
-	DataSource ds1;
+//	@Autowired
+//	ApplicationContext aCtx;
+//	DataSource ds1;
 //
 //	private String getLogin()
 //	{	
@@ -44,8 +44,6 @@ public class Acontroller {
 	@RequestMapping("/")
 	public String index(Model model,@RequestParam(value="name", required=false, defaultValue="World") String name) {
 		model.addAttribute("name", WebUtils.getLogin());
-		model.addAttribute("radmin",WebUtils.hasRole("ADMIN"));
-		model.addAttribute("ruser",WebUtils.hasRole("USER"));
 		model.addAttribute("rest", "home");
 		return "start";
 	}

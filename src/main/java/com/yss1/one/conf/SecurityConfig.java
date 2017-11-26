@@ -27,6 +27,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.logout().permitAll().logoutSuccessUrl("/login");
 	}
 
+	
+	
 	@Autowired
 	private UserService userService;
 

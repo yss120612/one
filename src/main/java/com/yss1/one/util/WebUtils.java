@@ -17,6 +17,16 @@ public static String getLogin() {
 	return null;
 }
 
+public static User getUser() {
+	Authentication au=SecurityContextHolder.getContext().getAuthentication();
+	if (au.isAuthenticated())
+	{
+	return (User)au.getPrincipal();
+	}
+	return null;
+}
+
+
 public static boolean hasRole(String rn) {
 	Authentication au=SecurityContextHolder.getContext().getAuthentication();
 	if (au.isAuthenticated())
@@ -29,5 +39,22 @@ public static boolean hasRole(String rn) {
 	}
 	return false;
 }
+
+public static String myRoles(String separator) {
+	Authentication au=SecurityContextHolder.getContext().getAuthentication();
+	String res="";
+	if (au.isAuthenticated())
+	{
+		User u=(User)au.getPrincipal();
+		for (GrantedAuthority ro: u.getAuthorities())
+		{
+			res+=ro.getAuthority()+separator;
+		}
+	}
+	if (!res.isEmpty()) res=res.substring(0, res.length()-separator.length());
+	return res;
+}
+
+
 
 }

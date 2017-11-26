@@ -5,7 +5,7 @@
 -- Dumped from database version 10.0
 -- Dumped by pg_dump version 10.0
 
--- Started on 2017-11-24 16:04:52
+-- Started on 2017-11-24 16:11:31
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -19,52 +19,64 @@ SET row_security = off;
 SET search_path = public, pg_catalog;
 
 --
--- TOC entry 2186 (class 0 OID 17362)
--- Dependencies: 208
--- Data for Name: dojitye; Type: TABLE DATA; Schema: public; Owner: userpp
+-- TOC entry 2184 (class 0 OID 17359)
+-- Dependencies: 207
+-- Data for Name: k_raions; Type: TABLE DATA; Schema: public; Owner: userpp
 --
--- Table: public.dojitye
 
--- DROP TABLE public.dojitye;
+-- DROP TABLE public.k_raions;
 
-CREATE TABLE public.dojitye
+CREATE TABLE public.k_raions
 (
-    year integer NOT NULL,
-    period integer NOT NULL,
-    period_min integer NOT NULL,
-    period_lgot integer NOT NULL,
-    CONSTRAINT dojitye_pkey PRIMARY KEY (year)
+    kodr integer NOT NULL,
+    koef numeric(7,1) NOT NULL,
+    rgn character varying(30) COLLATE pg_catalog."default",
+    dst character varying(60) COLLATE pg_catalog."default"
 )
 WITH (
     OIDS = FALSE
 )
 TABLESPACE pg_default;
 
-ALTER TABLE public.dojitye
+ALTER TABLE public.k_raions
     OWNER to userpp;
-    
+
+INSERT INTO k_raions VALUES (3002, 1.3, 'Республика Бурятия', 'Баунтовский');
+INSERT INTO k_raions VALUES (3013, 1.3, 'Республика Бурятия', 'Муйский');
+INSERT INTO k_raions VALUES (3017, 1.3, 'Республика Бурятия', 'Северо-Байкальский');
+INSERT INTO k_raions VALUES (9011, 1.3, 'Республика Карелия', 'Медвежьегорский');
+INSERT INTO k_raions VALUES (9006, 1.3, 'Республика Карелия', 'Муезерский');
+INSERT INTO k_raions VALUES (9004, 1.3, 'Республика Карелия', 'Пудожский');
+INSERT INTO k_raions VALUES (9014, 1.3, 'Республика Карелия', ' г. Сегежа');
+INSERT INTO k_raions VALUES (7018, 1.3, 'Республика Коми', 'Ижемский');
+INSERT INTO k_raions VALUES (7006, 1.3, 'Республика Коми', 'Печорский, Печора');
+INSERT INTO k_raions VALUES (7014, 1.3, 'Республика Коми', 'Троицко-Печорский');
+INSERT INTO k_raions VALUES (7019, 1.3, 'Республика Коми', 'Усть-Цилемский');
+INSERT INTO k_raions VALUES (7016, 1.3, 'Республика Коми', 'Удорский');
+INSERT INTO k_raions VALUES (7020, 1.3, 'Республика Коми', 'Вуктыл');
+INSERT INTO k_raions VALUES (7022, 1.3, 'Республика Коми', 'Сосногорск');
+INSERT INTO k_raions VALUES (7007, 1.3, 'Республика Коми', 'Ухта');
+INSERT INTO k_raions VALUES (7021, 1.3, 'Республика Коми', 'Усинск');
+INSERT INTO k_raions VALUES (34028, 1.3, 'Красноярский край', 'Богучанский');
+INSERT INTO k_raions VALUES (34013, 1.3, 'Красноярский край', 'Енисейский');
+INSERT INTO k_raions VALUES (34039, 1.3, 'Красноярский край', 'Кежемский');
+INSERT INTO k_raions VALUES (34044, 1.3, 'Красноярский край', 'Мотыгинский');
+INSERT INTO k_raions VALUES (34051, 1.3, 'Красноярский край', 'Северо-Енисейский');
+INSERT INTO k_raions VALUES (34053, 1.3, 'Красноярский край', 'Туруханский (южнее рек Нижняя Тунгуска и Турухан) районы');
+INSERT INTO k_raions VALUES (34061, 1.3, 'Красноярский край', 'Лесосибирск');
+INSERT INTO k_raions VALUES (48008, 1.3, 'Иркутская область', 'Бодайбинский');
+INSERT INTO k_raions VALUES (48009, 1.3, 'Иркутская область', 'Братский');
+INSERT INTO k_raions VALUES (48015, 1.3, 'Иркутская область', 'Казачинско-Ленский');
+INSERT INTO k_raions VALUES (48016, 1.3, 'Иркутская область', 'Катангский');
+INSERT INTO k_raions VALUES (48034, 1.3, 'Иркутская область', 'Киренский');
+INSERT INTO k_raions VALUES (48019, 1.3, 'Иркутская область', ' Мамско-Чуйский');
+INSERT INTO k_raions VALUES (48021, 1.3, 'Иркутская область', 'Нижнеилимский');
+INSERT INTO k_raions VALUES (48028, 1.3, 'Иркутская область', 'Усть-Кутский');
+INSERT INTO k_raions VALUES (48027, 1.3, 'Иркутская область', 'Усть-Илимск');
 
 
-INSERT INTO dojitye VALUES (2002, 144, 120, 144);
-INSERT INTO dojitye VALUES (2003, 150, 120, 150);
-INSERT INTO dojitye VALUES (2004, 156, 120, 156);
-INSERT INTO dojitye VALUES (2005, 162, 120, 162);
-INSERT INTO dojitye VALUES (2006, 168, 120, 168);
-INSERT INTO dojitye VALUES (2007, 174, 120, 174);
-INSERT INTO dojitye VALUES (2008, 180, 120, 180);
-INSERT INTO dojitye VALUES (2009, 186, 126, 186);
-INSERT INTO dojitye VALUES (2010, 192, 132, 192);
-INSERT INTO dojitye VALUES (2011, 204, 138, 204);
-INSERT INTO dojitye VALUES (2012, 216, 144, 216);
-INSERT INTO dojitye VALUES (2013, 228, 150, 228);
-INSERT INTO dojitye VALUES (2014, 228, 156, 240);
-INSERT INTO dojitye VALUES (2015, 228, 162, 252);
-INSERT INTO dojitye VALUES (2016, 228, 168, 252);
-
-
--- Completed on 2017-11-24 16:04:54
+-- Completed on 2017-11-24 16:11:33
 
 --
 -- PostgreSQL database dump complete
 --
- 
