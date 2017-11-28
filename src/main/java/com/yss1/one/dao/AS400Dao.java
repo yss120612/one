@@ -1,8 +1,9 @@
-package com.yss1.one.calc;
+package com.yss1.one.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -14,25 +15,23 @@ import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import com.yss1.one.models.Man;
 import com.yss1.one.models.Platej;
 import com.yss1.one.models.Staj;
+import com.yss1.one.models.Vsnos;
 import com.yss1.one.util.ApplicationContextUtil;
 import com.yss1.one.util.Utils;
 
 
 
-public class AS400Data {
+public class AS400Dao {
 	
 	 private Man man;
 	 private String fieldCsp;
 	 private String fieldCtp;
 	 private int dateSpos;
 	 private int dateFpos;
-	 SingleConnectionDataSource sds;
+	// SingleConnectionDataSource sds;
 	 
 	
-	 public AS400Data() {
-		 sds=(SingleConnectionDataSource)ApplicationContextUtil.getApplicationContext().getBean("as400DataSource");
-	 }
-	 
+	 	 
 	public String load(String snils) throws SQLException
 	{
 		snils=Utils.rawSNILS(snils);
@@ -42,9 +41,8 @@ public class AS400Data {
 			return "Пустой или не правильный снилс!";
 		}
 		
-		
-		JdbcTemplate jt=new JdbcTemplate(sds);
-		man=null;
+		//sds=(SingleConnectionDataSource)ApplicationContextUtil.getApplicationContext().getBean("as400DataSource");
+		JdbcTemplate jt=new JdbcTemplate((SingleConnectionDataSource)ApplicationContextUtil.getApplicationContext().getBean("as400DataSource"),true);
 		
 		try
 		{
@@ -52,7 +50,8 @@ public class AS400Data {
 		jt.update("call OPFRSOFT.PFRBAT0201('R002000018/"+snils+"/')");
 		man=jt.queryForObject("select * FROM QTEMP.R002000018",manRowMapper);
 		if (man==null) {
-			sds.getConnection().close();
+			//sds.getConnection().close();
+			jt.getDataSource().getConnection().close();
 			return "Снилс "+snils+" не найден!";
 		}
 		
@@ -62,9 +61,9 @@ public class AS400Data {
 		}
 		
 		GregorianCalendar gc=new GregorianCalendar();
-		gc.setTime(man.getBirthDay());
+		gc=man.getBirthDay();
 		gc.add(GregorianCalendar.YEAR, age);
-		man.setDatePrav(gc.getTime());
+		man.setDatePrav(gc);
 		man.setLgota(0);
 		
 		fieldCtp="ctpext";
@@ -85,17 +84,45 @@ public class AS400Data {
 			dateFpos=14;
 			jt.update("call OPFRSOFT.PFRBAT0201('R002000291/"+snils+"/')");
 			man.setStajKonv(jt.query("select * FROM QTEMP.R002000291",stajRowMapper));
-			System.out.println("HEREEEE Konv="+man.getStajKonv().size() +" Staj="+man.getStaj().size());
+			//.println("HEREEEE Konv="+man.getStajKonv().size() +" Staj="+man.getStaj().size());
 		}
 		
+		
+		//зарплата за 2000-2002 гг.
 		jt.update("call OPFRSOFT.PFRBAT0201('R002000014/"+snils+"/')");
 		man.setPlateg20002001(jt.query("select * FROM QTEMP.R002000014 where ctmcod like('2000') or ctmcod like('2001')",platejRowMapper));
-				
+
+		//взносы
+		jt.update("call OPFRSOFT.PFRBAT0201('R002000015/"+snils+"/')");
+		man.setVsnosy(jt.query("select * FROM QTEMP.R002000015",vsnosRowMapper));
+		
+		//уточнения по видом деятельности, указанному во взносах
+		jt.update("call OPFRSOFT.PFRBAT0201('R002000173/"+snils+"/')");
+		List<VsnosHelper> vhl = (jt.query("select * FROM QTEMP.R002000173",vsnosHelperRowMapper));
+		
+		for (Vsnos vs: man.getVsnosy())
+		{
+			if (vs.getCprext()==null||vs.getCprext().isEmpty())
+			{
+				for(VsnosHelper vh: vhl)
+				{
+					if (vh.getDptcod()==vs.getDptcod() && vh.getDcinumb()==vs.getDcinmb() && vh.getCprext()!=null)
+					{
+						vs.setCprext(vh.getCprext());
+						break;
+					}
+				}
+			}
+		}
+		
+		
 		
 		}
+		
 		catch(Exception ex)
 		{
-			sds.getConnection().close();
+			//sds.getConnection().close();
+			jt.getDataSource().getConnection().close();
 			return "Ошибка запроса к AS400!"+"\n"+ex.getMessage();
 		}
 		res=man.getFamily()+" "+man.getName()+" "+man.getOtch()+" "+man.getSex()+" "+man.getFormattedBirthday()+" "+man.getSNILS()+"<br>";
@@ -123,6 +150,47 @@ public class AS400Data {
 		}
 	};
 	
+	
+	private RowMapper<Vsnos> vsnosRowMapper = new RowMapper<Vsnos>() {
+		public Vsnos mapRow(ResultSet rs, int rowNum) throws SQLException {
+			Vsnos vsnos = new Vsnos();
+			vsnos.setDptcod(rs.getInt("dptcod"));
+			vsnos.setDcinmb(rs.getLong("dcinmb"));
+			vsnos.setCtmcod(rs.getString("ctmcod"));
+			vsnos.setAsr(Float.parseFloat(rs.getString("asr").replace(",",".")));
+			vsnos.setCprext(rs.getString("cprext"));
+			return vsnos;
+		}
+	};
+	
+	//вспомогательный класс для уточнения видов деятельности
+	private class VsnosHelper {
+		private long dcinumb;
+		private int dptcod;
+		private String cprext;
+		public long getDcinumb() {
+			return dcinumb;
+		}
+		public int getDptcod() {
+			return dptcod;
+		}
+		public String getCprext() {
+			return cprext;
+		}
+		public VsnosHelper(int dptcod, long dcinumb, String cprext) {
+			this.dcinumb = dcinumb;
+			this.dptcod = dptcod;
+			this.cprext = cprext;
+		}
+	}
+	
+	private RowMapper<VsnosHelper> vsnosHelperRowMapper = new RowMapper<VsnosHelper>() {
+		public VsnosHelper mapRow(ResultSet rs, int rowNum) throws SQLException {
+			return new VsnosHelper(rs.getInt(1),rs.getLong(2),rs.getString(12));
+		}
+	};
+	
+	
 	private RowMapper<Platej> platejRowMapper = new RowMapper<Platej>() {
 		public Platej mapRow(ResultSet rs, int rowNum) throws SQLException {
 			Platej platej = new Platej();
@@ -143,7 +211,7 @@ public class AS400Data {
 	private RowMapper<Man> manRowMapper = new RowMapper<Man>() {
 		public Man mapRow(ResultSet rs, int rowNum) throws SQLException {
 			Man m = new Man();
-			m.setBirthDay(Utils.makeDate(rs.getString("prnbrd"),"\\."));
+			m.setBirthDayDate(Utils.makeDate(rs.getString("prnbrd"),"\\."));
 			m.setFio(rs.getString("fio"));
 			m.setSNILS(rs.getString("insnmb"));
 			m.setSex(rs.getString("prnsex"));
@@ -151,6 +219,9 @@ public class AS400Data {
 		}
 	};
 
+	
+	
+	
 	private String res;
 	public String getRes() {
 		return res;

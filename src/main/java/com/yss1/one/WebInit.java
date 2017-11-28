@@ -1,5 +1,7 @@
 package com.yss1.one;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
@@ -10,18 +12,13 @@ import com.yss1.one.util.ApplicationContextUtil;
 
 
 public class WebInit extends SpringBootServletInitializer{
-		@Autowired
-		private ApplicationContext ctx;
+		
 		@Override
 		protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
 			SpringApplicationBuilder sbab=application.sources(OneApplication.class);
-			ApplicationContextUtil acu=new ApplicationContextUtil();
-			acu.setApplicationContext(ctx);
 			return sbab;
-			
-			
-			
 		}
+		
 		
 		
 	}

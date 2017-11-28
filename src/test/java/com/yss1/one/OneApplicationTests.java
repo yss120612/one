@@ -101,6 +101,7 @@ public class OneApplicationTests {
 		assertEquals(dojDao.getPeriod(2018, true),252);
 		assertEquals(dojDao.getPeriod(2016, false),228);
 		assertEquals(dojDao.getPeriod(2016, true),252);
+		assertEquals(dojDao.getPeriod(2029, false),228);
 		
 		
 	}

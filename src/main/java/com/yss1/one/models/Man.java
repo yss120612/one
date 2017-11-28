@@ -2,11 +2,14 @@ package com.yss1.one.models;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
+import com.yss1.one.calc.NpkCalculator;
 import com.yss1.one.calc.RkCalculator;
 import com.yss1.one.calc.RpRpkCalculator;
 import com.yss1.one.calc.StajCalculator;
+import com.yss1.one.calc.TarifCalculator;
 import com.yss1.one.util.ApplicationContextUtil;
 import com.yss1.one.util.Period;
 import com.yss1.one.util.Utils;
@@ -22,7 +25,7 @@ public class Man {
 	//пол
 	private String sex;
 	//дата рождения
-	private Date birthDay;
+	private GregorianCalendar birthDay;
 	//СНИЛС
 	private String SNILS;
 	//периоды деятельности общий и на даты
@@ -44,7 +47,10 @@ public class Man {
 	private List<Platej> plateg20002001;
 	//коэффициент зарплатный за 2000-2001 годы
 	private float kSal;
-	
+		
+	//взносы начисленнве
+	private List<Vsnos> vsnosy;
+		
 	//расчетная пенсия на 1 янв. 2002 года
 	private float rP;
 	
@@ -52,21 +58,28 @@ public class Man {
 	private float rPK;
 	
 	//дата права
-	private Date datePrav;
+	private GregorianCalendar datePrav;
 	
 	//льготный выход на пенсию
 	private int lgota;
+	
+	//начальный пенсионный капиталл
+	private float nPK;
 	
 	//калькуляторы
 	RkCalculator rkCalc;
 	StajCalculator stCalc;
 	RpRpkCalculator rpRpkCalc;
+	NpkCalculator npkCalc;
+	TarifCalculator tarifCalc;
 	
 	public Man() {
 		rkCalc=(RkCalculator)ApplicationContextUtil.getApplicationContext().getBean(RkCalculator.class);
 		stCalc=(StajCalculator)ApplicationContextUtil.getApplicationContext().getBean(StajCalculator.class);
 		rpRpkCalc=(RpRpkCalculator)ApplicationContextUtil.getApplicationContext().getBean(RpRpkCalculator.class);
-	}	
+		npkCalc=(NpkCalculator)ApplicationContextUtil.getApplicationContext().getBean(NpkCalculator.class);
+		tarifCalc=(TarifCalculator)ApplicationContextUtil.getApplicationContext().getBean(TarifCalculator.class);
+			}	
 	
 	public List<Platej> getPlateg20002001() {
 		return plateg20002001;
@@ -76,16 +89,24 @@ public class Man {
 		this.plateg20002001 = plateg20002001;
 	}
 
-	public Date getDatePrav() {
-		return datePrav;
+	public Date getDatePravDate() {
+		return datePrav.getTime();
 	}
 
+	public GregorianCalendar getDatePrav() {
+		return datePrav;
+		}
 
 
-	public void setDatePrav(Date datePrav) {
+	public void setDatePravDate(Date datePrav) {
+		this.datePrav = new GregorianCalendar();
+		this.datePrav.setTime(datePrav);
+	}
+
+	public void setDatePrav(GregorianCalendar datePrav) {
 		this.datePrav = datePrav;
 	}
-
+	
 
 
 	public int getLgota() {
@@ -121,19 +142,26 @@ public class Man {
 		rk2001=rkCalc.calc(plateg20002001);
 		calcSalK();
 		rP=rpRpkCalc.CalcRp(stajK, kSal);
-		rPK=rpRpkCalc.CalcRpk(dopStajK, rP,datePrav.getYear(),lgota==0);
+		rPK=rpRpkCalc.CalcRpk(dopStajK, rP,datePrav.get(GregorianCalendar.YEAR),lgota!=0);
+		nPK=npkCalc.calc(rPK, kVal, getDatePravDate());
+		tarifCalc.valc(vsnosy);
 		
 		
 		
-		res = "p1991=" + period1991 + " p2002=" + period2002 + " p2015=" + period2015+" KVal="+kVal+" StajK="+stajK+" ponStajK="+dopStajK+" RK="+rk2001+" Зар.К="+kSal+" RP="+rP+" RPK="+rPK+"<br>";
-		for (Platej pl : plateg20002001) {
-			res = res + pl.toString() + "<br>";
+		res = "p1991=" + period1991 + " p2002=" + period2002 + " p2015=" + period2015+" KVal="+kVal+" StajK="+stajK+" ponStajK="+dopStajK+" RK="+rk2001+" Зар.К="+kSal+" RP="+rP+" RPK="+rPK+
+			  " pravo="+Utils.getFormattedDate(datePrav.getTime()) +" NPK="+nPK+"<br>";
+//		for (Platej pl : plateg20002001) {
+//			res = res + pl.toString() + "<br>";
+//		}
+		
+		for (Vsnos vs : vsnosy) {
+			res = res + vs.toString() + "<br>";
 		}
 		
-		for (Staj st : tmp) {
-			//periodAll.addPeriod(Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
-			res = res + st.toString() + "<br>";
-		}
+//		for (Staj st : tmp) {
+//			//periodAll.addPeriod(Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
+//			res = res + st.toString() + "<br>";
+//		}
 		
 		
 
@@ -209,14 +237,23 @@ public class Man {
 		this.otch = otch;
 	}
 
-	public Date getBirthDay() {
+	public Date getBirthDayDate() {
+		return birthDay.getTime();
+	}
+
+	public void setBirthDayDate(Date birthDay) {
+		this.birthDay = new GregorianCalendar(); 
+		this.birthDay.setTime(birthDay);
+	}
+
+	public GregorianCalendar getBirthDay() {
 		return birthDay;
 	}
 
-	public void setBirthDay(Date birthDay) {
+	public void setBirthDay(GregorianCalendar birthDay) {
 		this.birthDay = birthDay;
 	}
-
+	
 	public String getSNILS() {
 		return SNILS;
 	}
@@ -254,7 +291,7 @@ public class Man {
 	}
 
 	public String getFormattedBirthday() {
-		return Utils.getFormattedDate(birthDay);
+		return Utils.getFormattedDate(birthDay.getTime());
 	}
 
 	public String getSex() {
@@ -264,4 +301,13 @@ public class Man {
 	public void setSex(String sex) {
 		this.sex = sex;
 	}
+	
+	public List<Vsnos> getVsnosy() {
+		return vsnosy;
+	}
+
+	public void setVsnosy(List<Vsnos> vsnosy) {
+		this.vsnosy = vsnosy;
+	}
+	
 }

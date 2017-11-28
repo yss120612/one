@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.yss1.one.calc.AS400Data;
+import com.yss1.one.dao.AS400Dao;
 import com.yss1.one.dao.UserDao;
+import com.yss1.one.util.ApplicationContextUtil;
 import com.yss1.one.util.WebUtils;
 
 @Controller
@@ -48,9 +49,27 @@ public class UsersCcontroller {
 		return "start";
 	}
 	
+	
+	@RequestMapping("/test")
+	public String test(Model model) {
+		String test="";
+		model.addAttribute("name", WebUtils.getLogin());
+		if (ApplicationContextUtil.getApplicationContext()==null)
+		{
+			test="context is null!!";
+		}
+		else
+		{
+			test = "context exist!";
+		}
+		model.addAttribute("rest", test);
+		return "start";
+	}
+	
+	
 	@RequestMapping(value= {"/calc"})
 	public String calc(Model model,@RequestParam(value="snils", required=false, defaultValue="049711721") String snils) throws SQLException {
-		AS400Data asd=new AS400Data();
+		AS400Dao asd=new AS400Dao();
 		String err=asd.load(snils);
 //		Authentication au=SecurityContextHolder.getContext().getAuthentication();
 //		if (au.isAuthenticated())

@@ -31,7 +31,7 @@
      </div>
      <div class="navbar-inner">
      <ul class="nav navbar-nav">
-        <li ><a href="#">Link </a></li>
+        <li ><a href="${springMacroRequestContext.contextPath}/test">Test </a></li>
         <li <#if page=="calc">class="active"</#if> ><a href="${springMacroRequestContext.contextPath}/calc">Run</a></li>
      </ul>
     

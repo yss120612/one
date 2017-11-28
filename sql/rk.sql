@@ -22,14 +22,14 @@ SET search_path = public, pg_catalog;
 -- TOC entry 2184 (class 0 OID 17359)
 -- Dependencies: 207
 -- Data for Name: k_raions; Type: TABLE DATA; Schema: public; Owner: userpp
---
+-- Table: public.k_raions
 
 -- DROP TABLE public.k_raions;
 
 CREATE TABLE public.k_raions
 (
     kodr integer NOT NULL,
-    koef numeric(7,1) NOT NULL,
+    koef real NOT NULL,
     rgn character varying(30) COLLATE pg_catalog."default",
     dst character varying(60) COLLATE pg_catalog."default"
 )

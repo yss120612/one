@@ -93,6 +93,11 @@ public class Utils {
 		return sdf.format(d);
 	}
 
+	public static String getFormattedDate4sql2(Date d) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		return sdf.format(d);
+	}
+	
 	public static String bytes2HexStr(byte[] ba) {
 		StringBuilder sb = new StringBuilder();
 		for (byte b : ba) {
