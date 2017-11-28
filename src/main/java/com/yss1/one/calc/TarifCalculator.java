@@ -12,10 +12,10 @@ import com.yss1.one.models.Vsnos;
 public class TarifCalculator {
 	@Autowired	
 	CategoryDao categoryDao;
-	public void valc(List<Vsnos> lv) {
+	public void valc(List<Vsnos> lv,boolean before67) {
 		if (lv==null) return;
 		for (Vsnos v: lv) {
-			categoryDao.setTarifs(v);
+			categoryDao.setTarifs(v,before67);
 		}
 		lv.removeIf(x->x.getCprcod()==0);
 	}

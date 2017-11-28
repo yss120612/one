@@ -144,7 +144,7 @@ public class Man {
 		rP=rpRpkCalc.CalcRp(stajK, kSal);
 		rPK=rpRpkCalc.CalcRpk(dopStajK, rP,datePrav.get(GregorianCalendar.YEAR),lgota!=0);
 		nPK=npkCalc.calc(rPK, kVal, getDatePravDate());
-		tarifCalc.valc(vsnosy);
+		tarifCalc.valc(vsnosy,datePrav.get(GregorianCalendar.YEAR)<1967);
 		
 		
 		

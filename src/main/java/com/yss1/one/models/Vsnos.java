@@ -30,6 +30,7 @@ private float solid;
 //дата окончания периода перечисленного взноса
 private Date date;
 
+
 public int getDptcod() {
 	return dptcod;
 }
@@ -48,19 +49,45 @@ public String getCtmcod() {
 public void setCtmcod(String ctmcod) {
 	this.ctmcod = ctmcod;
 	year=Integer.parseInt(ctmcod.substring(0,4));
+	int p=-1;
+	if(ctmcod.length()>5)
+	{
+		p=Integer.parseInt(ctmcod.substring(5,6));
+	}
+	
 	if (year<=2014 && year>=2002)
 	{
 	if (year<2010)
 	{
-		date=Utils.makeDate(2010, 12, 31);
+		date=Utils.makeDate(year, 12, 31);
 	}
 	else if (year==2010)
 	{
-		
+		if (p==0 || p==2) {
+			date=Utils.makeDate(2010, 12, 31);
+		}else if (p==1)
+		{
+			date=Utils.makeDate(2010, 6, 30);
+		}
+			
 	}
 	else
 	{
-		
+		if (p==0 || p==4) {
+			date=Utils.makeDate(year, 12, 31);
+		}
+		else if (p==1)
+		{
+			date=Utils.makeDate(year, 3, 31);
+		}
+		else if (p==2)
+		{
+			date=Utils.makeDate(year, 6, 30);
+		}
+		else if (p==3)
+		{
+			date=Utils.makeDate(year, 9, 30);
+		}
 	}
 	}
 }
@@ -103,7 +130,7 @@ public int getYear() {
 @Override
 public String toString() {
 	return "Vsnos [dptcod=" + dptcod + ", year=" + year + ", ctmcod=" + ctmcod + ", asr=" + asr
-			+ ", cprext=" + cprext + ", cprcod=" + cprcod + ", strah2=" + strah2 + ", strah3=" + strah3 + "]";
+			+ ", cprext=" + cprext + ", cprcod=" + cprcod + ", strah=" + strah + ", solidar=" + solid +", datev=" + Utils.getFormattedDate(date)+ "]";
 }
 
 

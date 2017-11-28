@@ -53,8 +53,6 @@ SET row_security = off;
 
 SET search_path = public, pg_catalog;
 
-SET search_path = public, pg_catalog;
-
 --
 -- TOC entry 2195 (class 0 OID 17381)
 -- Dependencies: 211

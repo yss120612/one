@@ -30,6 +30,7 @@
 						  </form>
 						<#else>                        
                         
+                        
 						 <#if error??><div id="error" class="alert alert-danger" role="alert">${error}</div></#if>
 						 
                         <form id="chgpassform" class="form-horizontal" role="form" action="${springMacroRequestContext.contextPath}/chgpwd" method="post">
@@ -51,10 +52,10 @@
                             </div>
                                     
 							<div class="control-group">
-							 <label for="login-password-new">Новый пароль повтор</label>                                    
+							 <label for="roles">Роли</label>                                    
                              <div style="margin-bottom: 25px" class="input-group" >
                                         <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                        <input id="login-password-new2" type="password" class="form-control" name="password_new2" placeholder="новый пароль повтор"  onChange="onCh()">
+                                        <input id="roles" type="list" class="form-control" name="roles" placeholder="роли"  onChange="onCh()">
                              </div>
                             </div>
                             
@@ -63,6 +64,15 @@
       						<input type="checkbox" class="form-check-input">
       						Доступ
     						</label>
+  							</div>
+                            
+                            <div class="form-group">
+    							<label for="exampleSelect1">Example select</label>
+    							<select class="form-control" id="exampleSelect1">
+    							<#list roles as r>
+							      <option>${r}</option>
+							    </#list>  
+    							</select>
   							</div>
                             
                             
