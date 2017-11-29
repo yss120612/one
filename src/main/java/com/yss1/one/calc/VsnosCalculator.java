@@ -11,6 +11,7 @@ import com.yss1.one.dao.IndexDao;
 import com.yss1.one.dao.SolidarDao;
 import com.yss1.one.dao.TarifDao;
 import com.yss1.one.models.Vsnos;
+import com.yss1.one.util.PerfMeter;
 
 @Service
 public class VsnosCalculator {
@@ -24,9 +25,13 @@ public class VsnosCalculator {
 	@Autowired
 	TarifDao tarifDao;
 
-	public float calc(List<Vsnos> lv, GregorianCalendar pravo) {
+	public float calc(List<Vsnos> lv, GregorianCalendar pravo, PerfMeter meter) {
+		
+		meter.start();
 		boolean before67=pravo.get(GregorianCalendar.YEAR)<1967;
 		tarifDao.setTarif(lv, before67);
+		meter.measure("VsnosCalculator:tarifDao.setTarif");
+		meter.start();
 		solidarDao.setSolidar(lv, before67);
 		for (Vsnos vs : lv) {
 			if (vs.getYear() >= 2002 && vs.getYear() <= 2015) {
@@ -35,11 +40,14 @@ public class VsnosCalculator {
 			}
 			indexDao.indexVsnos(lv, pravo.getTime());
 		}
+		meter.measure("VsnosCalculator:solidarDao.setSolidar");
+		meter.start();
 		float res=0;
 		for (Vsnos vs : lv) {
 			if (vs.getYear()>=2002 && vs.getYear()<=2014)
 			res+=vs.getAsrItog();
 		}
+		meter.measure("VsnosCalculator:calc summ");
 		return res;
 	}
 

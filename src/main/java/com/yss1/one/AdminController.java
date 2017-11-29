@@ -48,11 +48,11 @@ public class AdminController {
 	@PostMapping(value= {"/useradd"})
 	public String useradd(Model model)
 	{
-		model.addAttribute("name", WebUtils.getLogin());
-		model.addAttribute("rest","useredit call");
-		model.addAttribute("apage","home");
-		
-		return "start";
+		//model.addAttribute("name", WebUtils.getLogin());
+		model.addAttribute("titleform", "Создание пользователя");
+		model.addAttribute("action","add");
+		model.addAttribute("roles",rd.getRoleList());
+		return "user";
 	}
 	
 	@PostMapping(value= {"/userdel"})
@@ -70,6 +70,8 @@ public class AdminController {
 		}
 		return new ModelAndView("redirect:/userslist");
 	}
+	
+	
 	
 	
 }

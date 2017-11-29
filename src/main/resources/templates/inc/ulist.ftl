@@ -50,17 +50,22 @@ if (ac==1)
 {
 $('#userform').attr('action', '${springMacroRequestContext.contextPath}/useredit');
 }
-else
+else if (ac==2)
 {
 if (confirm('Удалить пользователя '+nm+'?'))
 {
 $('#userform').attr('action', '${springMacroRequestContext.contextPath}/userdel');
 }
-else
+else 
 {
 return;
 }
 }
+else if (ac==3)
+{
+$('#userform').attr('action', '${springMacroRequestContext.contextPath}/useradd');
+}
+
 $('#userid').val(id);
 $('#userform').submit();
 }

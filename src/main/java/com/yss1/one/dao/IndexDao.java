@@ -14,7 +14,6 @@ import org.springframework.stereotype.Repository;
 
 
 import com.yss1.one.models.Vsnos;
-import com.yss1.one.util.Twix;
 import com.yss1.one.util.Utils;
 //индексирует взносы
 @Repository
@@ -27,10 +26,10 @@ public class IndexDao {
 		String sql="select year, koeff from kindex order by year";
 		//pgDT.queryForList(sql, Twix.class);
 		Map<Integer,Float> map=new HashMap<>();
-		for (Twix<Integer,Float> tw:pgDT.query(sql, idxRowMapper))
-		{
-			map.put(tw.getKey(), tw.getVal());
-		}
+//		for (Twix<Integer,Float> tw:pgDT.query(sql, idxRowMapper))
+//		{
+//			map.put(tw.getKey(), tw.getVal());
+//		}
 		
 		for (Vsnos vs: lv){
 			if (vs.getYear()>=2002 && vs.getYear()<=2014 && Utils.beforeOrEqual(vs.getDate(), pravo))
@@ -47,10 +46,10 @@ public class IndexDao {
 		
 	}
 	
-	private RowMapper<Twix<Integer,Float>> idxRowMapper = new RowMapper<Twix<Integer,Float>>() {
-		public Twix<Integer,Float> mapRow(ResultSet rs, int rowNum) throws SQLException {
-			return new Twix<Integer,Float>(rs.getInt("year"),rs.getFloat("koeff"));
-		}
-	};
+//	private RowMapper<Twix<Integer,Float>> idxRowMapper = new RowMapper<Twix<Integer,Float>>() {
+//		public Twix<Integer,Float> mapRow(ResultSet rs, int rowNum) throws SQLException {
+//			return new Twix<Integer,Float>(rs.getInt("year"),rs.getFloat("koeff"));
+//		}
+//	};
 	
 }
