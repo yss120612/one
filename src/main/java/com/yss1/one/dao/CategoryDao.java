@@ -1,9 +1,13 @@
 package com.yss1.one.dao;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import com.yss1.one.models.Vsnos;
@@ -13,33 +17,29 @@ import com.yss1.one.util.Utils;
 public class CategoryDao {
 	@Autowired
 	private JdbcTemplate pgDT;
-
-	public void setTarifs(Vsnos vsnos, boolean before67) {
+	// меняем код взноса с буквенного на цифровой
+	public void setCode(Vsnos vsnos) {
 		String myd = Utils.getFormattedDate4sql2(Utils.makeDate(vsnos.getYear(), 1, 2));
 		String now = Utils.getFormattedDate4sql2(new Date());
-		// меняем код взноса с буквенного на цифровой
-		Integer kod = null;
-		Integer count = pgDT.queryForObject("select count(*) from public.category where category='?' and Date('?') between dstart and COALESCE(dend,Date('?'))"
-				, Integer.class, vsnos.getCprext().trim(),myd,now);
-		if (count > 0) {
-		           	  kod = pgDT.queryForObject("select code from public.category where category='?' and Date('?') between dstart and COALESCE(dend,Date('?'))"
-					, Integer.class, vsnos.getCprext().trim(),myd,now);
-		}
 
+//		Integer kod = null;
+//		Integer count = pgDT.queryForObject("select count(*) from public.category where category='?' and Date('?') between dstart and COALESCE(dend,Date('?'))"
+//				, Integer.class, vsnos.getCprext().trim(),myd,now);
+//		if (count > 0) {
+//		           	  kod = pgDT.queryForObject("select code from public.category where category='?' and Date('?') between dstart and COALESCE(dend,Date('?'))"
+//					, Integer.class, vsnos.getCprext().trim(),myd,now);
+//		}
+
+		List<Integer> lk=pgDT.query("select code from public.category where category='"+vsnos.getCprext().trim()+"' and Date('"+myd+"') between dstart and COALESCE(dend,Date('"+now+"'))",intRowMapper);
+		
 		//System.out.println("Kode="+kod);
-		if (kod == null) {
+		if (lk==null || lk.isEmpty()) {
 			vsnos.setCprcod(0);
 			return;
 		} else {
-			vsnos.setCprcod(kod);
+			vsnos.setCprcod(lk.get(0));
 		}
-
-		// идем за тарифами
-		String sql="select ";
-		sql+=(before67?"strah2":"strah3");
-		Float th = pgDT.queryForObject(sql+" from tarifs where kod=? and year=?",Float.class, vsnos.getCprcod(), vsnos.getYear());
-		vsnos.setStrah(th);
-	}
+}
 
 	// вспомогательный класс для тфрифов
 //	private class TarifHelper {
@@ -60,10 +60,10 @@ public class CategoryDao {
 //		}
 //	}
 //
-//	private RowMapper<TarifHelper> tarifHelperRowMapper = new RowMapper<TarifHelper>() {
-//		public TarifHelper mapRow(ResultSet rs, int rowNum) throws SQLException {
-//			return new TarifHelper(rs.getFloat("strah2"), rs.getFloat("strah2"));
-//		}
-//	};
+	private RowMapper<Integer> intRowMapper = new RowMapper<Integer>() {
+		public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+			return new Integer(rs.getInt(1));
+		}
+	};
 
 }

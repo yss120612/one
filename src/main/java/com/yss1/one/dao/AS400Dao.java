@@ -43,11 +43,12 @@ public class AS400Dao {
 		
 		//sds=(SingleConnectionDataSource)ApplicationContextUtil.getApplicationContext().getBean("as400DataSource");
 		JdbcTemplate jt=new JdbcTemplate((SingleConnectionDataSource)ApplicationContextUtil.getApplicationContext().getBean("as400DataSource"),true);
-		
+		String place="";
 		try
 		{
-			
+		place="18A";	
 		jt.update("call OPFRSOFT.PFRBAT0201('R002000018/"+snils+"/')");
+		place="18B";
 		man=jt.queryForObject("select * FROM QTEMP.R002000018",manRowMapper);
 		if (man==null) {
 			//sds.getConnection().close();
@@ -70,7 +71,9 @@ public class AS400Dao {
 		fieldCsp="cspext";
 		dateSpos=7;
 		dateFpos=8;
+		place="16A";
 		jt.update("call OPFRSOFT.PFRBAT0201('R002000016/"+snils+"/')");
+		place="16B";
 		man.setStaj(jt.query("select * FROM QTEMP.R002000016",stajRowMapper));
 		
 		jt.update("call OPFRSOFT.PFRBAT0201('R002000289/"+snils+"/')");
@@ -82,23 +85,31 @@ public class AS400Dao {
 			fieldCsp="cspcod";
 			dateSpos=13;
 			dateFpos=14;
+			place="291A";
 			jt.update("call OPFRSOFT.PFRBAT0201('R002000291/"+snils+"/')");
+			place="291B";
 			man.setStajKonv(jt.query("select * FROM QTEMP.R002000291",stajRowMapper));
 			//.println("HEREEEE Konv="+man.getStajKonv().size() +" Staj="+man.getStaj().size());
 		}
 		
 		
 		//зарплата за 2000-2002 гг.
+		place="14A";
 		jt.update("call OPFRSOFT.PFRBAT0201('R002000014/"+snils+"/')");
+		place="14B";
 		man.setPlateg20002001(jt.query("select * FROM QTEMP.R002000014 where ctmcod like('2000') or ctmcod like('2001')",platejRowMapper));
 
 		//взносы
+		place="15A";
 		jt.update("call OPFRSOFT.PFRBAT0201('R002000015/"+snils+"/')");
+		place="15B";
 		man.setVsnosy(jt.query("select * FROM QTEMP.R002000015",vsnosRowMapper));
 		
 		//уточнения по видом деятельности, указанному во взносах
+		place="173A";
 		jt.update("call OPFRSOFT.PFRBAT0201('R002000173/"+snils+"/')");
-		List<VsnosHelper> vhl = (jt.query("select * FROM QTEMP.R002000173",vsnosHelperRowMapper));
+		place="173B";
+		List<VsnosHelper> vhl = jt.query("select * FROM QTEMP.R002000173",vsnosHelperRowMapper);
 		
 		for (Vsnos vs: man.getVsnosy())
 		{
@@ -123,7 +134,7 @@ public class AS400Dao {
 		{
 			//sds.getConnection().close();
 			jt.getDataSource().getConnection().close();
-			return "Ошибка запроса к AS400!"+"\n"+ex.getMessage();
+			return "Ошибка запроса к AS400! "+place+"<br>"+ex.getMessage();
 		}
 		res=man.getFamily()+" "+man.getName()+" "+man.getOtch()+" "+man.getSex()+" "+man.getFormattedBirthday()+" "+man.getSNILS()+"<br>";
 		man.calcStaj();

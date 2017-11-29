@@ -9,15 +9,14 @@ import com.yss1.one.dao.CategoryDao;
 import com.yss1.one.models.Vsnos;
 //калькулятор тарифа страховых взносов в зависимости от категории взносов 
 @Service
-public class TarifCalculator {
+public class CodeCalculator {
 	@Autowired	
 	CategoryDao categoryDao;
 	public void valc(List<Vsnos> lv,boolean before67) {
 		if (lv==null) return;
 		for (Vsnos v: lv) {
-			categoryDao.setTarifs(v,before67);
+			categoryDao.setCode(v);
 		}
-		lv.removeIf(x->x.getCprcod()==0);
 	}
 	
 }

@@ -30,7 +30,15 @@ private float solid;
 //дата окончания периода перечисленного взноса
 private Date date;
 
+//учтенная сумма взноса с учетом индексации
+float asrItog;
 
+public float getAsrItog() {
+	return asrItog;
+}
+public void setAsrItog(float asrItog) {
+	this.asrItog = asrItog;
+}
 public int getDptcod() {
 	return dptcod;
 }
@@ -47,12 +55,12 @@ public String getCtmcod() {
 	return ctmcod;
 }
 public void setCtmcod(String ctmcod) {
-	this.ctmcod = ctmcod;
-	year=Integer.parseInt(ctmcod.substring(0,4));
+	this.ctmcod = ctmcod.trim();
+	year=Integer.parseInt(this.ctmcod.substring(0,4));
 	int p=-1;
-	if(ctmcod.length()>5)
+	if(this.ctmcod.length()>5)
 	{
-		p=Integer.parseInt(ctmcod.substring(5,6));
+		p=Integer.parseInt(this.ctmcod.substring(5,6));
 	}
 	
 	if (year<=2014 && year>=2002)
@@ -130,7 +138,7 @@ public int getYear() {
 @Override
 public String toString() {
 	return "Vsnos [dptcod=" + dptcod + ", year=" + year + ", ctmcod=" + ctmcod + ", asr=" + asr
-			+ ", cprext=" + cprext + ", cprcod=" + cprcod + ", strah=" + strah + ", solidar=" + solid +", datev=" + Utils.getFormattedDate(date)+ "]";
+			+ ", cprext=" + cprext + ", cprcod=" + cprcod + ", strah=" + strah + ", solidar=" + solid +", datev=" + (date!=null?Utils.getFormattedDate(date):"null")+", Itogo=" + asrItog+ "]";
 }
 
 

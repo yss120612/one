@@ -9,7 +9,8 @@ import com.yss1.one.calc.NpkCalculator;
 import com.yss1.one.calc.RkCalculator;
 import com.yss1.one.calc.RpRpkCalculator;
 import com.yss1.one.calc.StajCalculator;
-import com.yss1.one.calc.TarifCalculator;
+import com.yss1.one.calc.VsnosCalculator;
+import com.yss1.one.calc.CodeCalculator;
 import com.yss1.one.util.ApplicationContextUtil;
 import com.yss1.one.util.Period;
 import com.yss1.one.util.Utils;
@@ -66,19 +67,25 @@ public class Man {
 	//начальный пенсионный капиталл
 	private float nPK;
 	
+	//учтенные взносы за 2002-2014 годы
+	 private float vsnos0215;
+	
+	
 	//калькуляторы
 	RkCalculator rkCalc;
 	StajCalculator stCalc;
 	RpRpkCalculator rpRpkCalc;
 	NpkCalculator npkCalc;
-	TarifCalculator tarifCalc;
+	CodeCalculator codeCalc;
+	VsnosCalculator vsnosCalc;
 	
 	public Man() {
 		rkCalc=(RkCalculator)ApplicationContextUtil.getApplicationContext().getBean(RkCalculator.class);
 		stCalc=(StajCalculator)ApplicationContextUtil.getApplicationContext().getBean(StajCalculator.class);
 		rpRpkCalc=(RpRpkCalculator)ApplicationContextUtil.getApplicationContext().getBean(RpRpkCalculator.class);
 		npkCalc=(NpkCalculator)ApplicationContextUtil.getApplicationContext().getBean(NpkCalculator.class);
-		tarifCalc=(TarifCalculator)ApplicationContextUtil.getApplicationContext().getBean(TarifCalculator.class);
+		codeCalc=(CodeCalculator)ApplicationContextUtil.getApplicationContext().getBean(CodeCalculator.class);
+		vsnosCalc=(VsnosCalculator)ApplicationContextUtil.getApplicationContext().getBean(VsnosCalculator.class);
 			}	
 	
 	public List<Platej> getPlateg20002001() {
@@ -144,12 +151,12 @@ public class Man {
 		rP=rpRpkCalc.CalcRp(stajK, kSal);
 		rPK=rpRpkCalc.CalcRpk(dopStajK, rP,datePrav.get(GregorianCalendar.YEAR),lgota!=0);
 		nPK=npkCalc.calc(rPK, kVal, getDatePravDate());
-		tarifCalc.valc(vsnosy,datePrav.get(GregorianCalendar.YEAR)<1967);
-		
+		codeCalc.valc(vsnosy,datePrav.get(GregorianCalendar.YEAR)<1967);
+		vsnos0215=vsnosCalc.calc(vsnosy, datePrav);
 		
 		
 		res = "p1991=" + period1991 + " p2002=" + period2002 + " p2015=" + period2015+" KVal="+kVal+" StajK="+stajK+" ponStajK="+dopStajK+" RK="+rk2001+" Зар.К="+kSal+" RP="+rP+" RPK="+rPK+
-			  " pravo="+Utils.getFormattedDate(datePrav.getTime()) +" NPK="+nPK+"<br>";
+			  " pravo="+Utils.getFormattedDate(datePrav.getTime()) +" NPK="+nPK+" vsnosy02-15="+vsnos0215+"<br>";
 //		for (Platej pl : plateg20002001) {
 //			res = res + pl.toString() + "<br>";
 //		}
