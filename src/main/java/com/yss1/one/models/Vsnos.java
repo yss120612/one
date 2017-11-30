@@ -109,7 +109,7 @@ public String getCprext() {
 	return cprext;
 }
 public void setCprext(String cprext) {
-	this.cprext = cprext;
+	this.cprext = cprext.trim();
 }
 public int getCprcod() {
 	return cprcod;
@@ -137,7 +137,7 @@ public int getYear() {
 }
 @Override
 public String toString() {
-	return "Vsnos [dptcod=" + dptcod + ", year=" + year + ", ctmcod=" + ctmcod + ", asr=" + asr
+	return "Vsnos [year=" + year + ", ctmcod=" + ctmcod + ", asr=" + asr
 			+ ", cprext=" + cprext + ", cprcod=" + cprcod + ", strah=" + strah + ", solidar=" + solid +", datev=" + (date!=null?Utils.getFormattedDate(date):"null")+", Itogo=" + asrItog+ "]";
 }
 

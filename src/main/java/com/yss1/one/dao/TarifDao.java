@@ -21,7 +21,7 @@ public class TarifDao {
 	// идем за тарифами (процент, отчисляемый из ЗП)
 	String sql="select kod, year, "+(before67?"strah2 ":"strah3 ");
 
-	List<Tarif> lt=pgDT.query(sql+"from tarifs where year between 2002 and 2014 order by year,kod",tarifRowMapper);
+	List<Tarif> lt=pgDT.query(sql+"from tarifs order by year,kod",tarifRowMapper);
 	
 	for(Vsnos vs:lv) {
 		if (vs.getCprcod()!=0)

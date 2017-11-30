@@ -25,7 +25,7 @@ public class PerfMeterUnit {
 	public String getInfo() {
 		if (!isFinished()) return "";
 		float duration = (finish.getTime() - start.getTime()) / 1000f;
-		return String.format("%.2f:%s",duration,comment) ;
+		return String.format("%.3f:%s",duration,comment) ;
 	}
 
 }

@@ -1,14 +1,18 @@
 package com.yss1.one.dao;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import com.yss1.one.models.Vsnos;
+import com.yss1.one.util.Twix;
 
 @Repository
 public class SolidarDao {
@@ -25,9 +29,9 @@ public class SolidarDao {
 		}
 
 		Map<String, Float> map = new HashMap<>();
-//		for (Twix<String, Float> tw : pgDT.query(sql, solidRowMapper)) {
-//			map.put(tw.getKey(), tw.getVal());
-//		}
+		for (Twix<String, Float> tw : pgDT.query(sql, solidRowMapper)) {
+			map.put(tw.getKey(), tw.getVal());
+		}
 
 		
 		for (Vsnos vs: vl){
@@ -42,10 +46,10 @@ public class SolidarDao {
 		
 	}
 
-//	private RowMapper<Twix<String, Float>> solidRowMapper = new RowMapper<Twix<String, Float>>() {
-//		public Twix<String, Float> mapRow(ResultSet rs, int rowNum) throws SQLException {
-//			return new Twix<String, Float>(rs.getString("period"), rs.getFloat(2));
-//		}
-//	};
+	private RowMapper<Twix<String, Float>> solidRowMapper = new RowMapper<Twix<String, Float>>() {
+		public Twix<String, Float> mapRow(ResultSet rs, int rowNum) throws SQLException {
+			return new Twix<String, Float>(rs.getString("period"), rs.getFloat(2));
+		}
+	};
 
 }

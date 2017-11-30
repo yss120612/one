@@ -11,6 +11,7 @@ import com.yss1.one.calc.RpRpkCalculator;
 import com.yss1.one.calc.StajCalculator;
 import com.yss1.one.calc.VsnosCalculator;
 import com.yss1.one.calc.CodeCalculator;
+import com.yss1.one.calc.Ipk15Calculator;
 import com.yss1.one.util.ApplicationContextUtil;
 import com.yss1.one.util.PerfMeter;
 import com.yss1.one.util.Period;
@@ -71,6 +72,8 @@ public class Man {
 	//учтенные взносы за 2002-2014 годы
 	 private float vsnos0215;
 	
+	//индивидуальный пенсионный капиталл на 1.01.2015г.
+	 private float ipk15;
 	
 	//калькуляторы
 	RkCalculator rkCalc;
@@ -79,6 +82,7 @@ public class Man {
 	NpkCalculator npkCalc;
 	CodeCalculator codeCalc;
 	VsnosCalculator vsnosCalc;
+	Ipk15Calculator ipk15Calc;
 	PerfMeter meter;
 	
 	
@@ -89,6 +93,7 @@ public class Man {
 		npkCalc=(NpkCalculator)ApplicationContextUtil.getApplicationContext().getBean(NpkCalculator.class);
 		codeCalc=(CodeCalculator)ApplicationContextUtil.getApplicationContext().getBean(CodeCalculator.class);
 		vsnosCalc=(VsnosCalculator)ApplicationContextUtil.getApplicationContext().getBean(VsnosCalculator.class);
+		ipk15Calc=(Ipk15Calculator)ApplicationContextUtil.getApplicationContext().getBean(Ipk15Calculator.class);
 		meter=(PerfMeter)ApplicationContextUtil.getApplicationContext().getBean(PerfMeter.class);
 			}	
 	
@@ -147,41 +152,50 @@ public class Man {
 		period2015 = stCalc.getStajBefore(tmp, Utils.makeDate(2014, 12, 31));
 		periodAll  = stCalc.getStajAll(tmp);
 
-		meter.init();
 		meter.start();
 		calcKVal();
 		meter.measure("calcKVal");
+		
 		meter.start();
 		calcStajK();
 		meter.measure("calcStajK");
-		meter.start();
-		// rk2001 считается до SalK т.к. он его ограничивает
 		
+		// rk2001 считается до SalK т.к. он его ограничивает
+		meter.start();
 		rk2001=rkCalc.calc(plateg20002001);
 		meter.measure("rk2001");
+		
+		//расчет зарплатного коэффициента
 		meter.start();
 		calcSalK();
 		meter.measure("calcSalK");
+		
 		meter.start();
 		rP=rpRpkCalc.CalcRp(stajK, kSal);
-		meter.measure("rpRpkCalc");
-		meter.start();
+		meter.measure("CalcRp");
 		
+		meter.start();
 		rPK=rpRpkCalc.CalcRpk(dopStajK, rP,datePrav.get(GregorianCalendar.YEAR),lgota!=0);
-		meter.measure("rpRpkCalc");
+		meter.measure("CalcRpk");
+		
 		meter.start();
 		nPK=npkCalc.calc(rPK, kVal, getDatePravDate());
 		meter.measure("npkCalc");
+		
 		meter.start();
-		codeCalc.valc(vsnosy,datePrav.get(GregorianCalendar.YEAR)<1967);
+		codeCalc.calc(vsnosy);
 		meter.measure("codeCalc");
+		
+		vsnos0215=vsnosCalc.calc(vsnosy,birthDay, datePrav,meter);
+		
 		meter.start();
-		vsnos0215=vsnosCalc.calc(vsnosy, datePrav,meter);
-		meter.measure("vsnos0215");
+		ipk15=ipk15Calc.calc(nPK,vsnos0215,datePrav.get(GregorianCalendar.YEAR),lgota!=0);
+		meter.measure("ipk15Calc");
 		
 		
-		res = "p1991=" + period1991 + " p2002=" + period2002 + " p2015=" + period2015+" KVal="+kVal+" StajK="+stajK+" ponStajK="+dopStajK+" RK="+rk2001+" Зар.К="+kSal+" RP="+rP+" RPK="+rPK+
-			  " pravo="+Utils.getFormattedDate(datePrav.getTime()) +" NPK="+nPK+" vsnosy02-15="+vsnos0215+"<br>"+meter.getIntervals("<br>");
+		res = "<br>p1991=" + period1991 + " p2002=" + period2002 + " p2015=" + period2015+" KVal="+kVal+" StajK="+stajK+" ponStajK="+dopStajK+" RK="+rk2001+" Зар.К="+kSal+" RP="+rP+" RPK="+rPK+
+			  " pravo="+Utils.getFormattedDate(datePrav.getTime()) +" NPK="+nPK+" vsnosy02-15="+vsnos0215+" ipk15="+ipk15+"<br>"+meter.getIntervals("<br>")+"<br>";
+		
 //		for (Platej pl : plateg20002001) {
 //			res = res + pl.toString() + "<br>";
 //		}

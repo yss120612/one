@@ -127,6 +127,11 @@ public class Utils {
 		return !d1.before(d2);
 	}
 	
+	public static boolean between(Date d1, Date d2, Date d3) {//d1 after or equal d2
+		return !d1.before(d2) && !d1.after(d3);
+	}
+	
+	
 	public static boolean intersect(Date s1,Date f1,Date s2,Date f2) {//пересекаются ли диапазоны дат s1..f1 и s2..f2
 		return (afterOrEqual(s1, s2) && beforeOrEqual(s1, f2)) || (afterOrEqual(f1, s2) && beforeOrEqual(f1, f2))
 				|| included(s1,f1,s2,f2) || included(s2,f2,s1,f1);

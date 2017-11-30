@@ -12,11 +12,10 @@ import com.yss1.one.models.Vsnos;
 public class CodeCalculator {
 	@Autowired	
 	CategoryDao categoryDao;
-	public void valc(List<Vsnos> lv,boolean before67) {
-		if (lv==null) return;
-		for (Vsnos v: lv) {
-			categoryDao.setCode(v);
-		}
+	public void calc(List<Vsnos> lv) {
+			categoryDao.setCode(lv);
+			//lv.removeIf(x->(x.getCprcod()==0|| x.getCprext().equals("БЕЗР")));
 	}
+	
 	
 }

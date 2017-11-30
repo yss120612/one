@@ -12,11 +12,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
+import com.yss1.one.calc.RkCalculator;
 import com.yss1.one.models.Man;
 import com.yss1.one.models.Platej;
 import com.yss1.one.models.Staj;
 import com.yss1.one.models.Vsnos;
 import com.yss1.one.util.ApplicationContextUtil;
+import com.yss1.one.util.PerfMeter;
 import com.yss1.one.util.Utils;
 
 
@@ -30,7 +32,12 @@ public class AS400Dao {
 	 private int dateFpos;
 	// SingleConnectionDataSource sds;
 	 
-	
+	 PerfMeter meter;
+		
+		
+	public AS400Dao() {
+		meter=(PerfMeter)ApplicationContextUtil.getApplicationContext().getBean(PerfMeter.class);
+	}
 	 	 
 	public String load(String snils) throws SQLException
 	{
@@ -44,6 +51,8 @@ public class AS400Dao {
 		//sds=(SingleConnectionDataSource)ApplicationContextUtil.getApplicationContext().getBean("as400DataSource");
 		JdbcTemplate jt=new JdbcTemplate((SingleConnectionDataSource)ApplicationContextUtil.getApplicationContext().getBean("as400DataSource"),true);
 		String place="";
+		meter.init();
+		meter.start();
 		try
 		{
 		place="18A";	
@@ -55,6 +64,7 @@ public class AS400Dao {
 			jt.getDataSource().getConnection().close();
 			return "Снилс "+snils+" не найден!";
 		}
+		meter.measure("AS400 18");
 		
 		int age=60;
 		if (man.getSex().contains("Ж")) {
@@ -62,7 +72,7 @@ public class AS400Dao {
 		}
 		
 		GregorianCalendar gc=new GregorianCalendar();
-		gc=man.getBirthDay();
+		gc.setTime(man.getBirthDay().getTime());
 		gc.add(GregorianCalendar.YEAR, age);
 		man.setDatePrav(gc);
 		man.setLgota(0);
@@ -72,12 +82,14 @@ public class AS400Dao {
 		dateSpos=7;
 		dateFpos=8;
 		place="16A";
+		meter.start();
 		jt.update("call OPFRSOFT.PFRBAT0201('R002000016/"+snils+"/')");
 		place="16B";
 		man.setStaj(jt.query("select * FROM QTEMP.R002000016",stajRowMapper));
 		
 		jt.update("call OPFRSOFT.PFRBAT0201('R002000289/"+snils+"/')");
 		int count=jt.queryForObject("select count(*) FROM QTEMP.R002000289", Integer.class);
+		meter.measure("AS400 16");
 		
 		if (count>0)
 		{
@@ -86,31 +98,37 @@ public class AS400Dao {
 			dateSpos=13;
 			dateFpos=14;
 			place="291A";
+			meter.start();
 			jt.update("call OPFRSOFT.PFRBAT0201('R002000291/"+snils+"/')");
 			place="291B";
 			man.setStajKonv(jt.query("select * FROM QTEMP.R002000291",stajRowMapper));
-			//.println("HEREEEE Konv="+man.getStajKonv().size() +" Staj="+man.getStaj().size());
+			meter.measure("AS400 291");
 		}
 		
 		
 		//зарплата за 2000-2002 гг.
 		place="14A";
+		meter.start();
 		jt.update("call OPFRSOFT.PFRBAT0201('R002000014/"+snils+"/')");
 		place="14B";
 		man.setPlateg20002001(jt.query("select * FROM QTEMP.R002000014 where ctmcod like('2000') or ctmcod like('2001')",platejRowMapper));
-
+		meter.measure("AS400 14");
+		
+		
 		//взносы
 		place="15A";
+		meter.start();
 		jt.update("call OPFRSOFT.PFRBAT0201('R002000015/"+snils+"/')");
 		place="15B";
 		man.setVsnosy(jt.query("select * FROM QTEMP.R002000015",vsnosRowMapper));
+		meter.measure("AS400 15");
 		
 		//уточнения по видом деятельности, указанному во взносах
+		meter.start();
 		place="173A";
 		jt.update("call OPFRSOFT.PFRBAT0201('R002000173/"+snils+"/')");
 		place="173B";
 		List<VsnosHelper> vhl = jt.query("select * FROM QTEMP.R002000173",vsnosHelperRowMapper);
-		
 		for (Vsnos vs: man.getVsnosy())
 		{
 			if (vs.getCprext()==null||vs.getCprext().isEmpty())
@@ -125,7 +143,7 @@ public class AS400Dao {
 				}
 			}
 		}
-		
+		meter.measure("AS400 173");
 		
 		
 		}
