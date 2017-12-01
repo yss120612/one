@@ -63,7 +63,7 @@ public void setCtmcod(String ctmcod) {
 		p=Integer.parseInt(this.ctmcod.substring(5,6));
 	}
 	
-	if (year<=2014 && year>=2002)
+	if (year<=2099 && year>=2002)
 	{
 	if (year<2010)
 	{

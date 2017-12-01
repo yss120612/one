@@ -14,6 +14,7 @@ public class DojityeDao {
 	@Autowired
 	private JdbcTemplate pgDT;
 
+	private MinMax minMax;
 	//получение периода дожития по дате права и наличию отсутствию льгот
 	public int getPeriod(int year, boolean lgot) {
 		int count = pgDT.queryForObject("select count(*) from public.dojitye where year=?", Integer.class, year);
@@ -26,15 +27,14 @@ public class DojityeDao {
 		}
 
 		if (count < 1) {
-			minMax = pgDT.queryForObject("select min(year) as ymin, max(year) as ymax from public.dojitye",
-					mmRowMapper);
+			if (minMax==null) {
+				minMax = pgDT.queryForObject("select min(year) as ymin, max(year) as ymax from public.dojitye",mmRowMapper);
+			}
 			year = year < minMax.getMin() ? minMax.getMin() : minMax.getMax();
 		}
-
+		
 		return pgDT.queryForObject(sql, Integer.class, year);
 	}
-
-	private MinMax minMax;
 
 	private class MinMax {
 		public int getMin() {

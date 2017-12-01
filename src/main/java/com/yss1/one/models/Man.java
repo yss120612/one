@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.yss1.one.calc.NpkCalculator;
 import com.yss1.one.calc.RkCalculator;
-import com.yss1.one.calc.RpRpkCalculator;
+import com.yss1.one.calc.UniversalCalculator;
 import com.yss1.one.calc.StajCalculator;
 import com.yss1.one.calc.VsnosCalculator;
 import com.yss1.one.calc.CodeCalculator;
@@ -78,22 +78,20 @@ public class Man {
 	//калькуляторы
 	RkCalculator rkCalc;
 	StajCalculator stCalc;
-	RpRpkCalculator rpRpkCalc;
+	UniversalCalculator uniCalc;
 	NpkCalculator npkCalc;
 	CodeCalculator codeCalc;
 	VsnosCalculator vsnosCalc;
-	Ipk15Calculator ipk15Calc;
 	PerfMeter meter;
 	
 	
 	public Man() {
 		rkCalc=(RkCalculator)ApplicationContextUtil.getApplicationContext().getBean(RkCalculator.class);
 		stCalc=(StajCalculator)ApplicationContextUtil.getApplicationContext().getBean(StajCalculator.class);
-		rpRpkCalc=(RpRpkCalculator)ApplicationContextUtil.getApplicationContext().getBean(RpRpkCalculator.class);
+		uniCalc=(UniversalCalculator)ApplicationContextUtil.getApplicationContext().getBean(UniversalCalculator.class);
 		npkCalc=(NpkCalculator)ApplicationContextUtil.getApplicationContext().getBean(NpkCalculator.class);
 		codeCalc=(CodeCalculator)ApplicationContextUtil.getApplicationContext().getBean(CodeCalculator.class);
 		vsnosCalc=(VsnosCalculator)ApplicationContextUtil.getApplicationContext().getBean(VsnosCalculator.class);
-		ipk15Calc=(Ipk15Calculator)ApplicationContextUtil.getApplicationContext().getBean(Ipk15Calculator.class);
 		meter=(PerfMeter)ApplicationContextUtil.getApplicationContext().getBean(PerfMeter.class);
 			}	
 	
@@ -171,11 +169,11 @@ public class Man {
 		meter.measure("calcSalK");
 		
 		meter.start();
-		rP=rpRpkCalc.CalcRp(stajK, kSal);
+		rP=uniCalc.rpCalc(stajK, kSal);
 		meter.measure("CalcRp");
 		
 		meter.start();
-		rPK=rpRpkCalc.CalcRpk(dopStajK, rP,datePrav.get(GregorianCalendar.YEAR),lgota!=0);
+		rPK=uniCalc.rpkCalc(dopStajK, rP,datePrav.get(GregorianCalendar.YEAR),lgota!=0);
 		meter.measure("CalcRpk");
 		
 		meter.start();
@@ -189,7 +187,7 @@ public class Man {
 		vsnos0215=vsnosCalc.calc(vsnosy,birthDay, datePrav,meter);
 		
 		meter.start();
-		ipk15=ipk15Calc.calc(nPK,vsnos0215,datePrav.get(GregorianCalendar.YEAR),lgota!=0);
+		ipk15=uniCalc.npk15Calc(nPK,vsnos0215,datePrav.get(GregorianCalendar.YEAR),lgota!=0);
 		meter.measure("ipk15Calc");
 		
 		

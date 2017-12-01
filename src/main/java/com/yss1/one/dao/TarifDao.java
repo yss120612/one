@@ -16,13 +16,30 @@ public class TarifDao {
 	@Autowired
 	private JdbcTemplate pgDT;
 	
+	List<Tarif> lt;
+	
+	public float getGrVsnos(int y, int code) {
+		for (Tarif t:lt)
+		{
+		if (code==t.getKod() && y==t.getYear())
+		{
+			return t.getGr_vznos();
+		}
+		}
+		return 0;
+	}
+	
+	
+	
+	
 	public void setTarif(List<Vsnos> lv, boolean before67)
 	{
 	// идем за тарифами (процент, отчисляемый из ЗП)
-	String sql="select kod, year, "+(before67?"strah2 ":"strah3 ");
-
-	List<Tarif> lt=pgDT.query(sql+"from tarifs order by year,kod",tarifRowMapper);
-	
+	if (lt==null)
+	{
+		//String sql="select kod, year, "+(before67?"strah2 ":"strah3 ");
+		lt=pgDT.query("select kod, year,strah2,strah3,gr_vznos from tarifs order by year,kod",tarifRowMapper);
+	}
 	for(Vsnos vs:lv) {
 		if (vs.getCprcod()!=0)
 		{
@@ -30,7 +47,7 @@ public class TarifDao {
 			{
 			if (vs.getCprcod()==t.getKod() && vs.getYear()==t.getYear())
 			{
-				vs.setStrah(t.getTarif());
+				vs.setStrah(before67?t.getStrah2():t.getStrah2());
 				break;
 			}
 			}
@@ -42,39 +59,41 @@ public class TarifDao {
 	
 	private RowMapper<Tarif> tarifRowMapper = new RowMapper<Tarif>() {
 		public Tarif mapRow(ResultSet rs, int rowNum) throws SQLException {
-			return new Tarif(rs.getInt("kod"),rs.getInt("year"),rs.getFloat(3));
+			return new Tarif(rs.getInt("kod"),rs.getInt("year"),rs.getFloat("strah2"),rs.getFloat("strah3"),rs.getFloat("gr_vznos"));
 		}
 	};
 	
 	
 	private class Tarif {
-		
 		private int kod;
-		public Tarif(int kod, int year, float tarif) {
+		private int year;
+		private float strah2;
+		private float strah3;
+		private float gr_vznos;
+		public Tarif(int kod, int year, float strah2, float strah3, float gr_vznos) {
 			this.kod = kod;
 			this.year = year;
-			this.tarif = tarif;
+			this.strah2 = strah2;
+			this.strah3 = strah3;
+			this.gr_vznos = gr_vznos;
 		}
-		private int year;
-		private float tarif;
 		public int getKod() {
 			return kod;
-		}
-		public void setKod(int kod) {
-			this.kod = kod;
 		}
 		public int getYear() {
 			return year;
 		}
-		public void setYear(int year) {
-			this.year = year;
+		public float getStrah2() {
+			return strah2;
 		}
-		public float getTarif() {
-			return tarif;
+		public float getStrah3() {
+			return strah3;
 		}
-		public void setTarif(float tarif) {
-			this.tarif = tarif;
+		public float getGr_vznos() {
+			return gr_vznos;
 		}
+		
+
 		
 		
 	}

@@ -40,7 +40,8 @@ public class VsnosCalculator {
 		meter.start();
 		float res=0;
 		for (Vsnos vs : lv) {
-			if (vs.getYear() >= 2002 && vs.getYear() <= 2015 && vs.getStrah()>0) {
+			//if (vs.getYear() >= 2002 && vs.getYear() <= 2015 && vs.getStrah()>0) {
+			if (vs.getStrah()>0) {
 				vs.setAsrItog(vs.getAsr() * (vs.getStrah() - vs.getSolid())/ vs.getStrah());
 			}
 			

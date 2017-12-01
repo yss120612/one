@@ -12,8 +12,7 @@ public class NpkCalculator {
 	@Autowired
 	UrDao urDao;
 	
-	public float calc(float rpk, float kval, Date dp)
-	{
+	public float calc(float rpk, float kval, Date dp)	{
 		float result=rpk*(1+kval);
 		result=urDao.indexSumm(dp, result);
 		return result;

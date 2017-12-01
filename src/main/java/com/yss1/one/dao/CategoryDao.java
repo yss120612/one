@@ -17,30 +17,15 @@ import com.yss1.one.util.Utils;
 public class CategoryDao {
 	@Autowired
 	private JdbcTemplate pgDT;
+	
+	private List<CodeHelper> ch=null;
 	// меняем код взноса с буквенного на цифровой
+	
 	public void setCode(List<Vsnos> vl) {
-		//String myd = Utils.getFormattedDate4sql2(Utils.makeDate(vsnos.getYear(), 1, 2));
-		//String now = Utils.getFormattedDate4sql2(new Date());
-
-//		Integer kod = null;
-//		Integer count = pgDT.queryForObject("select count(*) from public.category where category='?' and Date('?') between dstart and COALESCE(dend,Date('?'))"
-//				, Integer.class, vsnos.getCprext().trim(),myd,now);
-//		if (count > 0) {
-//		           	  kod = pgDT.queryForObject("select code from public.category where category='?' and Date('?') between dstart and COALESCE(dend,Date('?'))"
-//					, Integer.class, vsnos.getCprext().trim(),myd,now);
-//		}
-
-		//List<Integer> lk=pgDT.query("select code from public.category where category='"+vsnos.getCprext().trim()+"' and Date('"+myd+"') between dstart and COALESCE(dend,Date('"+now+"'))",intRowMapper);
-		List<CodeHelper> ch=pgDT.query("select code,category,dstart,dend from public.category where code>0",codeRowMapper);
-		
-		//System.out.println("Kode="+kod);
-//		if (lk==null || lk.isEmpty()) {
-//			vsnos.setCprcod(0);
-//			return;
-//		} else {
-//			vsnos.setCprcod(lk.get(0));
-//		}
-		
+		if (ch==null)
+		{
+			ch=pgDT.query("select code,category,dstart,dend from public.category where code>0",codeRowMapper);
+		}
 		
 		Date d1;
 		for (Vsnos vs:vl) {

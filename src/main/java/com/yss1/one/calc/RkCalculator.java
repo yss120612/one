@@ -27,7 +27,11 @@ public class RkCalculator {
 		for (Platej pl: lpl) {
 			if (Utils.afterOrEqual(pl.getdEnd(),tm)) lp.add(pl);
 		}
-		System.out.println(lp.get(0));
-		return rkDao.getRK(lp);
+		//System.out.println(lp.get(0));
+		float koeff=rkDao.getRK(lp);
+		if (koeff>=1.8f) return 1.9f;
+		else if (koeff>=1.5f) return 1.7f;
+		else if (koeff>=1.0f) return 1.4f;
+		else return 1.2f;
 	}
 }

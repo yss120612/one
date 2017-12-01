@@ -28,10 +28,7 @@ public class RkDao {
 			}
 		}
 		
-		if (koeff>=1.8f) return 1.9f;
-		else if (koeff>=1.5f) return 1.7f;
-		else if (koeff>=1.0f) return 1.4f;
-		else return 1.2f;
+		return koeff;
 	}
 	
 }
