@@ -24,6 +24,7 @@ import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Section;
+import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.CMYKColor;
 import com.itextpdf.text.pdf.PdfDocument;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -42,83 +43,83 @@ public byte[] makeDocument(Man man) throws DocumentException, IOException
 	Document document = new Document(PageSize.A4, 50, 50, 50, 50);
 	ByteArrayOutputStream mos= new ByteArrayOutputStream();
 	
-	//PdfWriter writer = PdfWriter.getInstance(document,new FileOutputStream("d:\\"+name+".pdf"));
+	//PdfWriter writer = PdfWriter.getInstance(document,new FileOutputStream("d:\\"+man.getSNILS()+".pdf"));
 	
 	
 	PdfWriter writer = PdfWriter.getInstance(document,mos);
 	
 	document.open();
-	
+	BaseFont baseFont = BaseFont.createFont("d:\\times.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+    Font font = new Font(baseFont, 14, Font.NORMAL);
+    
 	//Font ft=FontFactory.getFont(FontFactory.TIMES, 14, Font.NORMAL, new CMYKColor(0, 0, 0, 0));
     //Font ft2=FontFactory.getFont(FontFactory.TIMES, 24, Font.NORMAL, new CMYKColor(255, 255, 0, 0));
 	//Anchor anchorTarget = new Anchor("First page of the document.");
     //anchorTarget.setName("BackToTop");
-    Paragraph paragraph1 = new Paragraph("Результат расчета пенсии");
-
-    paragraph1.setSpacingBefore(150);
-
-    //paragraph1.add(anchorTarget);
+    Paragraph paragraph1 = new Paragraph("Результат расчета пенсии "+man.getSNILS(),font);
+    paragraph1.setSpacingBefore(50);
+ 
     document.add(paragraph1);
-    
-    
     
     //document.add(new Paragraph("Some more text on the first page with different color and font type.",ft));
     
     //document.add(new Paragraph("Another par. Hoihodfh fdsjokfkhds dfjslkjfds dskjfcdsn ds dskljflkdsf dsfdsksjflkdsf dsfckdsjfcldsf flkdsjfn fkljdfskl",ft2));
-    
-   Chapter chapter1 = new Chapter(new Paragraph("Chapter1"), 1);
-    
-    Section section1 = chapter1.addSection("Section1");
+//    
+//   Chapter chapter1 = new Chapter(new Paragraph("Chapter1"), 1);
+//    
+//    Section section1 = chapter1.addSection("Section1");
     
     PdfPTable table=new PdfPTable(2);
     table.setSpacingBefore(25);
     table.setSpacingAfter(25);
 
-    PdfPCell c1 = new PdfPCell(new Phrase("Параметр"));  
+    
+    PdfPCell c1 = new PdfPCell(new Phrase("Параметр",font));
+    
     table.addCell(c1);
-    PdfPCell c2 = new PdfPCell(new Phrase("Размер"));
+    PdfPCell c2 = new PdfPCell(new Phrase("Размер",font));
     table.addCell(c2);
 
-    table.addCell("СНИЛС");
+    table.addCell(new Phrase("СНИЛС",font));
     table.addCell(man.getSNILS());
 
-    table.addCell("ФИО");
-    table.addCell(man.getFamily()+" "+man.getName()+" "+man.getOtch());
+    table.addCell(new Phrase("ФИО",font));
+    table.addCell(new Phrase(man.getFamily()+" "+man.getName()+" "+man.getOtch(),font));
     
-    table.addCell("Дата рождения");
+    table.addCell(new Phrase("Дата рождения",font));
     table.addCell(Utils.getFormattedDate(man.getBirthDayDate()));
     
-    table.addCell("Пол");
-    table.addCell(man.getSex());
+    table.addCell(new Phrase("Пол",font));
+    table.addCell(new Phrase(man.getSex(),font));
     
-    table.addCell("Дата права");
+    table.addCell(new Phrase("Дата права",font));
     table.addCell(Utils.getFormattedDate(man.getDatePravDate()));
     
-    table.addCell("Стаж всего");
+    table.addCell(new Phrase("Стаж всего",font));
     table.addCell(man.getPeriodAll().toString());
     
-    table.addCell("Стаж на 01.01.2015");
+    table.addCell(new Phrase("Стаж на 01.01.2015",font));
     table.addCell(man.getPeriod2015().toString());
     
-    table.addCell("Стаж на 01.01.2002");
+    table.addCell(new Phrase("Стаж на 01.01.2002",font));
     table.addCell(man.getPeriod2002().toString());
     
-    table.addCell("Стаж на 01.01.1991");
+    table.addCell(new Phrase("Стаж на 01.01.1991",font));
     table.addCell(man.getPeriod1991().toString());
     
-    table.addCell("Отношение зарплат");
+    table.addCell(new Phrase("Отношение зарплат",font));
     table.addCell(String.format("%.2f", man.getkSal()));
     
-    table.addCell("ИПК");
+    table.addCell(new Phrase("ИПК",font));
     table.addCell(String.format("%.2f", man.getIpk()));
     
-    table.addCell("Страховая пенсия по старости");
+    table.addCell(new Phrase("Страховая пенсия по старости",font));
     table.addCell(String.format("%.2f", man.getPensiya()));
     
-    table.addCell("Фиксированная выплата");
+    table.addCell(new Phrase("Фиксированная выплата",font));
     table.addCell(String.format("%.2f", man.getFix()));
     
-    table.addCell("Общий размер пенсии");
+    table.addCell(new Phrase("Общий размер пенсии",font));
     table.addCell(String.format("%.2f", man.getPensiya()+man.getFix()));
     
     
@@ -138,6 +139,7 @@ public byte[] makeDocument(Man man) throws DocumentException, IOException
     //document.add(chapter1); 
     document.add(table);
     document.close();
+    writer.close();
    // System.out.println(bytes2HexStr(mos.toByteArray()));
     //SyslogOutputStream(mos.toString());
     //save2file(mos.toByteArray(),"d:\\aaa.pdf");
@@ -148,24 +150,25 @@ public byte[] makeErrorDocument(String snils,String err) throws DocumentExceptio
 {
 	Document document = new Document(PageSize.A4, 50, 50, 50, 50);
 	ByteArrayOutputStream mos= new ByteArrayOutputStream();
-	
-	//PdfWriter writer = PdfWriter.getInstance(document,new FileOutputStream("d:\\"+name+".pdf"));
+	//PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("d:\\"+snils+".pdf"));
+    BaseFont baseFont = BaseFont.createFont("d:\\times.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+    Font font = new Font(baseFont, 21, Font.NORMAL);
 	PdfWriter writer = PdfWriter.getInstance(document,mos);
 	
 	document.open();
 //	Anchor anchorTarget = new Anchor("First page of the document.");
 //    anchorTarget.setName("BackToTop");
-    //Font ft=FontFactory.getFont(FontFactory.COURIER, 14, Font.BOLD, new CMYKColor(0, 0, 0, 0));
-   // Font ft2=FontFactory.getFont(FontFactory.TIMES, 24, Font.NORMAL, new CMYKColor(255, 0, 0, 0));
-    Paragraph paragraph1 = new Paragraph("Ошибочная ситуация");
-
-    paragraph1.setSpacingBefore(150);
+//    Font ft=FontFactory.getFont(FontFactory.COURIER, 14, Font.BOLD, new CMYKColor(0, 0, 0, 0));
+//    Font ft2=FontFactory.getFont(FontFactory.TIMES, 24, Font.NORMAL, new CMYKColor(255, 0, 0, 0));
+    Paragraph paragraph1 = new Paragraph("Ошибочная ситуация",font);
+	//Paragraph paragraph1 = new Paragraph("QQ");
+    //paragraph1.setSpacingBefore(150);
 
 //    paragraph1.add(anchorTarget);
     document.add(paragraph1);
     
         
-    document.add(new Paragraph(err));
+    document.add(new Paragraph(err,font));
     
 //    document.add(new Paragraph("Another par. Hoihodfh fdsjokfkhds dfjslkjfds dskjfcdsn ds dskljflkdsf dsfdsksjflkdsf dsfckdsjfcldsf flkdsjfn fkljdfskl",ft2));
 //    
@@ -218,11 +221,13 @@ public byte[] makeErrorDocument(String snils,String err) throws DocumentExceptio
 //    
 //    document.add(section1); 
     document.close();
+    //writer.close();
    // System.out.println(bytes2HexStr(mos.toByteArray()));
     //SyslogOutputStream(mos.toString());
     //save2file(mos.toByteArray(),"d:\\aaa.pdf");
     return mos.toByteArray();
 }
+
 
 
 

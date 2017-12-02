@@ -80,10 +80,9 @@ private void run()
     String result;
     for (Map.Entry<Integer,String> pair: mans.entrySet())
     {
-     //System.out.println("id="+pair.getKey()+" value="+pair.getValue());
     result="";	
-    man=as400.load(pair.getValue(),result);	
-    if (result.isEmpty() || man==null)
+    man=as400.load(pair.getValue(),result);
+    if (!result.isEmpty() || man==null)
     {
     res=Utils.bytes2HexStr(doc.makeErrorDocument(pair.getValue(),result));
     }
@@ -98,7 +97,7 @@ private void run()
     pst.setBinaryStream(2, new ByteArrayInputStream(res.getBytes()), res.length());
     //pst.setString(2, Utils.getFormattedDate4sql(new Date()));
     //pst.setInt(3,pair.getKey());
-    System.out.println(pst.toString());
+    //System.out.println(pst.toString());
     //System.out.println(pst.);
     pst.executeUpdate();
     pst.close();
