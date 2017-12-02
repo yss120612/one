@@ -1,18 +1,22 @@
 package com.yss1.one.calc;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.yss1.one.dao.MaxIPKDao;
 import com.yss1.one.dao.SPKDao;
 import com.yss1.one.dao.TarifDao;
 import com.yss1.one.models.Vsnos;
+import com.yss1.one.util.Utils;
 
-public class FinishClculator {
+@Service
+public class FinishCalculator {
 @Autowired
 private MaxIPKDao maxIPKDao;
 
@@ -25,33 +29,50 @@ private TarifDao tarifDao;
 
 private List<vs15> vs15list;
 
-public float calcNPK(List<Vsnos> lv, Date prav) {
+public float calcPens(float f, Date time) {
+	// TODO Auto-generated method stub
+	return spkDao.getSpk(time)*f;
+}
+
+public float calcFix(Date time) {
+	// TODO Auto-generated method stub
+	return spkDao.getFixVipl(time);
+}
+
+
+public float calcIPK(List<Vsnos> lv, Date prav) {
 	vs15list=new ArrayList<>();
 	vs15 curr;
 	for (Vsnos vs:lv)
 	{
-		if (vs.getYear()>=2015) {
-			curr=getElement(vs.getYear(),vs.getCprcod());
+		if (vs.getYear()>=2015 && Utils.beforeOrEqual(vs.getDate(),prav)) {
+			curr=getElement(vs.getYear());
+			curr.setCode(vs.getCprcod());
 			curr.summ+=vs.getAsrItog();
 		}
 	}
-	
+	float summa=0;
+	float cs;
 	for (vs15 v: vs15list) {
 		v.setMaxSumm(tarifDao.getGrVsnos(v.getYear(),v.getCode())*0.16f);
 		v.setIpks(maxIPKDao.getIpks(v.getYear()));
-		v.setIpkv(maxIPKDao.getIpkn(v.getYear()));
+		v.setIpkn(maxIPKDao.getIpkn(v.getYear()));
+		//if (v.getSumm()>v.getMaxSumm()) v.setSumm(v.getMaxSumm());
+		cs=v.getSumm()/v.getMaxSumm()*10;
+		summa+=cs>v.getIpks()?v.getIpks():cs;
 	}
+
+	return summa;
 }
 
-private vs15 getElement(int ye,int co) {
+private vs15 getElement(int ye) {
 	for (vs15 v: vs15list) {
-		if (v.getYear()==ye && v.getCode()==co) {
+		if (v.getYear()==ye) {
 			return v;
 		}
 	}
 	vs15 vs=new vs15();
 	vs.setYear(ye);
-	vs.setCode(co);
 	vs15list.add(vs);
 	return vs;
 }
@@ -104,6 +125,9 @@ private class vs15{
 	
 	
 }
+
+
+
 
 
 }

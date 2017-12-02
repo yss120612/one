@@ -11,7 +11,8 @@ import com.yss1.one.calc.UniversalCalculator;
 import com.yss1.one.calc.StajCalculator;
 import com.yss1.one.calc.VsnosCalculator;
 import com.yss1.one.calc.CodeCalculator;
-import com.yss1.one.calc.Ipk15Calculator;
+import com.yss1.one.calc.FinishCalculator;
+
 import com.yss1.one.util.ApplicationContextUtil;
 import com.yss1.one.util.PerfMeter;
 import com.yss1.one.util.Period;
@@ -72,9 +73,18 @@ public class Man {
 	//учтенные взносы за 2002-2014 годы
 	 private float vsnos0215;
 	
-	//индивидуальный пенсионный капиталл на 1.01.2015г.
+	//индивидуальный пенсионный коэффициент на 1.01.2015г.
 	 private float ipk15;
 	
+	//индивидуальный пенсионный коэффициент.
+	 private float ipk;
+	
+	 //расчитанная пенсия
+	 float pensiya;
+	 
+	 //расчитанная фиксированная выплата
+	 float fix;
+	 
 	//калькуляторы
 	RkCalculator rkCalc;
 	StajCalculator stCalc;
@@ -82,6 +92,7 @@ public class Man {
 	NpkCalculator npkCalc;
 	CodeCalculator codeCalc;
 	VsnosCalculator vsnosCalc;
+	FinishCalculator finCalc;
 	PerfMeter meter;
 	
 	
@@ -92,6 +103,7 @@ public class Man {
 		npkCalc=(NpkCalculator)ApplicationContextUtil.getApplicationContext().getBean(NpkCalculator.class);
 		codeCalc=(CodeCalculator)ApplicationContextUtil.getApplicationContext().getBean(CodeCalculator.class);
 		vsnosCalc=(VsnosCalculator)ApplicationContextUtil.getApplicationContext().getBean(VsnosCalculator.class);
+		finCalc=(FinishCalculator)ApplicationContextUtil.getApplicationContext().getBean(FinishCalculator.class);
 		meter=(PerfMeter)ApplicationContextUtil.getApplicationContext().getBean(PerfMeter.class);
 			}	
 	
@@ -135,7 +147,7 @@ public class Man {
 
 		
 	
-	public void calcStaj() {
+	public void calcPens() {
 		if (staj == null || staj.isEmpty()) {
 			return;
 		}
@@ -190,9 +202,19 @@ public class Man {
 		ipk15=uniCalc.npk15Calc(nPK,vsnos0215,datePrav.get(GregorianCalendar.YEAR),lgota!=0);
 		meter.measure("ipk15Calc");
 		
+		meter.start();
+		ipk=ipk15+finCalc.calcIPK(vsnosy,datePrav.getTime());
+		meter.measure("ipkCalc");
+		
+		
+		meter.start();
+		pensiya=finCalc.calcPens(ipk,datePrav.getTime());
+		fix=finCalc.calcFix(datePrav.getTime());
+		meter.measure("pensCalc");
+		
 		
 		res = "<br>p1991=" + period1991 + " p2002=" + period2002 + " p2015=" + period2015+" KVal="+kVal+" StajK="+stajK+" ponStajK="+dopStajK+" RK="+rk2001+" Зар.К="+kSal+" RP="+rP+" RPK="+rPK+
-			  " pravo="+Utils.getFormattedDate(datePrav.getTime()) +" NPK="+nPK+" vsnosy02-15="+vsnos0215+" ipk15="+ipk15+"<br>"+meter.getIntervals("<br>")+"<br>";
+			  " pravo="+Utils.getFormattedDate(datePrav.getTime()) +" NPK="+nPK+" vsnosy02-15="+vsnos0215+" ipk15="+ipk15+" ipk="+ipk+" ipkAll="+(ipk+ipk15)+"<br>"+ " Pensya="+pensiya+" Fix vipl="+fix+"<br>"+meter.getIntervals("<br>")+"<br>";
 		
 //		for (Platej pl : plateg20002001) {
 //			res = res + pl.toString() + "<br>";
@@ -224,7 +246,7 @@ public class Man {
 		stajK = 0.55f;
 		dopStajK = 1f;
 		int need = sex.toUpperCase().contains("М") ? 25 : 20;
-		if (period2002.getYears() > need) {
+		if (period2002.getYears() >= need) {
 			stajK += (period2002.getYears() - need) * 0.01f;
 			if (stajK > 0.75f)
 				stajK = 0.75f;
@@ -352,6 +374,42 @@ public class Man {
 
 	public void setVsnosy(List<Vsnos> vsnosy) {
 		this.vsnosy = vsnosy;
+	}
+
+	public Period getPeriodAll() {
+		return periodAll;
+	}
+
+	public Period getPeriod1991() {
+		return period1991;
+	}
+
+	public Period getPeriod2002() {
+		return period2002;
+	}
+
+	public Period getPeriod2015() {
+		return period2015;
+	}
+
+	public float getkVal() {
+		return kVal;
+	}
+
+	public float getkSal() {
+		return kSal;
+	}
+
+	public float getIpk() {
+		return ipk;
+	}
+
+	public float getPensiya() {
+		return pensiya;
+	}
+
+	public float getFix() {
+		return fix;
 	}
 	
 }

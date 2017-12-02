@@ -47,7 +47,7 @@ public class TarifDao {
 			{
 			if (vs.getCprcod()==t.getKod() && vs.getYear()==t.getYear())
 			{
-				vs.setStrah(before67?t.getStrah2():t.getStrah2());
+				vs.setStrah(before67?t.getStrah2():t.getStrah3());
 				break;
 			}
 			}

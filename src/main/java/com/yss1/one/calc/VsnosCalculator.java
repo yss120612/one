@@ -26,6 +26,8 @@ public class VsnosCalculator {
 	@Autowired
 	TarifDao tarifDao;
 
+	
+	//сумма взносов за 02-14 года
 	public float calc(List<Vsnos> lv, GregorianCalendar bd, GregorianCalendar pravo, PerfMeter meter) {
 		
 		meter.start();
@@ -38,7 +40,7 @@ public class VsnosCalculator {
 		meter.measure("VsnosCalculator:solidarDao.setSolidar");
 		
 		meter.start();
-		float res=0;
+		
 		for (Vsnos vs : lv) {
 			//if (vs.getYear() >= 2002 && vs.getYear() <= 2015 && vs.getStrah()>0) {
 			if (vs.getStrah()>0) {
@@ -50,6 +52,7 @@ public class VsnosCalculator {
 		
 		meter.start();
 		indexDao.indexVsnos(lv, pravo.getTime());
+		float res=0;
 		meter.measure("VsnosCalculator:indexDao.indexVsnos");
 		
 		meter.start();

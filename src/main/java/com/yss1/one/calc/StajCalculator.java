@@ -41,7 +41,7 @@ public List<Staj> orderStajRecords(List<Staj> stl,List<Staj> stkl)
 List<Staj> tmp = new ArrayList<>();
 Staj last = null;
 Staj end = null;
-if (!stl.isEmpty()) {
+if (stl!=null && !stl.isEmpty()) {
 	end = stl.get(stl.size() - 1);
 }
 for (Staj st : stl) {
@@ -60,6 +60,8 @@ for (Staj st : stl) {
 		tmp.add(last);
 }
 
+if (stkl!=null && !stkl.isEmpty())
+{
 List<Staj> current = new ArrayList<>(stkl);
 stkl.clear();
 
@@ -80,6 +82,7 @@ while (current.size() > 0) {
 for (Staj stKonv : stkl) {
 	if (stKonv.getEndDate().after(stKonv.getStartDate()) && !skipThis(stKonv))
 		tmp.add(stKonv);
+}
 }
 
 Collections.sort(tmp);

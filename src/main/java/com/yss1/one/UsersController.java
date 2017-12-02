@@ -14,11 +14,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.yss1.one.dao.AS400Dao;
 import com.yss1.one.dao.UserDao;
+import com.yss1.one.models.Man;
 import com.yss1.one.util.ApplicationContextUtil;
 import com.yss1.one.util.WebUtils;
 
 @Controller
-public class UsersCcontroller {
+public class UsersController {
 	
 	@InitBinder
 	public void initBind()
@@ -70,12 +71,8 @@ public class UsersCcontroller {
 	@RequestMapping(value= {"/calc"})
 	public String calc(Model model,@RequestParam(value="snils", required=false, defaultValue="049711721") String snils) throws SQLException {
 		AS400Dao asd=new AS400Dao();
-		String err=asd.load(snils);
-//		Authentication au=SecurityContextHolder.getContext().getAuthentication();
-//		if (au.isAuthenticated())
-//		{
-//			model.addAttribute("name", ((User)au.getPrincipal()).getUsername());
-//		}
+		String err="";
+		Man man=asd.load(snils,err);
 		
 		model.addAttribute("rest", asd.getRes());
 		model.addAttribute("err", err);

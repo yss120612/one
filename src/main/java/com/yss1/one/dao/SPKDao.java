@@ -26,26 +26,36 @@ public class SPKDao {
 			fillList();
 		}
 		
-		if (spkhl==null || spkhl.isEmpty()) return res;
+		if (spkhl==null || spkhl.isEmpty()) { 
+			System.out.println("empty spisok");
+			return res;
+		}
 		Date d1=spkhl.get(0).getDprava();
+		float val=spkhl.get(0).getSpk();
+		int count=0;
 		for (SPKHelper h:spkhl)
 		{
+			count++;
+			if (count==1) continue;
 			if (minSpk<0 && h.getSpk()>0.5f) minSpk=h.getSpk();//выбрали минимальный СПК отличный от 0
 			if (Utils.between(prav, d1, h.getDprava())) {
-				res=h.getSpk();
+				res=val;
 				break;
 			}
 			else
 			{
 				d1=h.getDprava();
+				val=h.getSpk();
 			}
 			
 		}
 		
+		
+		
 		if (res<-0.5f)//период не найден
 		{
 			if (Utils.between(prav, d1, Utils.makeDate(2099,1,1))) {
-			res=spkhl.get(spkhl.size()-1).getSpk();//последний
+			res=val;//последний
 			}
 			else {
 				res=0;
@@ -53,6 +63,7 @@ public class SPKDao {
 		}
 		
 		if (res<0.5f) res=minSpk;
+		System.out.println("minSpk="+minSpk+" res="+res+" pravo="+Utils.getFormattedDate(prav));
 		return res;
 	}
 	
@@ -66,16 +77,21 @@ public class SPKDao {
 		
 		if (spkhl==null || spkhl.isEmpty()) return res;
 		Date d1=spkhl.get(0).getDprava();
+		float val=spkhl.get(0).getFixvipl();
+		int count=0;
 		for (SPKHelper h:spkhl)
 		{
+			count++;
+			if (count==1) continue;
 			if (minFv<0 && h.getFixvipl()>0.5f) minFv=h.getFixvipl();//выбрали минимальный ФВ отличный от 0
 			if (Utils.between(prav, d1, h.getDprava())) {
-				res=h.getFixvipl();
+				res=val;
 				break;
 			}
 			else
 			{
 				d1=h.getDprava();
+				val=h.getFixvipl();
 			}
 			
 		}
@@ -83,7 +99,7 @@ public class SPKDao {
 		if (res<-0.5f)//период не найден
 		{
 			if (Utils.between(prav, d1, Utils.makeDate(2099,1,1))) {
-			res=spkhl.get(spkhl.size()-1).getFixvipl();//последний
+			res=val;//последний
 			}
 			else {
 				res=0;
@@ -95,7 +111,7 @@ public class SPKDao {
 	}
 	
 	private void fillList() {
-		pgDT.query("select * from sprspk order by date", spkRowMapper);
+		spkhl=pgDT.query("select * from sprspk order by date", spkRowMapper);
 	}
 	
 	private RowMapper<SPKHelper> spkRowMapper = new RowMapper<SPKHelper>() {

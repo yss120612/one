@@ -3,6 +3,7 @@ package com.yss1.one.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,10 +32,13 @@ public class IndexDao {
 			map.put(tw.getKey(), tw.getVal());
 		}
 		
+		GregorianCalendar gc=new GregorianCalendar();
+		gc.setTime(pravo);
+		int limit=Math.min(2015,gc.get(GregorianCalendar.YEAR));
 		for (Vsnos vs: lv){
 			if (vs.getYear()>=2002 && vs.getYear()<=2014 && Utils.beforeOrEqual(vs.getDate(), pravo))
 			{
-				for (int i=vs.getYear();i<=2014;i++)
+				for (int i=vs.getYear();i<=limit;i++)
 				{
 					if (map.containsKey(i))
 					{

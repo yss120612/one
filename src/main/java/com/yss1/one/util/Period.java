@@ -8,7 +8,7 @@ public Period(int years, int months, int days) {
 	}
 @Override
 public String toString() {
-	return "{y:" + years + " m:" + months + " d:" + days + "}";
+	return "{" + years + " / " + months + " / " + days + "}";
 }
 public int getYears() {
 		return years;

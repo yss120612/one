@@ -39,13 +39,14 @@ public class AS400Dao {
 		meter=(PerfMeter)ApplicationContextUtil.getApplicationContext().getBean(PerfMeter.class);
 	}
 	 	 
-	public String load(String snils) throws SQLException
+	public Man load(String snils, String err) throws SQLException
 	{
 		snils=Utils.rawSNILS(snils);
-		
+		Integer count;
 		if (snils.isEmpty())
 		{
-			return "Пустой или не правильный снилс!";
+			err="Пустой или не правильный снилс!";
+			return null;
 		}
 		
 		//sds=(SingleConnectionDataSource)ApplicationContextUtil.getApplicationContext().getBean("as400DataSource");
@@ -58,12 +59,15 @@ public class AS400Dao {
 		place="18A";	
 		jt.update("call OPFRSOFT.PFRBAT0201('R002000018/"+snils+"/')");
 		place="18B";
-		man=jt.queryForObject("select * FROM QTEMP.R002000018",manRowMapper);
-		if (man==null) {
-			//sds.getConnection().close();
+		count=jt.queryForObject("select count(*) FROM QTEMP.R002000018",Integer.class);
+		if (count<1)
+		{
 			jt.getDataSource().getConnection().close();
-			return "Снилс "+snils+" не найден!";
+			err="Снилс "+snils+" не найден!";
+			return null;
 		}
+
+		man=jt.queryForObject("select * FROM QTEMP.R002000018",manRowMapper);
 		meter.measure("AS400 18");
 		
 		int age=60;
@@ -88,7 +92,7 @@ public class AS400Dao {
 		man.setStaj(jt.query("select * FROM QTEMP.R002000016",stajRowMapper));
 		
 		jt.update("call OPFRSOFT.PFRBAT0201('R002000289/"+snils+"/')");
-		int count=jt.queryForObject("select count(*) FROM QTEMP.R002000289", Integer.class);
+		count=jt.queryForObject("select count(*) FROM QTEMP.R002000289", Integer.class);
 		meter.measure("AS400 16");
 		
 		if (count>0)
@@ -152,14 +156,15 @@ public class AS400Dao {
 		{
 			//sds.getConnection().close();
 			jt.getDataSource().getConnection().close();
-			return "Ошибка запроса к AS400! "+place+"<br>"+ex.getMessage();
+			err="Ошибка запроса к AS400! "+place+"<br>"+ex.getMessage();
+			return null;
 		}
 		res=man.getFamily()+" "+man.getName()+" "+man.getOtch()+" "+man.getSex()+" "+man.getFormattedBirthday()+" "+man.getSNILS()+"<br>";
-		man.calcStaj();
+		man.calcPens();
 		res=res+man.getPeriod().toString()+"<br>"+"Platejes length="+man.getPlateg20002001().size()+"<br>";
 		res+=man.res;
 		jt.getDataSource().getConnection().close();
-		return "";
+		return man;
 	}
 	
 	
