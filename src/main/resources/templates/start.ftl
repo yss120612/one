@@ -32,7 +32,7 @@
      <div class="navbar-inner">
      <ul class="nav navbar-nav">
         <li ><a href="${springMacroRequestContext.contextPath}/test">Test </a></li>
-        <li <#if page=="calc">class="active"</#if> ><a href="${springMacroRequestContext.contextPath}/calc">Run</a></li>
+        <li <#if page=="calc" || page=="calcres">class="active"</#if> ><a href="${springMacroRequestContext.contextPath}/calc">Run</a></li>
      </ul>
     
        
@@ -75,6 +75,14 @@
 <div class="alert alert-danger">
 <h3>${err}</h3>
 </div>
+</#if>
+
+<#if page=="calc">
+<#include "/inc/calc.ftl">
+</#if>
+
+<#if page=="calcres" && !err??>
+<#include "/inc/calcres.ftl">
 </#if>
 
 <#if page=="ulist">

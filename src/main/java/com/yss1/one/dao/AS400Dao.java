@@ -25,13 +25,13 @@ import com.yss1.one.util.Utils;
 
 public class AS400Dao {
 	
-	 private Man man;
+	 //private Man man;
 	 private String fieldCsp;
 	 private String fieldCtp;
 	 private int dateSpos;
 	 private int dateFpos;
 	// SingleConnectionDataSource sds;
-	 
+	 private String err;
 	 PerfMeter meter;
 		
 		
@@ -39,13 +39,15 @@ public class AS400Dao {
 		meter=(PerfMeter)ApplicationContextUtil.getApplicationContext().getBean(PerfMeter.class);
 	}
 	 	 
-	public Man load(String snils, String err) throws SQLException
+	public Man load(String snils) throws SQLException
 	{
+		setErr("");
+		Man man=new Man();
 		snils=Utils.rawSNILS(snils);
 		Integer count;
 		if (snils.isEmpty())
 		{
-			err="Пустой или не правильный снилс!";
+			setErr("Пустой или не правильный снилс!");
 			return null;
 		}
 		
@@ -63,7 +65,7 @@ public class AS400Dao {
 		if (count<1)
 		{
 			jt.getDataSource().getConnection().close();
-			err="Снилс "+snils+" не найден!";
+			setErr("Снилс "+snils+" не найден!");
 			return null;
 		}
 
@@ -156,7 +158,7 @@ public class AS400Dao {
 		{
 			//sds.getConnection().close();
 			jt.getDataSource().getConnection().close();
-			err="Ошибка запроса к AS400! "+place+"<br>"+ex.getMessage();
+			setErr("Ошибка запроса к AS400! "+place+"<br>"+ex.getMessage());
 			return null;
 		}
 		res=man.getFamily()+" "+man.getName()+" "+man.getOtch()+" "+man.getSex()+" "+man.getFormattedBirthday()+" "+man.getSNILS()+"<br>";
@@ -259,5 +261,13 @@ public class AS400Dao {
 	private String res;
 	public String getRes() {
 		return res;
+	}
+
+	public String getErr() {
+		return err;
+	}
+
+	public void setErr(String err) {
+		this.err = err;
 	}
 }

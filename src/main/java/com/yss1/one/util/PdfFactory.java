@@ -1,42 +1,86 @@
 package com.yss1.one.util;
 
 
+import java.awt.Color;
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
+
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Date;
 
-import org.postgresql.util.StreamWrapper;
+import javax.annotation.PostConstruct;
 
-import com.itextpdf.text.Anchor;
+import org.springframework.stereotype.Service;
+
+import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chapter;
-import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.List;
-import com.itextpdf.text.ListItem;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
-import com.itextpdf.text.Section;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.CMYKColor;
-import com.itextpdf.text.pdf.PdfDocument;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.yss1.one.models.Man;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 
+@Service
 public class PdfFactory {
-//private PdfDocumrnt pdoc;
+private BaseFont baseFont;
+private BaseFont baseFontb;
+private BaseFont baseFonti;
+
+@PostConstruct
+public void init() throws DocumentException, IOException {
+	baseFont = BaseFont.createFont("public/fonts/times.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+	baseFonti = BaseFont.createFont("public/fonts/timesi.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+	baseFontb = BaseFont.createFont("public/fonts/timesbd.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+}
+public void makeTest(String mess) throws DocumentException, IOException {
+	Document document = new Document(PageSize.A4, 50, 50, 50, 50);
+    Font font = new Font(baseFont, 14, Font.NORMAL, new CMYKColor(255, 255, 0, 0));
+    Font fontb = new Font(baseFontb, 14, Font.NORMAL, new CMYKColor(255, 255, 0, 0));
+    Font fonti = new Font(baseFonti, 14, Font.NORMAL, new CMYKColor(255, 255, 0, 0));
+	PdfWriter writer = PdfWriter.getInstance(document,new FileOutputStream("d:\\"+mess+".pdf"));
+	document.open();
+	Chapter chapter1= new Chapter(new Paragraph("Глава 1",font),1);
+	Paragraph paragraph1 = new Paragraph("русский текст setSpacingBefore(150)",font);
+    paragraph1.setSpacingBefore(50);
+    paragraph1.setSpacingAfter(50);
+    chapter1.add(paragraph1);
+    chapter1.add(new Paragraph("русский текст bold",fontb));
+    chapter1.add(new Paragraph("русский текст italic",fonti));
 	
+    PdfPTable table=new PdfPTable(3);
+    table.setSpacingBefore(25);
+    table.setSpacingAfter(25);
+    table.setHeaderRows(1);
+    table.setFooterRows(1);
+    //table.getDefaultCell().se
+    PdfPCell cell= new PdfPCell(new Phrase("заголовок 1",font));
+    cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+    table.addCell(cell);
+    table.addCell(new Phrase("заголовок 2",font));
+    table.addCell(new Phrase("заголовок 3",font));
+    table.addCell(new Phrase("тело 1.1",font));
+    table.addCell(new Phrase("тело 1.2",font));
+    table.addCell(new Phrase("тело 1.3",font));
+    table.addCell(new Phrase("тело 2.1",font));
+    table.addCell(new Phrase("тело 2.2",font));
+    table.addCell(new Phrase("тело 2.3",font));
+    table.addCell(new Phrase("футер 1",font));
+    table.addCell(new Phrase("футер 2",font));
+    table.addCell(new Phrase("футер 3",font));
+    chapter1.add(table);
+	document.add(chapter1);
+    document.close();
+    writer.close();
+}
 	
 public byte[] makeDocument(Man man) throws DocumentException, IOException
 {
@@ -50,7 +94,7 @@ public byte[] makeDocument(Man man) throws DocumentException, IOException
 	
 	document.open();
 	BaseFont baseFont = BaseFont.createFont("d:\\times.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-    Font font = new Font(baseFont, 14, Font.NORMAL);
+    Font font = new Font(baseFont, 14, Font.NORMAL, new CMYKColor(255, 255, 0, 0));
     
 	//Font ft=FontFactory.getFont(FontFactory.TIMES, 14, Font.NORMAL, new CMYKColor(0, 0, 0, 0));
     //Font ft2=FontFactory.getFont(FontFactory.TIMES, 24, Font.NORMAL, new CMYKColor(255, 255, 0, 0));

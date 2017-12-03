@@ -1,8 +1,11 @@
 package com.yss1.one;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -45,15 +48,59 @@ public class AdminController {
 		return "start";
 	}
 	
-	@PostMapping(value= {"/useradd"})
-	public String useradd(Model model)
+	@GetMapping(value= {"/useradd"})
+	public String useraddGET(Model model)
 	{
 		//model.addAttribute("name", WebUtils.getLogin());
 		model.addAttribute("titleform", "Создание пользователя");
 		model.addAttribute("action","add");
+		model.addAttribute("access",true);
 		model.addAttribute("roles",rd.getRoleList());
 		return "user";
 	}
+	
+	@PostMapping(value= {"/useradd"})
+	public ModelAndView useraddPOST(Model model,@RequestParam(value="username",required=true) String username,
+										  @RequestParam(value="password",required=true) String password,
+										  @RequestParam(value="password2",required=true) String password2,
+										  @RequestParam(value="uroles",required=false,defaultValue="") String  roles,
+										  @RequestParam(value="access",required=false,defaultValue="false") boolean acc)
+	{
+		
+		String error="";
+		if (!password.equals(password2))
+		{
+			error="Пароли не совпадают!";
+		}
+		
+		if (password.length()<4)
+		{
+			error=(error.isEmpty())?"Пароли менее 4х символов!":error+"<br>Пароли менее 4х символов!";
+		}
+		
+		User us=ud.getUserByName("");
+		if (us!=null)
+		{
+			error=(error.isEmpty())?"Пользователь "+username+" уже существует":error+"<br>Пользователь "+username+" уже существует";
+		}
+		
+		if (!error.isEmpty()) {
+			model.addAttribute("err",error);
+			model.addAttribute("action","add");
+			model.addAttribute("titleform", "Создание пользователя");
+			model.addAttribute("roles",rd.getRoleList());
+			return new ModelAndView("redirect:/useradd", (Map<String, ?>) model);
+		}
+		us=ud.addUser(username, password, acc);
+		for (String ro:roles.split(","))
+		{
+			us.addRole(rd.findRoleByName(ro));
+		}
+		ud.saveUser(us);
+		
+		return new ModelAndView("redirect:/userslist");
+	}
+	
 	
 	@PostMapping(value= {"/userdel"})
 	public ModelAndView userdelPOST(Model model,@RequestParam(value="userid",required=true) int id)
@@ -70,8 +117,5 @@ public class AdminController {
 		}
 		return new ModelAndView("redirect:/userslist");
 	}
-	
-	
-	
 	
 }

@@ -1,6 +1,6 @@
 <div class="row">
 <div class="col-md-12">
-<form id="userform" method="post" action="">
+<form id="userform" method="get" action="">
 <table class="table table-bordered">
 <thead>
 <tr>

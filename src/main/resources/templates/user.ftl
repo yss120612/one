@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
+<head>
+<meta charset="UTF-8">
 <link rel="stylesheet" href="${springMacroRequestContext.contextPath}/css/bootstrap.min.css">
 <script type="text/javascript" src="${springMacroRequestContext.contextPath}/js/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="${springMacroRequestContext.contextPath}/js/bootstrap.min.js"></script>
-<head>
-<meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
 <body>
@@ -20,18 +20,10 @@
                     <div style="padding-top:30px" class="panel-body" >
 
                         
-						<#if messa??>
-						 <div id="ok" class="alert alert-success" role="alert">${messa}</div>
-						  <form id="chgpassOKform" class="form-horizontal" role="form" action="${springMacroRequestContext.contextPath}/" method="post">
-						   <div style="margin-bottom: 25px" class="input-group" >
-						    <button type="submit" id="btn-login" class="btn btn-success btn-block"><i class="glyphicon glyphicon-ok"></i> OK </button>
-						    <input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
-						   </div>
-						  </form>
-						<#else>                        
+						             
                         
                         
-						 <#if error??><div id="error" class="alert alert-danger" role="alert">${error}</div></#if>
+						<#if err??><div id="error" class="alert alert-danger" role="alert">${err}</div></#if>
 						 
                         <form id="userform" class="form-horizontal" role="form" method="post">
                         
@@ -65,7 +57,7 @@
   							 </div>
   							 </div>
                             
-                             <div class="control-group">
+                             <div class="control-group col-md-6">
     							<label for="uroles">Роли (Shift+click)</label>
     							<select multiple class="form-control" id="uroles" name="uroles">
     							<#list roles as r>
@@ -83,47 +75,47 @@
                                 <div style="margin-top:10px" class="form-group">
                                     <!-- Button -->
 
-                                    <div class="col-sm-4 controls">
+                                    <div class="controls col-md-10 col-md-ofset-1">
                                     <#if action=="add">
-                                      	<button type="button" id="btn-adduser" class="btn btn-success"><i class="glyphicon glyphicon-floppy-saved" onclick="onClc(1)"></i>Добавить</button>
+                                      	<button type="button" id="btn-adduser" class="btn btn-success" onclick="onClk(1)"><i class="glyphicon glyphicon-ok"></i> Добавить</button>
                                      <#else> 
-                                     	<button type="button" id="btn-edituser" class="btn btn-success"><i class="glyphicon glyphicon-floppy-saved" onclick="onClc(2)"></i>Принять</button>
+                                     	<button type="button" id="btn-edituser" class="btn btn-success" onclick="onClk(2)"><i class="glyphicon glyphicon-ok"></i> Принять</button>
                                      </#if>
-                                     	<button type="cancel" id="btn-cancel" class="btn btn-default"><i class="glyphicon glyphicon-remove" onclick="onClc(3)"></i>Отмена</button>
+                                     	<button type="button" id="btn-cancel" class="btn btn-default" onclick="onClk(3)"><i class="glyphicon glyphicon-remove"></i> Отмена</button>
                                     </div>
                                 </div>
                                 
                             </form>  
-                         </#if>      
                         </div>                     
                     </div>  
         </div>
 </div>
     
 <script language="Javascript">
+
 function onCh()
 {
-$('#error').hide();
+ $('#error').hide();
 }
 
 function onClk(v)
 {
 if (v==1)
-{
-$("#userform").attr("action","${springMacroRequestContext.contextPath}/useradd");
-$("#userform").submit(); 
-}
+ {
+  $('#userform').attr("action","${springMacroRequestContext.contextPath}/useradd");
+  $('#userform').submit(); 
+ }
 else if (v==2)
-{
-$("#userform").attr("action","${springMacroRequestContext.contextPath}/useredit");
-$("#userform").submit(); 
-}
+ {
+  $('#userform').attr("action","${springMacroRequestContext.contextPath}/useredit");
+  $('#userform').submit(); 
+ }
 else if (v==3)
-{
-window.location ="${springMacroRequestContext.contextPath}/userlist";
+ {
+  document.location.href ="${springMacroRequestContext.contextPath}/userslist";
+ }
 }
 
-}
 
 
 </script>

@@ -37,6 +37,10 @@ private int counter=0;
 ApplicationContext ctx;
 DataSource pgDS;
 
+@Autowired
+PdfFactory pdfFactory;
+
+
 @PostConstruct
 public void init() {
 	pgDS=(DataSource)ctx.getBean("postgressDS");
@@ -48,7 +52,7 @@ private void run()
 {
 	//if (pgDS==null) return;
 	//pgDS=(DataSource)ctx.getBean("postgressDS");
-	PdfFactory doc=new PdfFactory();
+
 	String res="";
 //	try {
 //		res=Utils.bytes2HexStr(doc.makeDocument1(counter++));
@@ -60,7 +64,7 @@ private void run()
     
     //PreparedStatementCreator psc = (PreparedStatementCreator) new PreparedStatementCreatorFactory("update public.spravka set szi_new=? where id=1");
     
-    System.out.println("Tut"+counter++);
+    //System.out.println("Tut"+counter++);
     try {
     //PreparedStatement pst=createPreparedStatement(ds.getConnection());
     	
@@ -75,20 +79,24 @@ private void run()
     rs.close();
     stmt.close();
     PreparedStatement pst;
-    AS400Dao as400= new AS400Dao(); 
+    AS400Dao as400=null; 
     Man man;
-    String result;
+    //String result;
+    if (!mans.isEmpty())
+    {
+    	as400 = new AS400Dao();
+    }
     for (Map.Entry<Integer,String> pair: mans.entrySet())
     {
-    result="";	
-    man=as400.load(pair.getValue(),result);
-    if (!result.isEmpty() || man==null)
+    //result="";	
+    man=as400.load(pair.getValue());
+    if (man==null)
     {
-    res=Utils.bytes2HexStr(doc.makeErrorDocument(pair.getValue(),result));
+    res=Utils.bytes2HexStr(pdfFactory.makeErrorDocument(pair.getValue(),as400.getErr()));
     }
     else
     {
-    res=Utils.bytes2HexStr(doc.makeDocument(man));	
+    res=Utils.bytes2HexStr(pdfFactory.makeDocument(man));	
     }
     pst=conn.prepareStatement("update public.spravka set szi_new=?,raschet=?, ts_a=TIMESTAMP '"+Utils.getFormattedDate4sql(new Date())+"' where id="+pair.getKey());
     

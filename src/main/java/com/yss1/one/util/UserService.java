@@ -24,7 +24,7 @@ public class UserService implements UserDetailsService {
 	public void init() {
 		//Если никого нет делаем юзера с 2я ролями
 		if (userDao.getAllUsers().isEmpty()) {
-			User u =userDao.addUser("user", "1111");
+			User u =userDao.addUser("user", "1111",true);
 			Role r = roleDao.findRoleByName("ADMIN");
 			if (r == null) {
 				r = roleDao.addRole("ADMIN");

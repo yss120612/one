@@ -68,9 +68,9 @@ public class UserDao {
 		return u;
 	}
 
-	public User addUser(String name, String pass) {
-		pgDT.update("insert into public.users (username,password,enable,locked) values(?,?,true,false)", name,
-				bpe.encode(pass));
+	public User addUser(String name, String pass,boolean en) {
+		pgDT.update("insert into public.users (username,password,enable,locked) values(?,?,?,false)", name,
+				bpe.encode(pass),en);
 		return getUserByName(name);
 	}
 
