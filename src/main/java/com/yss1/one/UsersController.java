@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itextpdf.text.DocumentException;
 import com.yss1.one.dao.AS400Dao;
+import com.yss1.one.dao.MainDao;
 import com.yss1.one.dao.UserDao;
 import com.yss1.one.models.Man;
 import com.yss1.one.util.ApplicationContextUtil;
@@ -51,6 +52,11 @@ public class UsersController {
 	
 	@Autowired
 	PdfFactory pdfFactory;
+	
+	
+	@Autowired
+	MainDao mainDao;
+	
 	
 	@RequestMapping("/")
 	public String index(Model model,@RequestParam(value="name", required=false, defaultValue="World") String name) {
@@ -87,15 +93,31 @@ public class UsersController {
 	
 	@PostMapping(value= {"/calc"})
 	public String calcPost(Model model,@RequestParam(value="snils", required=true) String snils) throws SQLException {
-		AS400Dao asd=new AS400Dao();
-		Man man=asd.load(snils);
-		String err=asd.getErr();
+		//AS400Dao asd=new AS400Dao();
+		Man man=null;
+		try {
+			man=mainDao.calculate(snils,0);
+		} catch (DocumentException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				//asd.load(snils);
+		//String err=asd.getErr();
 		
 		model.addAttribute("name", WebUtils.getLogin());
-		model.addAttribute("rest", asd.getRes());
-		model.addAttribute("err", err);
+		//model.addAttribute("rest", "OK");
+		if (mainDao.getError().isEmpty())
+		{
+			model.addAttribute("man", man);
+			model.addAttribute("res", man.getRes());
+		}
+		else
+		{
+			model.addAttribute("err", mainDao.getError());	
+		}
+		
 		model.addAttribute("apage", "calcres");
-		model.addAttribute("man", "man");
+		
 		return "start";
 	}
 	

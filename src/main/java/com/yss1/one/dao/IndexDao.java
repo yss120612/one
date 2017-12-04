@@ -38,7 +38,7 @@ public class IndexDao {
 		for (Vsnos vs: lv){
 			if (vs.getYear()>=2002 && vs.getYear()<=2014 && Utils.beforeOrEqual(vs.getDate(), pravo))
 			{
-				for (int i=vs.getYear();i<=limit;i++)
+				for (int i=vs.getYear();i<limit;i++)
 				{
 					if (map.containsKey(i))
 					{

@@ -93,7 +93,7 @@ public byte[] makeDocument(Man man) throws DocumentException, IOException
 	PdfWriter writer = PdfWriter.getInstance(document,mos);
 	
 	document.open();
-	BaseFont baseFont = BaseFont.createFont("d:\\times.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+	//BaseFont baseFont = BaseFont.createFont("d:\\times.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
     Font font = new Font(baseFont, 14, Font.NORMAL, new CMYKColor(255, 255, 0, 0));
     
 	//Font ft=FontFactory.getFont(FontFactory.TIMES, 14, Font.NORMAL, new CMYKColor(0, 0, 0, 0));
@@ -125,46 +125,46 @@ public byte[] makeDocument(Man man) throws DocumentException, IOException
     table.addCell(c2);
 
     table.addCell(new Phrase("СНИЛС",font));
-    table.addCell(man.getSNILS());
+    table.addCell(new Phrase(man.getSNILS(),font));
 
     table.addCell(new Phrase("ФИО",font));
     table.addCell(new Phrase(man.getFamily()+" "+man.getName()+" "+man.getOtch(),font));
     
     table.addCell(new Phrase("Дата рождения",font));
-    table.addCell(Utils.getFormattedDate(man.getBirthDayDate()));
+    table.addCell(new Phrase(Utils.getFormattedDate(man.getBirthDayDate()),font));
     
     table.addCell(new Phrase("Пол",font));
     table.addCell(new Phrase(man.getSex(),font));
     
     table.addCell(new Phrase("Дата права",font));
-    table.addCell(Utils.getFormattedDate(man.getDatePravDate()));
+    table.addCell(new Phrase(Utils.getFormattedDate(man.getDatePravDate()),font));
     
     table.addCell(new Phrase("Стаж всего",font));
-    table.addCell(man.getPeriodAll().toString());
+    table.addCell(new Phrase(man.getPeriodAll().toString(),font));
     
     table.addCell(new Phrase("Стаж на 01.01.2015",font));
-    table.addCell(man.getPeriod2015().toString());
+    table.addCell(new Phrase(man.getPeriod2015().toString(),font));
     
     table.addCell(new Phrase("Стаж на 01.01.2002",font));
-    table.addCell(man.getPeriod2002().toString());
+    table.addCell(new Phrase(man.getPeriod2002().toString(),font));
     
     table.addCell(new Phrase("Стаж на 01.01.1991",font));
-    table.addCell(man.getPeriod1991().toString());
+    table.addCell(new Phrase(man.getPeriod1991().toString(),font));
     
     table.addCell(new Phrase("Отношение зарплат",font));
-    table.addCell(String.format("%.2f", man.getkSal()));
+    table.addCell(new Phrase(String.format("%.2f", man.getkSal()),font));
     
     table.addCell(new Phrase("ИПК",font));
-    table.addCell(String.format("%.2f", man.getIpk()));
+    table.addCell(new Phrase(String.format("%.2f", man.getIpk()),font));
     
     table.addCell(new Phrase("Страховая пенсия по старости",font));
-    table.addCell(String.format("%.2f", man.getPensiya()));
+    table.addCell(new Phrase(String.format("%.2f", man.getPensiya()),font));
     
     table.addCell(new Phrase("Фиксированная выплата",font));
-    table.addCell(String.format("%.2f", man.getFix()));
+    table.addCell(new Phrase(String.format("%.2f", man.getFix()),font));
     
     table.addCell(new Phrase("Общий размер пенсии",font));
-    table.addCell(String.format("%.2f", man.getPensiya()+man.getFix()));
+    table.addCell(new Phrase(String.format("%.2f", man.getPensiya()+man.getFix()),font));
     
     
 
@@ -195,7 +195,7 @@ public byte[] makeErrorDocument(String snils,String err) throws DocumentExceptio
 	Document document = new Document(PageSize.A4, 50, 50, 50, 50);
 	ByteArrayOutputStream mos= new ByteArrayOutputStream();
 	//PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("d:\\"+snils+".pdf"));
-    BaseFont baseFont = BaseFont.createFont("d:\\times.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+    //BaseFont baseFont = BaseFont.createFont("d:\\times.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
     Font font = new Font(baseFont, 21, Font.NORMAL);
 	PdfWriter writer = PdfWriter.getInstance(document,mos);
 	

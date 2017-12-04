@@ -40,7 +40,6 @@ public class VsnosCalculator {
 		meter.measure("VsnosCalculator:solidarDao.setSolidar");
 		
 		meter.start();
-		
 		for (Vsnos vs : lv) {
 			//if (vs.getYear() >= 2002 && vs.getYear() <= 2015 && vs.getStrah()>0) {
 			if (vs.getStrah()>0) {

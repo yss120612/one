@@ -30,24 +30,20 @@ public class SPKDao {
 			System.out.println("empty spisok");
 			return res;
 		}
+		
 		Date d1=spkhl.get(0).getDprava();
 		float val=spkhl.get(0).getSpk();
 		int count=0;
 		for (SPKHelper h:spkhl)
 		{
+			if (minSpk<0f && h.getSpk()>0.5f) minSpk=h.getSpk();//выбрали минимальный СПК отличный от 0
 			count++;
 			if (count==1) continue;
-			if (minSpk<0 && h.getSpk()>0.5f) minSpk=h.getSpk();//выбрали минимальный СПК отличный от 0
 			if (Utils.between(prav, d1, h.getDprava())) {
 				res=val;
-				break;
 			}
-			else
-			{
-				d1=h.getDprava();
-				val=h.getSpk();
-			}
-			
+			d1=h.getDprava();
+			val=h.getSpk();
 		}
 		
 		
@@ -58,7 +54,7 @@ public class SPKDao {
 			res=val;//последний
 			}
 			else {
-				res=0;
+				res=0f;
 			}
 		}
 		
@@ -81,9 +77,10 @@ public class SPKDao {
 		int count=0;
 		for (SPKHelper h:spkhl)
 		{
+			if (minFv<0 && h.getFixvipl()>0.5f) minFv=h.getFixvipl();//выбрали минимальный ФВ отличный от 0
 			count++;
 			if (count==1) continue;
-			if (minFv<0 && h.getFixvipl()>0.5f) minFv=h.getFixvipl();//выбрали минимальный ФВ отличный от 0
+			
 			if (Utils.between(prav, d1, h.getDprava())) {
 				res=val;
 				break;
@@ -125,7 +122,6 @@ public class SPKDao {
 		private float spk;
 		private float fixvipl;
 		public SPKHelper(Date dprava, float spk, float fixvipl) {
-			super();
 			this.dprava = dprava;
 			this.spk = spk;
 			this.fixvipl = fixvipl;

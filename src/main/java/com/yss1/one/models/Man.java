@@ -123,7 +123,11 @@ public class Man {
 		return datePrav;
 		}
 
+	public String getDatePravStr() {
+		return Utils.getFormattedDate(datePrav.getTime());
+	}
 
+	
 	public void setDatePravDate(Date datePrav) {
 		this.datePrav = new GregorianCalendar();
 		this.datePrav.setTime(datePrav);
@@ -214,7 +218,7 @@ public class Man {
 		
 		
 		res = "<br>p1991=" + period1991 + " p2002=" + period2002 + " p2015=" + period2015+" KVal="+kVal+" StajK="+stajK+" ponStajK="+dopStajK+" RK="+rk2001+" Зар.К="+kSal+" RP="+rP+" RPK="+rPK+
-			  " pravo="+Utils.getFormattedDate(datePrav.getTime()) +" NPK="+nPK+" vsnosy02-15="+vsnos0215+" ipk15="+ipk15+" ipk="+ipk+" ipkAll="+(ipk+ipk15)+"<br>"+ " Pensya="+pensiya+" Fix vipl="+fix+"<br>"+meter.getIntervals("<br>")+"<br>";
+			  " pravo="+Utils.getFormattedDate(datePrav.getTime()) +" NPK="+nPK+" vsnosy02-15="+vsnos0215+" ipk15="+ipk15+" ipk="+ipk+"<br>"+ " Pensya="+pensiya+" Fix vipl="+fix+"<br>"+meter.getIntervals("<br>")+"<br>";
 		
 //		for (Platej pl : plateg20002001) {
 //			res = res + pl.toString() + "<br>";
@@ -307,6 +311,10 @@ public class Man {
 		return birthDay.getTime();
 	}
 
+	public String getBirthDayStr() {
+		return Utils.getFormattedDate(birthDay.getTime());
+	}
+	
 	public void setBirthDayDate(Date birthDay) {
 		this.birthDay = new GregorianCalendar(); 
 		this.birthDay.setTime(birthDay);
@@ -411,5 +419,26 @@ public class Man {
 	public float getFix() {
 		return fix;
 	}
+	
+	public float getSumm() {
+		return pensiya+fix;
+	}
+	
+	public String getPensiyaStr() {
+		return String.format("%.2f", pensiya);
+	}
+
+	public String getFixStr() {
+		return String.format("%.2f", fix);
+	}
+	
+	public String getSummStr() {
+		return String.format("%.2f", pensiya+fix);
+	}
+
+	public String getRes() {
+		return res;
+	}
+	
 	
 }

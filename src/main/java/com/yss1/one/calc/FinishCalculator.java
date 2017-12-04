@@ -62,6 +62,7 @@ public float calcIPK(List<Vsnos> lv, Date prav) {
 		summa+=cs>v.getIpks()?v.getIpks():cs;
 	}
 
+	
 	return summa;
 }
 

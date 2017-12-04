@@ -161,10 +161,10 @@ public class AS400Dao {
 			setErr("Ошибка запроса к AS400! "+place+"<br>"+ex.getMessage());
 			return null;
 		}
-		res=man.getFamily()+" "+man.getName()+" "+man.getOtch()+" "+man.getSex()+" "+man.getFormattedBirthday()+" "+man.getSNILS()+"<br>";
+		//res=man.getFamily()+" "+man.getName()+" "+man.getOtch()+" "+man.getSex()+" "+man.getFormattedBirthday()+" "+man.getSNILS()+"<br>";
 		man.calcPens();
-		res=res+man.getPeriod().toString()+"<br>"+"Platejes length="+man.getPlateg20002001().size()+"<br>";
-		res+=man.res;
+		//res=res+man.getPeriod().toString()+"<br>"+"Platejes length="+man.getPlateg20002001().size()+"<br>";
+		//res+=man.res;
 		jt.getDataSource().getConnection().close();
 		return man;
 	}
