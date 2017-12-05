@@ -38,6 +38,8 @@ public class Man {
 	private List<Staj> staj;
 	//Записи о стажах из конвертации
 	private List<Staj> stajKonv;
+	//записи о стаже оригинал с ас400
+	private List<Staj> rawStaj;
 	public String res;
 	//коэффициент валоризации
 	private float kVal;
@@ -93,6 +95,7 @@ public class Man {
 	CodeCalculator codeCalc;
 	VsnosCalculator vsnosCalc;
 	FinishCalculator finCalc;
+	
 	PerfMeter meter;
 	
 	
@@ -156,8 +159,10 @@ public class Man {
 			return;
 		}
 
-		sort();
-
+		sortStaj();
+		
+		
+		rawStaj = stCalc.copyStajes(staj,stajKonv);
 		List<Staj> tmp = stCalc.orderStajRecords(staj,stajKonv);
 		res = "";
 		
@@ -247,15 +252,17 @@ public class Man {
 
 	//расчет стажевого и понижающего стажевого козффициентов
 	public void calcStajK() {
+		
 		stajK = 0.55f;
 		dopStajK = 1f;
-		int need = sex.toUpperCase().contains("М") ? 25 : 20;
+		float need = sex.toUpperCase().contains("М") ? 25.0f : 20.0f;
 		if (period2002.getYears() >= need) {
 			stajK += (period2002.getYears() - need) * 0.01f;
 			if (stajK > 0.75f)
 				stajK = 0.75f;
 		} else {
-			dopStajK = (period2002.getYears() * 12 + period2002.getMonths() + period2002.getDays() / 30f) / (need * 12f);
+			dopStajK = (period2002.getYears() * 12.0f + period2002.getMonths() + period2002.getDays() / 30.0f) / (need * 12.0f);
+			//System.out.println("chis="+(period2002.getYears() * 12.0f + period2002.getMonths() + period2002.getDays() / 30.0f)+" snam="+(need * 12.0f));
 		}
 	}
 	
@@ -267,9 +274,14 @@ public class Man {
 		if (mon>24) mon=24;
 		float sal=0;
 		if (plateg20002001==null || mon==0) return;
-		for (Platej pl: plateg20002001) sal+=pl.getSumma();
+		for (Platej pl: plateg20002001)
+		{
+			//System.out.println("platej="+pl.getSumma());
+			sal+=pl.getSumma();
+		}
 		kSal=sal/mon/1494.5f;
 		if (kSal>rk2001) kSal=rk2001;
+		//System.out.println("mon="+mon+" sal="+sal);
 	}
 	
 	public Period getPeriod() {
@@ -280,7 +292,7 @@ public class Man {
 		return name;
 	}
 
-	public void sort() {
+	public void sortStaj() {
 		if (staj != null)
 			Collections.sort(staj);
 		if (stajKonv != null)

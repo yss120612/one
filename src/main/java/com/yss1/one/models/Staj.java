@@ -72,6 +72,8 @@ public Staj(Staj s) {
 	addDay=1;
 }
 
+
+
 public String getVidDeyat() {
 	return vidDeyat;
 }
@@ -101,7 +103,7 @@ public String getCggext() {
 }
 
 public void setCggext(String cggext) {
-	this.cggext = cggext;
+	this.cggext = cggext!=null?cggext.trim():"";
 }
 
 public String getCwcext() {
@@ -109,7 +111,7 @@ public String getCwcext() {
 }
 
 public void setCwcext(String cwcext) {
-	this.cwcext = cwcext;
+	this.cwcext = cwcext!=null?cwcext.trim():"";
 }
 
 public String getCtpext() {
@@ -117,7 +119,7 @@ public String getCtpext() {
 }
 
 public void setCtpext(String ctpext) {
-	this.ctpext = ctpext;
+	this.ctpext = ctpext!=null?ctpext.trim():"";
 }
 
 public String getDopctpext() {
@@ -133,7 +135,7 @@ public String getCspext() {
 }
 
 public void setCspext(String cspext) {
-	this.cspext = cspext;
+	this.cspext = cspext!=null?cspext.trim():"";
 }
 
 public String getDopcspext() {

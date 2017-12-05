@@ -15,16 +15,18 @@ DojityeDao dojDao;
 
 //на вход стажевый коэффициент и зарплатное отношение
 //калькулятор расчетной пенсии
-	public float rpCalc(float sk, float sratio)
+	public float rpCalc(float stajK, float sratio)
 	{
-		float res=1671f*sk*sratio;
+		float res=1671f*stajK*sratio;
 		return res<660?660:res;
 	}
 	
 	//на вход понижающий стажевый коэффициент, расчетную пенсию, год права и лготный стаж
 	//калькулятор расчетного пенсионного капиталла
 	public float rpkCalc(float psk, float rp, int yp, boolean lgota)
+
 	{
+		System.out.println("psk="+psk+" doj="+dojDao.getPeriod(yp,lgota));
 		return (rp-450)*psk*dojDao.getPeriod(yp,lgota);
 	}
 	

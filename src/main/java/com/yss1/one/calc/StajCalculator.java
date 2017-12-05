@@ -5,8 +5,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.yss1.one.dao.LgtCodesDao;
 import com.yss1.one.models.Staj;
 import com.yss1.one.util.Period;
 import com.yss1.one.util.Utils;
@@ -14,6 +16,9 @@ import com.yss1.one.util.Utils;
 @Service
 public class StajCalculator {
 	
+@Autowired
+LgtCodesDao lgtCodesDao;
+
 //функция расчета стажа на указанную дату	
 public Period getStajBefore(List<Staj> ls, Date bd) {
 		Period per = new Period(0, 0, 0);
@@ -32,6 +37,25 @@ public Period getStajBefore(List<Staj> ls, Date bd) {
 //функция расчета общего стажа
 public Period getStajAll(List<Staj> ls) {
 	return getStajBefore(ls, Utils.makeDate(2100, 1, 1));
+}
+
+public List<Staj> copyStajes(List<Staj> stl,List<Staj> stkl)
+{
+	List<Staj> result=new ArrayList<>();
+	if (stl!=null) for (Staj st: stl) result.add(new Staj(st));
+	if (stkl!=null) for (Staj st: stkl) result.add(new Staj(st));
+	Collections.sort(result);
+	lgtCodesDao.updateCodes(result);
+	return result;
+}
+
+public Period getPedStaj(List<Staj> stl) {
+	Period period= new Period(0,0,0);
+	if (stl==null) return period;
+	for (Staj st: stl) {
+		
+	}
+	return period;
 }
 
 

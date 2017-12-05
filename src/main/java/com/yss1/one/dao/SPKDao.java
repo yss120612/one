@@ -59,7 +59,7 @@ public class SPKDao {
 		}
 		
 		if (res<0.5f) res=minSpk;
-		System.out.println("minSpk="+minSpk+" res="+res+" pravo="+Utils.getFormattedDate(prav));
+		//System.out.println("minSpk="+minSpk+" res="+res+" pravo="+Utils.getFormattedDate(prav));
 		return res;
 	}
 	

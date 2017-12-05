@@ -152,10 +152,10 @@ public byte[] makeDocument(Man man) throws DocumentException, IOException
     table.addCell(new Phrase(man.getPeriod1991().toString(),font));
     
     table.addCell(new Phrase("Отношение зарплат",font));
-    table.addCell(new Phrase(String.format("%.2f", man.getkSal()),font));
+    table.addCell(new Phrase(String.format("%.3f", man.getkSal()),font));
     
     table.addCell(new Phrase("ИПК",font));
-    table.addCell(new Phrase(String.format("%.2f", man.getIpk()),font));
+    table.addCell(new Phrase(String.format("%.3f", man.getIpk()),font));
     
     table.addCell(new Phrase("Страховая пенсия по старости",font));
     table.addCell(new Phrase(String.format("%.2f", man.getPensiya()),font));
