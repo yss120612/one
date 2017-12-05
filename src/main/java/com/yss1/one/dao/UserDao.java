@@ -83,7 +83,7 @@ public class UserDao {
 			return "Неверный старый пароль!";
 		}
 		if (newpass.equals(oldpass)) {
-			return "Старый пароль совпадает с новым";
+			return "Пароли не совпадают!";
 		}
 		u.setPassword(bpe.encode(newpass));
 		pgDT.update("update public.users set password=? where id=?", u.getPassword(), u.getId());
@@ -125,7 +125,7 @@ public class UserDao {
 			return false;
 		}
 		pgDT.update("delete from public.users_roles where id_user=?", u.getId());
-		pgDT.update("delete public.users where id=?", u.getId());
+		pgDT.update("delete from public.users where id=?", u.getId());
 		return true;
 	}
 

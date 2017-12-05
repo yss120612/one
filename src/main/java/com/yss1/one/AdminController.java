@@ -1,5 +1,6 @@
 package com.yss1.one;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,20 +39,30 @@ public class AdminController {
 		return "start";
 	}
 	
+	@GetMapping(value= {"/useredit"})
+	public String usereditGET(Model model,@RequestParam(value="userid",required=true) int id)
+	{
+		User u= ud.getUserById(id);
+		model.addAttribute("titleform", "Изменение пользователя");
+		model.addAttribute("action","edit");
+		model.addAttribute("user",u);
+		model.addAttribute("roles",rd.getRoleList());
+		return "user";
+	}
+	
 	@PostMapping(value= {"/useredit"})
-	public String usereditPOST(Model model,@RequestParam(value="userid",required=true) int id)
+	public ModelAndView usereditPOST(Model model,@RequestParam(value="userid",required=true) int id)
 	{
 		model.addAttribute("name", WebUtils.getLogin());
 		model.addAttribute("rest","useredit call");
 		model.addAttribute("apage","home");
 		
-		return "start";
+		return new ModelAndView("redirect:/userslist");
 	}
 	
 	@GetMapping(value= {"/useradd"})
 	public String useraddGET(Model model)
 	{
-		//model.addAttribute("name", WebUtils.getLogin());
 		model.addAttribute("titleform", "Создание пользователя");
 		model.addAttribute("action","add");
 		model.addAttribute("access",true);
