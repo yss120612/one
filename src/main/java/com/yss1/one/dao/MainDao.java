@@ -46,6 +46,7 @@ private String res;
 		String sql = "";
 		Man man = null;
 		Connection conn = null;
+		snils=Utils.formatSNILS(snils);
 		try {
 			conn = pgDS.getConnection();
 			man = as400.load(snils);

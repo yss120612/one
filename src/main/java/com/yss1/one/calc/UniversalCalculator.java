@@ -26,7 +26,6 @@ DojityeDao dojDao;
 	public float rpkCalc(float psk, float rp, int yp, boolean lgota)
 
 	{
-		System.out.println("psk="+psk+" doj="+dojDao.getPeriod(yp,lgota));
 		return (rp-450)*psk*dojDao.getPeriod(yp,lgota);
 	}
 	

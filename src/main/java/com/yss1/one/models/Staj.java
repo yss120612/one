@@ -10,8 +10,9 @@ public class Staj implements Comparable<Staj>{
 @Override
 	public String toString() {
 		period=Utils.calcPeriod(startDate,endDate,addDay);
-		return "Staj [startDate=" + Utils.getFormattedDate(startDate) + ", endDate=" + Utils.getFormattedDate(endDate) + "\ncggext=" + cggext + ", cwcext=" + cwcext
-				+ ", ctpext=" + ctpext + ", dopctpext=" + dopctpext + ", cspext=" + cspext + ", vidDeyat=" + vidDeyat + " period="+period.toString()+"]";
+//		return "Staj [startDate=" + Utils.getFormattedDate(startDate) + ", endDate=" + Utils.getFormattedDate(endDate) + "\ncggext=" + cggext + ", cwcext=" + cwcext
+//				+ ", ctpext=" + ctpext + ", dopctpext=" + dopctpext + ", cspext=" + cspext + ", vidDeyat=" + vidDeyat + " period="+period.toString()+"]";
+		return "Staj [startDate=" + Utils.getFormattedDate(startDate) + ", endDate=" + Utils.getFormattedDate(endDate) + ", ctpext=" + ctpext + ", dopctpext=" + dopctpext + ", cspext=" + cspext + ", dopcspext="+ dopcspext +", stavka=" + stavka + " period="+period.toString()+"]";
 				
 	}
 
@@ -45,6 +46,15 @@ private String vidDeyat;
 //день прибавляем?
 private int addDay;
 
+private float stavka;
+
+public float getStavka() {
+	return stavka;
+}
+
+public void setStavka(float stavka) {
+	this.stavka = stavka;
+}
 
 public int getAddDay() {
 	return addDay;
@@ -56,6 +66,7 @@ public void setAddDay(int addDay) {
 
 public Staj() {
 	addDay=1;
+	stavka=0f;
 }
 
 public Staj(Staj s) {
@@ -69,8 +80,16 @@ public Staj(Staj s) {
 	this.cspext = s.cspext;
 	this.dopcspext = s.dopcspext;
 	this.vidDeyat = s.vidDeyat;
-	addDay=1;
+	this.addDay=1;
+	this.stavka=0f;
 }
+
+public static Staj makeCopy(Staj s) {
+	Staj s1=new Staj(s);
+	s1.setStavka(s.getStavka());
+	return s1;
+}
+
 
 
 

@@ -171,6 +171,8 @@ public class Man {
 		period2015 = stCalc.getStajBefore(tmp, Utils.makeDate(2014, 12, 31));
 		periodAll  = stCalc.getStajAll(tmp);
 
+		Period pedPer=stCalc.getPedStaj(rawStaj);
+		
 		meter.start();
 		calcKVal();
 		meter.measure("calcKVal");
@@ -222,21 +224,23 @@ public class Man {
 		meter.measure("pensCalc");
 		
 		
-		res = "<br>p1991=" + period1991 + " p2002=" + period2002 + " p2015=" + period2015+" KVal="+kVal+" StajK="+stajK+" ponStajK="+dopStajK+" RK="+rk2001+" Зар.К="+kSal+" RP="+rP+" RPK="+rPK+
+		
+		
+		res = "PedPer="+pedPer+"<br>p1991=" + period1991 + " p2002=" + period2002 + " p2015=" + period2015+" KVal="+kVal+" StajK="+stajK+" ponStajK="+dopStajK+" RK="+rk2001+" Зар.К="+kSal+" RP="+rP+" RPK="+rPK+
 			  " pravo="+Utils.getFormattedDate(datePrav.getTime()) +" NPK="+nPK+" vsnosy02-15="+vsnos0215+" ipk15="+ipk15+" ipk="+ipk+"<br>"+ " Pensya="+pensiya+" Fix vipl="+fix+"<br>"+meter.getIntervals("<br>")+"<br>";
 		
 //		for (Platej pl : plateg20002001) {
 //			res = res + pl.toString() + "<br>";
 //		}
 		
-		for (Vsnos vs : vsnosy) {
-			res = res + vs.toString() + "<br>";
-		}
-		
-//		for (Staj st : tmp) {
-//			//periodAll.addPeriod(Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
-//			res = res + st.toString() + "<br>";
+//		for (Vsnos vs : vsnosy) {
+//			res = res + vs.toString() + "<br>";
 //		}
+		
+		for (Staj st : rawStaj) {
+			//periodAll.addPeriod(Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
+			res = res + st.toString() + "<br>";
+		}
 		
 		
 

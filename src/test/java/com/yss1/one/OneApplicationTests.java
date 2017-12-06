@@ -141,4 +141,15 @@ public class OneApplicationTests {
 		
 	}
 	
+	@Test
+	public void floatTest() {
+		assertEquals(Utils.getFloat("jkew jew (000.1)bkj"), 0.1f,0.001f);
+		assertEquals(Utils.getFloat("jkew jew (.1)bkj"), 0.1f,0.001f);
+		assertEquals(Utils.getFloat("jkew jew (1)bkj"), 1f,0.001f);
+		assertEquals(Utils.getFloat("jkew jew (0.88)bkj"), 0.88f,0.001f);
+		assertEquals(Utils.getFloat("jkew jew ( 0.88 )bkj"), 0.88f,0.001f);
+		assertEquals(Utils.getFloat("(0.88)"), 0.88f,0.001f);
+		assertEquals(Utils.getFloat("(.88)"), 0.88f,0.001f);
+	}
+	
 }
