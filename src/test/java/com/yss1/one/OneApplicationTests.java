@@ -117,6 +117,19 @@ public class OneApplicationTests {
 		
 	}
 	
+	@Test
+	public void snilsFormat() {
+		assertEquals(Utils.formatSNILS("04971172171"), "049-711-721 71");
+		assertEquals(Utils.formatSNILS("049711721"), "049-711-721 71");
+		assertEquals(Utils.formatSNILS("049 711 721"), "049-711-721 71");
+		assertEquals(Utils.formatSNILS("049-711-721"), "049-711-721 71");
+		assertEquals(Utils.formatSNILS("049-711-721 71"), "049-711-721 71");
+		assertEquals(Utils.formatSNILS("049 711 721 71"), "049-711-721 71");
+		
+		System.out.println("test3");
+		
+	}
+	
 	
 	@Test
 	public void dateTest() {

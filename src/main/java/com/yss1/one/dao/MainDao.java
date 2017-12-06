@@ -53,7 +53,14 @@ private String res;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		error=as400.getErr();
+		if (!snils.isEmpty())
+		{
+		     error=as400.getErr();
+		}
+		else
+		{
+			 error = "Некорректный СНИЛС!"; 
+		}
 		
 		/*
 		 * id bigint NOT NULL DEFAULT nextval('spravka_id_seq'::regclass),

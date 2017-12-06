@@ -68,10 +68,29 @@ public class UserDao {
 		return u;
 	}
 
-	public User addUser(String name, String pass,boolean en) {
-		pgDT.update("insert into public.users (username,password,enable,locked) values(?,?,?,false)", name,
+	public boolean hasUser(String name) {
+		Integer count = pgDT.queryForObject("select count(*) from public.users where username=?",Integer.class,name.trim());
+		return count>0;
+	}
+	
+	
+	public User addUser(String name, String pass,boolean en,String [] roles) {
+		if (hasUser(name)) return null;
+		pgDT.update("insert into public.users (username,password,enable,locked) values(?,?,?,false)", name.trim(),
 				bpe.encode(pass),en);
-		return getUserByName(name);
+		User u=getUserByName(name);
+		List<Role> rl=roleDao.getRoleList();
+		for (String ro:roles) {
+			for (Role r:rl) {
+				if(r.getRoleName().equals(ro))
+				{
+					u.addRole(r);
+					break;
+				}
+			}
+		}
+		updateRoles(u);
+		return u; 
 	}
 
 	public String changePassword(String un, String oldpass, String newpass) {
@@ -105,10 +124,7 @@ public class UserDao {
 				&& u.getAuthorities().containsAll(u0.getAuthorities())) {
 			return true;// роли не трогали
 		}
-		pgDT.update("delete from public.users_roles where id_user=?", u.getId());
-		for (Role r : (HashSet<Role>) u.getAuthorities()) {
-			pgDT.update("insert into public.users_roles (id_user, id_role) values(?,?)", u.getId(), r.getId());
-		}
+		updateRoles(u);
 		return true;
 	}
 
@@ -116,6 +132,14 @@ public class UserDao {
 		return deleteUser(getUserById(idx));
 	}
 
+	private void updateRoles(User u)
+	{
+		pgDT.update("delete from public.users_roles where id_user=?", u.getId());
+		for (Role r : (HashSet<Role>) u.getAuthorities()) {
+			pgDT.update("insert into public.users_roles (id_user, id_role) values(?,?)", u.getId(), r.getId());
+		}
+	}
+	
 	public boolean deleteUser(String name) {
 		return deleteUser(getUserByName(name));
 	}

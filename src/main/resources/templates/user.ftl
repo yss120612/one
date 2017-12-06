@@ -57,7 +57,7 @@
   							 </div>
   							 </div>
                             
-                             <div class="control-group col-md-6">
+                             <div class="control-group col-md-6 col-md-offset-1">
     							<label for="uroles">Роли (Shift+click)</label>
     							<select multiple class="form-control" id="uroles" name="uroles">
     							<#list roles as r>
@@ -65,14 +65,15 @@
       							</#list>  
     							</select>
   							  </div>
-                            
+                             <div class="control-group col-md-6">
+                             </div>
                                                         
                             
-                                <div width="100%" style="border-top: 1px solid#888; margin-top:15px"></div>    
+                                <div class="col-md-12" style="border-top: 1px solid#888; margin-top:15px; margin-bottom:15px"></div>    
 
 								<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
 								
-                                <div style="margin-top:10px" class="form-group">
+                                <div style="margin-top:10px;" class="form-group">
                                     <!-- Button -->
 
                                     <div class="controls col-md-10 col-md-ofset-1">

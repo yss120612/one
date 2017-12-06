@@ -27,15 +27,14 @@ public class AdminController {
 	@Autowired
 	RoleDao rd;
 	
+	private String erroradd="";
+	
 	@RequestMapping(value= {"/userslist"},method=RequestMethod.GET)
 	public String uList(Model model,@RequestParam(value="error",required=false) String error,@RequestParam(value="logout",required=false) String logout) {
 		model.addAttribute("name", WebUtils.getLogin());
-//		model.addAttribute("radmin",WebUtils.hasRole("ADMIN"));
-//		model.addAttribute("ruser",WebUtils.hasRole("USER"));
 		model.addAttribute("rest", "Список пользователей");
 		model.addAttribute("apage","ulist");
 		model.addAttribute("users",ud.getAllUsers());
-		//model.addAttribute("isadmin",WebUtils.hasRole("ADMIN"));
 		return "start";
 	}
 	
@@ -51,13 +50,12 @@ public class AdminController {
 	}
 	
 	@PostMapping(value= {"/useredit"})
-	public ModelAndView usereditPOST(Model model,@RequestParam(value="userid",required=true) int id)
+	public String usereditPOST(Model model,@RequestParam(value="userid",required=true) int id)
 	{
 		model.addAttribute("name", WebUtils.getLogin());
 		model.addAttribute("rest","useredit call");
 		model.addAttribute("apage","home");
-		
-		return new ModelAndView("redirect:/userslist");
+		return "redirect:/userslist";
 	}
 	
 	@GetMapping(value= {"/useradd"})
@@ -65,60 +63,55 @@ public class AdminController {
 	{
 		model.addAttribute("titleform", "Создание пользователя");
 		model.addAttribute("action","add");
+		if (!erroradd.isEmpty()) model.addAttribute("err",erroradd);
 		model.addAttribute("access",true);
 		model.addAttribute("roles",rd.getRoleList());
+		erroradd="";
 		return "user";
 	}
 	
 	@PostMapping(value= {"/useradd"})
-	public ModelAndView useraddPOST(Model model,@RequestParam(value="username",required=true) String username,
+	public String useraddPOST(Model model,@RequestParam(value="username",required=true) String username,
 										  @RequestParam(value="password",required=true) String password,
 										  @RequestParam(value="password2",required=true) String password2,
-										  @RequestParam(value="uroles",required=false,defaultValue="") String  roles,
+										  @RequestParam(value="uroles",required=false) String  roles,
 										  @RequestParam(value="access",required=false,defaultValue="false") boolean acc)
 	{
 		
-		String error="";
+		if (roles==null) roles="";
+		erroradd="";
 		if (!password.equals(password2))
 		{
-			error="Пароли не совпадают!";
+			erroradd="Пароли не совпадают!";
 		}
 		
 		if (password.length()<4)
 		{
-			error=(error.isEmpty())?"Пароли менее 4х символов!":error+"<br>Пароли менее 4х символов!";
+			erroradd=(erroradd.isEmpty())?"Пароли менее 4х символов!":erroradd+"<br>Пароли менее 4х символов!";
 		}
 		
-		User us=ud.getUserByName("");
-		if (us!=null)
-		{
-			error=(error.isEmpty())?"Пользователь "+username+" уже существует":error+"<br>Пользователь "+username+" уже существует";
+		User us=ud.addUser(username, password, acc,roles.split(","));
+		if (us==null) {
+			erroradd=(erroradd.isEmpty())?"Пользователь "+username+" уже существует":erroradd+"<br>Пользователь "+username+" уже существует";
 		}
 		
-		if (!error.isEmpty()) {
-			model.addAttribute("err",error);
-			model.addAttribute("action","add");
-			model.addAttribute("titleform", "Создание пользователя");
-			model.addAttribute("roles",rd.getRoleList());
-			return new ModelAndView("redirect:/useradd", (Map<String, ?>) model);
+		if (!erroradd.isEmpty()) {
+			return "redirect:/useradd";
 		}
-		us=ud.addUser(username, password, acc);
-		for (String ro:roles.split(","))
-		{
-			us.addRole(rd.findRoleByName(ro));
-		}
-		ud.saveUser(us);
 		
-		return new ModelAndView("redirect:/userslist");
+//		for (String ro:roles.split(","))
+//		{
+//			us.addRole(rd.findRoleByName(ro));
+//		}
+//		ud.saveUser(us);
+		
+		return "redirect:/userslist";
 	}
 	
 	
 	@PostMapping(value= {"/userdel"})
 	public ModelAndView userdelPOST(Model model,@RequestParam(value="userid",required=true) int id)
 	{
-//		model.addAttribute("name", WebUtils.getLogin());
-//		model.addAttribute("rest","userdel call");
-//		model.addAttribute("apage","ulist");
 		User us = ud.getUserById(id);
 		
 		ud.deleteUser(id);

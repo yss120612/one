@@ -160,6 +160,10 @@ public class Utils {
 
 	public static String formatSNILS(String snils) {
 		// TODO Auto-generated method stub
+		String sn=rawSNILS(snils);
+		if (sn.length()!=9) return "";
+		int cs=calcSNILS(sn);
+		snils=String.format("%s-%s-%s %2d", sn.substring(0,3),sn.substring(3,6),sn.substring(6,9),cs);
 		return snils;
 	}
 

@@ -36,12 +36,69 @@ ${au.authority}<#sep>, </#sep>
 </#list>
 </tbody>
 </table>
-<button type="button" id="btn_add"  class="btn btn-info btn-mini" onclick="clk(3,0,'')"><i class="glyphicon glyphicon-plus" ></i></button>
+<a type="button" id="btn_add"  class="btn btn-info btn-mini" href="${springMacroRequestContext.contextPath}/useradd"><i class="glyphicon glyphicon-plus" ></i></a>
 <input id="userid" name="userid" type="hidden" value=""/>
 <input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
 </form>
 </div>
 </div>
+
+                    <fieldset class="detailed-search-form-notes-list fl-l">
+                        <dl class="f-row cf">
+                            <dt>Направления по интересам</dt>
+                            <dd class="f-city-field">
+                                
+                                    <div class="row small cf">
+                                        <div class="title" data-value="romantic"> &larr; Романтика</div>
+                                    </div>
+                                
+                                    <div class="row small cf">
+                                        <div class="title" data-value="family"> &larr; Семейный отдых</div>
+                                    </div>
+                                
+                                    <div class="row small cf">
+                                        <div class="title" data-value="visafree"> &larr; Безвизовые страны</div>
+                                    </div>
+                                
+                                    <div class="row small cf">
+                                        <div class="title" data-value="sea"> &larr; Море</div>
+                                    </div>
+                                
+                                    <div class="row small cf">
+                                        <div class="title" data-value="surfing"> &larr; Сёрфинг</div>
+                                    </div>
+                                
+                                    <div class="row small cf">
+                                        <div class="title" data-value="shopping"> &larr; Шоппинг</div>
+                                    </div>
+                                
+                                    <div class="row small cf">
+                                        <div class="title" data-value="nature"> &larr; Природа</div>
+                                    </div>
+                                
+                                    <div class="row small cf">
+                                        <div class="title" data-value="gourmet"> &larr; Гурмэ</div>
+                                    </div>
+                                
+                                    <div class="row small cf">
+                                        <div class="title" data-value="culture"> &larr; Культура</div>
+                                    </div>
+                                
+                                    <div class="row small cf">
+                                        <div class="title" data-value="diving"> &larr; Дайвинг</div>
+                                    </div>
+                                
+                                    <div class="row small cf">
+                                        <div class="title" data-value="kite"> &larr; Кайтсёрфинг</div>
+                                    </div>
+                                
+                                    <div class="row small cf">
+                                        <div class="title" data-value="ski"> &larr; Лыжи и сноуборд</div>
+                                    </div>
+                                
+                            </dd>
+                        </dl>
+                    </fieldset>
 <script type="text/javascript">
 function clk(ac,id,nm){
 if (ac==1)
