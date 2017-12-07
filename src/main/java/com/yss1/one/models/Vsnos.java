@@ -24,6 +24,9 @@ private int cprcod;
 //тарифы страховая часть 
 private float strah;
 
+//тарифы страховая часть 
+private float nacop;
+
 //тарифы солидарная часть 
 private float solid;
 
@@ -123,6 +126,14 @@ public float getStrah() {
 public void setStrah(float strah) {
 	this.strah = strah;
 }
+
+public float getNacop() {
+	return nacop;
+}
+public void setNacop(float nacop) {
+	this.nacop = nacop;
+}
+
 public float getSolid() {
 	return solid;
 }

@@ -34,20 +34,204 @@ public Period getStajBefore(List<Staj> ls, Date bd) {
 		return per;
 	}
 
-//функция расчета общего стажа
-public Period getStajAll(List<Staj> ls) {
-	return getStajBefore(ls, Utils.makeDate(2100, 1, 1));
+	public Period getMedStajBefore(List<Staj> ls, Date bd, boolean containsCity) {
+		// what=1 ГД,what=2 СМ, what=3 ГДХР, what=4 СМХР
+
+		Period per = new Period(0, 0, 0);
+		Date border = Utils.makeDate(1999, 11, 1);
+		for (Staj st : ls) {
+			if (st.getStartDate().after(bd))
+				continue;
+			
+			if (st.getDopcspext().contains("СМХР")) {
+				if (containsCity) {
+					if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
+						per.addPeriod(Utils.multPeriod(
+								Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()), 1.75f));
+					} else {
+						per.addPeriod(Utils.multPeriod(Utils.calcPeriod(st.getStartDate(), bd, 0), 1.75f));
+					}
+				} else {
+					if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
+						per.addPeriod(Utils.multPeriod(
+								Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()), 1.5f));
+					} else {
+						per.addPeriod(Utils.multPeriod(Utils.calcPeriod(st.getStartDate(), bd, 0), 1.5f));
+					}
+				}
+				
+			} else if (st.getDopcspext().contains("ГДХР")) {
+				if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
+					per.addPeriod(Utils.multPeriod(Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()),
+							1.5f));
+				} else {
+					per.addPeriod(Utils.multPeriod(Utils.calcPeriod(st.getStartDate(), bd, 0), 1.5f));
+				}
+
+			} else if (st.getDopcspext().contains("СМ")) {
+				if (containsCity) {
+					if (st.getStartDate().before(border)) {
+						if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
+							per.addPeriod(Utils.multPeriod(
+									Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()), 1.25f));
+						} else {
+							per.addPeriod(Utils.multPeriod(Utils.calcPeriod(st.getStartDate(), bd, 0), 1.25f));
+						}
+					} else {
+						if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
+							per.addPeriod(Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
+						} else {
+							per.addPeriod(Utils.calcPeriod(st.getStartDate(), bd, 0));
+						}
+					}
+				} else {
+					if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
+						per.addPeriod(Utils.multPeriod(
+								Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()), 1.25f));
+					} else {
+						per.addPeriod(Utils.multPeriod(Utils.calcPeriod(st.getStartDate(), bd, 0), 1.25f));
+					}
+				}
+				
+			} else if (st.getDopcspext().contains("ГД")) {
+				if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
+					per.addPeriod(Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
+				} else {
+					per.addPeriod(Utils.calcPeriod(st.getStartDate(), bd, 0));
+				}
+			}
+
+		}
+		return per;
+	}
+
+	public Period getMedStajAll(List<Staj> ls, boolean containsCity) {
+		return getMedStajBefore(ls, Utils.makeDate(2100, 1, 1), containsCity);
+	}
+
+	// функция расчета общего стажа
+	public Period getStajAll(List<Staj> ls) {
+		return getStajBefore(ls, Utils.makeDate(2100, 1, 1));
+	}
+
+	public List<Staj> copyStajes(List<Staj> stl, List<Staj> stkl) {
+		List<Staj> result = new ArrayList<>();
+		if (stl != null)
+			for (Staj st : stl)
+				result.add(new Staj(st));
+		if (stkl != null)
+			for (Staj st : stkl)
+				result.add(new Staj(st));
+		Collections.sort(result);
+		lgtCodesDao.updateCodes(result);// замена кодов на актуальные
+		return result;
+	}
+
+public Period getMedStaj(List<Staj> stl,List<String> vidl) {
+	
+	if (stl==null) return new Period(0,0,0);
+	List<Staj> sttmp=new ArrayList<Staj>();
+	float stavka;
+	Staj current,stg1=null;
+	Date dfrom=Utils.makeDate(1999,11,01);
+	//отбираем только с нужным кодом которые или имеют ставку или до 10-11-1999г.
+	for (Staj st: stl) {
+		for (String vid:vidl)
+		{
+		if (st.getCspext().contains(vid))
+		{
+			current=new Staj(st);
+			if (st.getStartDate().before(dfrom)) {
+				if (st.getEndDate().after(dfrom)) {
+					current.setStavka(1f);
+					current.setEndDate(Utils.addDay(dfrom,-1));
+					current.setAddDay(0);
+					sttmp.add(current);
+					
+					current=new Staj(st);
+					current.setStartDate(dfrom);
+				}
+				else
+				{
+					current.setStavka(1f);
+					sttmp.add(current);
+					continue;
+				}
+				
+			}
+			stavka=Utils.getFloat(current.getDopcspext());
+			if (stavka>0) {
+				current.setStavka(stavka);
+				sttmp.add(current);
+			}
+		}
+	}
+	}
+	if (sttmp.isEmpty()) return new Period(0,0,0);
+	Collections.sort(sttmp);
+	List<Staj> toadd=new ArrayList<Staj>();
+	int counter;
+	boolean changed;
+	
+	
+	
+	int cycles=0;
+	
+	while(true)
+	{
+	toadd.clear();
+	counter=0;
+	current=sttmp.get(0);
+	for (Staj st1: sttmp) {
+		counter++;
+		if (counter==1 || !st1.getStartDate().before(st1.getEndDate())) continue;
+		changed=false;
+		if (Utils.afterOrEqual(current.getEndDate(),st1.getStartDate()))
+		{
+			if (current.getEndDate().before(st1.getEndDate()))
+			{//порождается часть от st
+				stg1=Staj.makeCopy(st1);
+				stg1.setStartDate(Utils.addDay(current.getEndDate(),1));
+				st1.setEndDate(current.getEndDate());
+				st1.setAddDay(0);
+			}
+			else
+			{
+				stg1=Staj.makeCopy(current);
+				stg1.setStartDate(Utils.addDay(st1.getEndDate(),1));
+			}
+			changed=stg1.getStartDate().before(stg1.getEndDate());
+			st1.setStavka(st1.getStavka()+current.getStavka());
+			
+			current.setEndDate(Utils.addDay(st1.getStartDate(),-1));
+			current.setAddDay(0);
+		}
+		
+		if (changed) toadd.add(stg1);
+		current=st1;
+	}
+	if (toadd.isEmpty()) break;
+	cycles+=1;
+	System.out.println("cycles="+cycles+" lgh="+toadd.size());
+	sttmp.addAll(toadd);
+	Collections.sort(sttmp);
+	}
+	
+	sttmp.removeIf(x->(x.getStavka()<0.999f|| !x.getStartDate().before(x.getEndDate())));
+	boolean containsCity=false;
+	for (Staj st: sttmp) {
+		if (st.getCspext().contains("ГД")) {
+			containsCity=true;
+			break;
+		}
+		
+	}
+	
+	//switch ()
+	return getStajAll(sttmp);
 }
 
-public List<Staj> copyStajes(List<Staj> stl,List<Staj> stkl)
-{
-	List<Staj> result=new ArrayList<>();
-	if (stl!=null) for (Staj st: stl) result.add(new Staj(st));
-	if (stkl!=null) for (Staj st: stkl) result.add(new Staj(st));
-	Collections.sort(result);
-	lgtCodesDao.updateCodes(result);//замена кодов на актуальные
-	return result;
-}
+
 
 public Period getPedStaj(List<Staj> stl) {
 	
@@ -135,17 +319,13 @@ public Period getPedStaj(List<Staj> stl) {
 	Collections.sort(sttmp);
 	}
 
-//	for (Staj st : sttmp) {
-//		System.out.println(st.toString());
-//	}
-//	System.out.println("-----------------------------------------------");
 	sttmp.removeIf(x->(x.getStavka()<0.999f|| !x.getStartDate().before(x.getEndDate())));
-//	for (Staj st : sttmp) {
-//		System.out.println(st.toString());
-//	}
 	
 	return getStajAll(sttmp);
 }
+
+
+
 
 
 //упорядычеваем записи о стаже, исключаем перекрывающиеся участки, сливаем

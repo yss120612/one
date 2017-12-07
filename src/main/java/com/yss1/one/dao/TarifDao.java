@@ -38,7 +38,7 @@ public class TarifDao {
 	if (lt==null)
 	{
 		//String sql="select kod, year, "+(before67?"strah2 ":"strah3 ");
-		lt=pgDT.query("select kod, year,strah2,strah3,gr_vznos from tarifs order by year,kod",tarifRowMapper);
+		lt=pgDT.query("select kod, year,strah2,strah3,nakop2,nakop3,gr_vznos from tarifs order by year,kod",tarifRowMapper);
 	}
 	for(Vsnos vs:lv) {
 		if (vs.getCprcod()!=0)
@@ -48,6 +48,7 @@ public class TarifDao {
 			if (vs.getCprcod()==t.getKod() && vs.getYear()==t.getYear())
 			{
 				vs.setStrah(before67?t.getStrah2():t.getStrah3());
+				vs.setNacop(before67?t.getNacop2():t.getNacop3());
 				break;
 			}
 			}
@@ -59,7 +60,7 @@ public class TarifDao {
 	
 	private RowMapper<Tarif> tarifRowMapper = new RowMapper<Tarif>() {
 		public Tarif mapRow(ResultSet rs, int rowNum) throws SQLException {
-			return new Tarif(rs.getInt("kod"),rs.getInt("year"),rs.getFloat("strah2"),rs.getFloat("strah3"),rs.getFloat("gr_vznos"));
+			return new Tarif(rs.getInt("kod"),rs.getInt("year"),rs.getFloat("strah2"),rs.getFloat("strah3"),rs.getFloat("nakop2"),rs.getFloat("nakop3"),rs.getFloat("gr_vznos"));
 		}
 	};
 	
@@ -69,8 +70,10 @@ public class TarifDao {
 		private int year;
 		private float strah2;
 		private float strah3;
+		private float nacop2;
+		private float nacop3;
 		private float gr_vznos;
-		public Tarif(int kod, int year, float strah2, float strah3, float gr_vznos) {
+		public Tarif(int kod, int year, float strah2, float strah3, float nacop2, float nacop3, float gr_vznos) {
 			this.kod = kod;
 			this.year = year;
 			this.strah2 = strah2;
@@ -88,6 +91,12 @@ public class TarifDao {
 		}
 		public float getStrah3() {
 			return strah3;
+		}
+		public float getNacop2() {
+			return nacop2;
+		}
+		public float getNacop3() {
+			return nacop3;
 		}
 		public float getGr_vznos() {
 			return gr_vznos;

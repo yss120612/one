@@ -38,7 +38,6 @@ ${au.authority}<#sep>, </#sep>
 </table>
 <a type="button" id="btn_add"  class="btn btn-info btn-mini" href="${springMacroRequestContext.contextPath}/useradd"><i class="glyphicon glyphicon-plus" ></i></a>
 <input id="userid" name="userid" type="hidden" value=""/>
-<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
 </form>
 </div>
 </div>
@@ -105,6 +104,7 @@ if (ac==1)
 {
 $('#userid').val(id);
 $('#userform').attr('action', '${springMacroRequestContext.contextPath}/useredit');
+$('#userform').attr('method','get');
 }
 else if (ac==2)
 {

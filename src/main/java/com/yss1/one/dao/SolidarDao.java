@@ -38,6 +38,7 @@ public class SolidarDao {
 			if (vs.getYear()>=2002 && map.containsKey(vs.getCtmcod()))
 			{
 						vs.setSolid(map.get(vs.getCtmcod()));
+						vs.setSolid(vs.getSolid()==0?0:vs.getStrah()+vs.getNacop()-16);
 				}
 			}
 		

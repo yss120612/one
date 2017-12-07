@@ -31,10 +31,15 @@
                              <label for="login-password-old">Логин</label>
                              <div style="margin-bottom: 25px" class="input-group" >
                                         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                        <input id="username" type="text" class="form-control" name="username" placeholder="логин"  onChange="onCh()">
+                                        <#if action?? && action=="edit">
+                                        	<input id="username" type="text" class="form-control" name="username" disabled="disabled" value="${user.username}">
+                                        <#else>	
+                                        	<input id="username" type="text" class="form-control" name="username" placeholder="логин"  onChange="onCh()" >
+                                        </#if>
                              </div>
                             </div>
                             
+							<#if action?? && action=="add">
                             <div class="control-group">
                              <label for="login-password-new">Пароль</label>
                              <div style="margin-bottom: 25px" class="input-group" >
@@ -50,10 +55,19 @@
                                     <input id="password2" type="password" class="form-control" name="password2" placeholder="пароль еще раз"  onChange="onCh()">
                              </div>
                             </div>
+                            </#if>
                             
 							<div class="control-group">                                    
 							 <div class="form-check">
-    							<label class="form-check-label"><input type="checkbox" name="access" id="access" class="form-check-input"> Доступ</label>
+							<#if action?? && action=="add">
+    							<label class="form-check-label">
+    							<input type="checkbox" name="access" id="access" class="form-check-input" checked="true"> Доступ
+    							</label>
+    						<#else>
+    							<label class="form-check-label">
+    							<input type="checkbox" name="access" id="access" class="form-check-input" checked> Доступ
+    							</label>
+    						</#if>	
   							 </div>
   							 </div>
                             

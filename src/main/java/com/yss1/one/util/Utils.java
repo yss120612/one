@@ -83,6 +83,41 @@ public class Utils {
 		return new Period(year, month, day);
 	}
 
+	//умножаем период на коэффициент
+	public static Period multPeriod(Period per, float mult) {
+		float day = per.getDays()*mult;
+		float month = per.getMonths()*mult;
+		float year = per.getYears()*mult;
+
+		System.out.println("first year="+year+ " month="+month+" day="+day);
+		month=month+(year-(float)Math.floor(year))*12f;
+		year=(float)Math.floor(year);
+		day=day+(month-(float)Math.floor(month))*30f;
+		month=(float)Math.floor(month);
+		day=(float)Math.floor(day);
+		System.out.println("before year="+year+ " month="+month+" day="+day);
+		while (day>=30 || month>=12f)
+		{
+			if (day>=30) 
+			{
+				day=day-30;
+				month=month+1;
+			}
+			
+			if (month>=12f)
+			{
+				month=month-12;
+				year=year+1;
+			}
+			
+			
+		}
+		
+		System.out.println("year="+year+ " month="+month+" day="+day);
+		return new Period((int) Math.rint(year), (int)Math.rint(month), (int)Math.rint(day));
+	}
+	
+	
 	public static String getFormattedDate4sql(Date d) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		return sdf.format(d);

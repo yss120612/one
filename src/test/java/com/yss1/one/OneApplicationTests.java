@@ -118,6 +118,25 @@ public class OneApplicationTests {
 	}
 	
 	@Test
+	public void multPeriodTest() {
+		Period period=new Period(1,1,1);
+		Period res= Utils.multPeriod(period, 1.5f);
+		//System.out.println("year="+res.getYears()+" month="+res.getMonths()+" day="+res.getDays());
+		assertEquals(res.getYears(),1);
+		assertEquals(res.getMonths(),7);
+		assertEquals(res.getDays(),16);
+		
+		period=new Period(1,11,25);
+		res= Utils.multPeriod(period, 1.75f);
+		System.out.println("year="+res.getYears()+" month="+res.getMonths()+" day="+res.getDays());
+		assertEquals(res.getYears(),3);
+		assertEquals(res.getMonths(),5);
+		assertEquals(res.getDays(),21);
+		
+	}
+	
+	
+	@Test
 	public void snilsFormat() {
 		assertEquals(Utils.formatSNILS("04971172171"), "049-711-721 71");
 		assertEquals(Utils.formatSNILS("049711721"), "049-711-721 71");

@@ -1,8 +1,5 @@
 package com.yss1.one;
 
-import java.util.Collection;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,8 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
-
 import com.yss1.one.dao.RoleDao;
 import com.yss1.one.dao.UserDao;
 import com.yss1.one.models.User;
@@ -50,11 +45,10 @@ public class AdminController {
 	}
 	
 	@PostMapping(value= {"/useredit"})
-	public String usereditPOST(Model model,@RequestParam(value="userid",required=true) int id)
+	public String usereditPOST(Model model,@RequestParam(value="userid",required=true) int id,
+										   @RequestParam(value="uroles",required=false) String  roles,
+										   @RequestParam(value="access",required=false,defaultValue="false") boolean acc)
 	{
-		model.addAttribute("name", WebUtils.getLogin());
-		model.addAttribute("rest","useredit call");
-		model.addAttribute("apage","home");
 		return "redirect:/userslist";
 	}
 	
@@ -99,27 +93,21 @@ public class AdminController {
 			return "redirect:/useradd";
 		}
 		
-//		for (String ro:roles.split(","))
-//		{
-//			us.addRole(rd.findRoleByName(ro));
-//		}
-//		ud.saveUser(us);
-		
-		return "redirect:/userslist";
+    	return "redirect:/userslist";
 	}
 	
 	
 	@PostMapping(value= {"/userdel"})
-	public ModelAndView userdelPOST(Model model,@RequestParam(value="userid",required=true) int id)
+	public String userdelPOST(@RequestParam(value="userid",required=true) int id)
 	{
 		User us = ud.getUserById(id);
 		
 		ud.deleteUser(id);
 		if (us.getUsername().equals(WebUtils.getLogin()))
 		{
-			return new ModelAndView("redirect:/login?logout");
+			return "redirect:/login?logout";
 		}
-		return new ModelAndView("redirect:/userslist");
+		return "redirect:/userslist";
 	}
 	
 }
