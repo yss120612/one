@@ -61,11 +61,11 @@
 							 <div class="form-check">
 							<#if action?? && action=="add">
     							<label class="form-check-label">
-    							<input type="checkbox" name="access" id="access" class="form-check-input" checked="true"> Доступ
+    							<input type="checkbox" name="access" id="access" class="form-check-input" checked="true"> Доступ разрешен
     							</label>
     						<#else>
     							<label class="form-check-label">
-    							<input type="checkbox" name="access" id="access" class="form-check-input" checked> Доступ
+    							<input type="checkbox" name="access" id="access" class="form-check-input" <#if user.enabled>checked</#if>> Доступ разрешен
     							</label>
     						</#if>	
   							 </div>
@@ -75,10 +75,14 @@
     							<label for="uroles">Роли (Shift+click)</label>
     							<select multiple class="form-control" id="uroles" name="uroles">
     							<#list roles as r>
-      								<option>${r.authority}</option>
+    							<#if action?? && action=="add">
+    								<option>${r.authority}</option>
+    							<#else>
+      								<option <#if user.roleNames?seq_contains(r.authority) >selected</#if> >${r.authority}</option>
+      							</#if>
       							</#list>  
     							</select>
-  							  </div>
+ 							  </div>
                              <div class="control-group col-md-6">
                              </div>
                                                         

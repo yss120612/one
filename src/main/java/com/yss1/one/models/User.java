@@ -1,7 +1,9 @@
 package com.yss1.one.models;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -32,6 +34,15 @@ public class User implements UserDetails {
 		return roles;
 	}
 
+	public List<String> getRoleNames()
+	{
+		List<String> res = new ArrayList<>();
+		for (Role r:roles) {
+			res.add(r.getRoleName());
+		}
+		return res;
+	}
+	
 	public boolean addRole(Role r) {
 		if (!this.hasRole(r)) {
 			roles.add(r);

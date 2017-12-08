@@ -37,7 +37,6 @@ public class TarifDao {
 	// идем за тарифами (процент, отчисляемый из ЗП)
 	if (lt==null)
 	{
-		//String sql="select kod, year, "+(before67?"strah2 ":"strah3 ");
 		lt=pgDT.query("select kod, year,strah2,strah3,nakop2,nakop3,gr_vznos from tarifs order by year,kod",tarifRowMapper);
 	}
 	for(Vsnos vs:lv) {
@@ -78,6 +77,8 @@ public class TarifDao {
 			this.year = year;
 			this.strah2 = strah2;
 			this.strah3 = strah3;
+			this.nacop2 = nacop2;
+			this.nacop3 = nacop3;
 			this.gr_vznos = gr_vznos;
 		}
 		public int getKod() {

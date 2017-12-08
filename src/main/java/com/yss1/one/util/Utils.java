@@ -66,7 +66,7 @@ public class Utils {
 		return makeDate(year, Integer.parseInt(as[1]), Integer.parseInt(as[0]));
 	}
 
-	public static Period calcPeriod(Date ds, Date df, int ad) {
+	public static Period makePeriod(Date ds, Date df, int ad) {
 		String sdiff = String.format("%010d", getFormattedDate4period(df) - getFormattedDate4period(ds));
 		int day = Integer.parseInt(sdiff.substring(sdiff.length() - 3, sdiff.length()));
 		int month = Integer.parseInt(sdiff.substring(sdiff.length() - 6, sdiff.length() - 3));
@@ -89,7 +89,7 @@ public class Utils {
 		float month = per.getMonths()*mult;
 		float year = per.getYears()*mult;
 
-		System.out.println("first year="+year+ " month="+month+" day="+day);
+		//System.out.println("first year="+year+ " month="+month+" day="+day);
 		month=month+(year-(float)Math.floor(year))*12f;
 		year=(float)Math.floor(year);
 		day=day+(month-(float)Math.floor(month))*30f;
@@ -109,11 +109,7 @@ public class Utils {
 				month=month-12;
 				year=year+1;
 			}
-			
-			
 		}
-		
-		System.out.println("year="+year+ " month="+month+" day="+day);
 		return new Period((int) Math.rint(year), (int)Math.rint(month), (int)Math.rint(day));
 	}
 	

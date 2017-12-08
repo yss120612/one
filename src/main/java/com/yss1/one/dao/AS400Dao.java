@@ -172,6 +172,7 @@ public class AS400Dao {
 	
 	private RowMapper<Staj> stajRowMapper = new RowMapper<Staj>() {
 		public Staj mapRow(ResultSet rs, int rowNum) throws SQLException {
+			if (rs.getString(dateSpos)==null||rs.getString(dateFpos)==null) return null;
 			Staj staj = new Staj();
 			staj.setVidDeyat(rs.getString(7));
 			staj.setStartDate(Utils.makeDate(rs.getString(dateSpos),"\\."));
@@ -189,6 +190,7 @@ public class AS400Dao {
 	
 	private RowMapper<Vsnos> vsnosRowMapper = new RowMapper<Vsnos>() {
 		public Vsnos mapRow(ResultSet rs, int rowNum) throws SQLException {
+			if (rs.getString("asr")==null || rs.getString("asr").isEmpty()) return null;
 			Vsnos vsnos = new Vsnos();
 			vsnos.setDptcod(rs.getInt("dptcod"));
 			vsnos.setDcinmb(rs.getLong("dcinmb"));

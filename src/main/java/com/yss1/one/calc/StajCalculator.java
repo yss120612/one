@@ -26,9 +26,9 @@ public Period getStajBefore(List<Staj> ls, Date bd) {
 			if (st.getStartDate().after(bd))
 				continue;
 			if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
-				per.addPeriod(Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
+				per.addPeriod(Utils.makePeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
 			} else {
-				per.addPeriod(Utils.calcPeriod(st.getStartDate(), bd, 0));
+				per.addPeriod(Utils.makePeriod(st.getStartDate(), bd, 0));
 			}
 		}
 		return per;
@@ -43,61 +43,61 @@ public Period getStajBefore(List<Staj> ls, Date bd) {
 			if (st.getStartDate().after(bd))
 				continue;
 			
-			if (st.getDopcspext().contains("СМХР")) {
+			if (st.getCspext().contains("СМХР")) {
 				if (containsCity) {
 					if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
 						per.addPeriod(Utils.multPeriod(
-								Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()), 1.75f));
+								Utils.makePeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()), 1.75f));
 					} else {
-						per.addPeriod(Utils.multPeriod(Utils.calcPeriod(st.getStartDate(), bd, 0), 1.75f));
+						per.addPeriod(Utils.multPeriod(Utils.makePeriod(st.getStartDate(), bd, 0), 1.75f));
 					}
 				} else {
 					if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
 						per.addPeriod(Utils.multPeriod(
-								Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()), 1.5f));
+								Utils.makePeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()), 1.5f));
 					} else {
-						per.addPeriod(Utils.multPeriod(Utils.calcPeriod(st.getStartDate(), bd, 0), 1.5f));
+						per.addPeriod(Utils.multPeriod(Utils.makePeriod(st.getStartDate(), bd, 0), 1.5f));
 					}
 				}
 				
-			} else if (st.getDopcspext().contains("ГДХР")) {
+			} else if (st.getCspext().contains("ГДХР")) {
 				if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
-					per.addPeriod(Utils.multPeriod(Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()),
+					per.addPeriod(Utils.multPeriod(Utils.makePeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()),
 							1.5f));
 				} else {
-					per.addPeriod(Utils.multPeriod(Utils.calcPeriod(st.getStartDate(), bd, 0), 1.5f));
+					per.addPeriod(Utils.multPeriod(Utils.makePeriod(st.getStartDate(), bd, 0), 1.5f));
 				}
 
-			} else if (st.getDopcspext().contains("СМ")) {
+			} else if (st.getCspext().contains("СМ")) {
 				if (containsCity) {
 					if (st.getStartDate().before(border)) {
 						if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
 							per.addPeriod(Utils.multPeriod(
-									Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()), 1.25f));
+									Utils.makePeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()), 1.25f));
 						} else {
-							per.addPeriod(Utils.multPeriod(Utils.calcPeriod(st.getStartDate(), bd, 0), 1.25f));
+							per.addPeriod(Utils.multPeriod(Utils.makePeriod(st.getStartDate(), bd, 0), 1.25f));
 						}
 					} else {
 						if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
-							per.addPeriod(Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
+							per.addPeriod(Utils.makePeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
 						} else {
-							per.addPeriod(Utils.calcPeriod(st.getStartDate(), bd, 0));
+							per.addPeriod(Utils.makePeriod(st.getStartDate(), bd, 0));
 						}
 					}
 				} else {
 					if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
 						per.addPeriod(Utils.multPeriod(
-								Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()), 1.25f));
+								Utils.makePeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()), 1.25f));
 					} else {
-						per.addPeriod(Utils.multPeriod(Utils.calcPeriod(st.getStartDate(), bd, 0), 1.25f));
+						per.addPeriod(Utils.multPeriod(Utils.makePeriod(st.getStartDate(), bd, 0), 1.25f));
 					}
 				}
 				
-			} else if (st.getDopcspext().contains("ГД")) {
+			} else if (st.getCspext().contains("ГД")) {
 				if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
-					per.addPeriod(Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
+					per.addPeriod(Utils.makePeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
 				} else {
-					per.addPeriod(Utils.calcPeriod(st.getStartDate(), bd, 0));
+					per.addPeriod(Utils.makePeriod(st.getStartDate(), bd, 0));
 				}
 			}
 
@@ -136,9 +136,8 @@ public Period getMedStaj(List<Staj> stl,List<String> vidl) {
 	Date dfrom=Utils.makeDate(1999,11,01);
 	//отбираем только с нужным кодом которые или имеют ставку или до 10-11-1999г.
 	for (Staj st: stl) {
-		for (String vid:vidl)
-		{
-		if (st.getCspext().contains(vid))
+		
+		if (vidl.contains(st.getCspext()))
 		{
 			current=new Staj(st);
 			if (st.getStartDate().before(dfrom)) {
@@ -165,15 +164,13 @@ public Period getMedStaj(List<Staj> stl,List<String> vidl) {
 				sttmp.add(current);
 			}
 		}
-	}
+	
 	}
 	if (sttmp.isEmpty()) return new Period(0,0,0);
 	Collections.sort(sttmp);
 	List<Staj> toadd=new ArrayList<Staj>();
 	int counter;
 	boolean changed;
-	
-	
 	
 	int cycles=0;
 	
@@ -220,17 +217,28 @@ public Period getMedStaj(List<Staj> stl,List<String> vidl) {
 	sttmp.removeIf(x->(x.getStavka()<0.999f|| !x.getStartDate().before(x.getEndDate())));
 	boolean containsCity=false;
 	for (Staj st: sttmp) {
+		System.out.println(st);
 		if (st.getCspext().contains("ГД")) {
 			containsCity=true;
-			break;
+			
+			//break;
 		}
 		
 	}
 	
-	//switch ()
-	return getStajAll(sttmp);
+	
+	return getMedStajAll(sttmp, containsCity);
 }
 
+
+
+private String selectMedStaj(Staj a, Staj b) {
+	if (a.getCspext().equals("27-ГД")||a.getCspext().equals("27-ГД")) return "27-ГД";
+	else if (a.getCspext().equals("27-СМ")||a.getCspext().equals("27-СМ")) return "27-СМ";
+	else if (a.getCspext().equals("27-ГДХР")||a.getCspext().equals("27-ГДХР")) return "27-ГДХР";
+	else if (a.getCspext().equals("27-СМХР")||a.getCspext().equals("27-СМХР")) return "27-СМНР";
+	else return "";
+}
 
 
 public Period getPedStaj(List<Staj> stl) {

@@ -149,7 +149,7 @@ public int getYear() {
 @Override
 public String toString() {
 	return "Vsnos [year=" + year + ", ctmcod=" + ctmcod + ", asr=" + asr
-			+ ", cprext=" + cprext + ", cprcod=" + cprcod + ", strah=" + strah + ", solidar=" + solid +", datev=" + (date!=null?Utils.getFormattedDate(date):"null")+", Itogo=" + asrItog+ "]";
+			+ ", cprext=" + cprext + ", cprcod=" + cprcod + ", strah=" + strah + ", nacop=" + nacop + ", solidar=" + solid +", datev=" + (date!=null?Utils.getFormattedDate(date):"null")+", Itogo=" + asrItog+ "]";
 }
 
 

@@ -1,5 +1,6 @@
 package com.yss1.one.models;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -172,6 +173,19 @@ public class Man {
 		periodAll  = stCalc.getStajAll(tmp);
 
 		Period pedPer=stCalc.getPedStaj(rawStaj);
+		List<String> med=new ArrayList<>();
+		med.add("27-СМХР");
+		Period medSMHRPer=stCalc.getMedStaj(rawStaj,med);
+		med.add("27-ГДХР");
+		Period medGDHRPer=stCalc.getMedStaj(rawStaj,med);
+		med.add("27-СМ");
+		Period medSMPer=stCalc.getMedStaj(rawStaj,med);
+		med.add("27-ГД");
+		Period medGDPer=stCalc.getMedStaj(rawStaj,med);
+		med.clear();
+		med.add("27-СМХР");
+		med.add("27-СМ");
+		Period medSeloPer=stCalc.getMedStaj(rawStaj,med);
 		
 		meter.start();
 		calcKVal();
@@ -226,21 +240,21 @@ public class Man {
 		
 		
 		
-		res = "PedPer="+pedPer+"<br>p1991=" + period1991 + " p2002=" + period2002 + " p2015=" + period2015+" KVal="+kVal+" StajK="+stajK+" ponStajK="+dopStajK+" RK="+rk2001+" Зар.К="+kSal+" RP="+rP+" RPK="+rPK+
+		res = "МЕД СМХР="+medSMHRPer+" МЕД ГДХР="+medGDHRPer+"МЕД СМ="+medSMPer+"МЕД ГД="+medGDPer+" МЕД СЕЛО="+medSeloPer+" PedPer="+pedPer+"<br>p1991=" + period1991 + " p2002=" + period2002 + " p2015=" + period2015+" KVal="+kVal+" StajK="+stajK+" ponStajK="+dopStajK+" RK="+rk2001+" Зар.К="+kSal+" RP="+rP+" RPK="+rPK+
 			  " pravo="+Utils.getFormattedDate(datePrav.getTime()) +" NPK="+nPK+" vsnosy02-15="+vsnos0215+" ipk15="+ipk15+" ipk="+ipk+"<br>"+ " Pensya="+pensiya+" Fix vipl="+fix+"<br>"+meter.getIntervals("<br>")+"<br>";
 		
 //		for (Platej pl : plateg20002001) {
 //			res = res + pl.toString() + "<br>";
 //		}
 		
-//		for (Vsnos vs : vsnosy) {
-//			res = res + vs.toString() + "<br>";
-//		}
-		
-		for (Staj st : rawStaj) {
-			//periodAll.addPeriod(Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
-			res = res + st.toString() + "<br>";
+		for (Vsnos vs : vsnosy) {
+			res = res + vs.toString() + "<br>";
 		}
+		
+//		for (Staj st : rawStaj) {
+//			//periodAll.addPeriod(Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
+//			res = res + st.toString() + "<br>";
+//		}
 		
 		
 
@@ -373,6 +387,7 @@ public class Man {
 	}
 
 	public void setStaj(List<Staj> staj) {
+		staj.removeIf(x->x==null);
 		this.staj = staj;
 	}
 
@@ -397,6 +412,7 @@ public class Man {
 	}
 
 	public void setVsnosy(List<Vsnos> vsnosy) {
+		vsnosy.removeIf(x->x==null);
 		this.vsnosy = vsnosy;
 	}
 

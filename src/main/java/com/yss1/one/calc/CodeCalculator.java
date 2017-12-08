@@ -14,7 +14,6 @@ public class CodeCalculator {
 	CategoryDao categoryDao;
 	public void calc(List<Vsnos> lv) {
 			categoryDao.setCode(lv);
-			//lv.removeIf(x->(x.getCprcod()==0|| x.getCprext().equals("БЕЗР")));
 	}
 	
 	

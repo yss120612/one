@@ -1,5 +1,6 @@
 package com.yss1.one.util;
-
+//модель для хранения любого периода в формате дни/месяцы/годы
+//умеет себя складывать с другим и умножать на коэффициент
 public class Period {
 public Period(int years, int months, int days) {
 		this.years = years;
@@ -28,7 +29,8 @@ public int getYears() {
 	public void setDays(int days) {
 		this.days = days;
 	}
-	
+
+//прибавляет к текущему периоду другой	
 public void addPeriod(Period p)
 {
 	if (p==null) {
@@ -43,6 +45,13 @@ public void addPeriod(Period p)
 	months=(months+days/30)%12;
 	days=days%30;
 }
+
+//возвращает новый период в виде себя умноженного на коэффициент. текущий не изменяет
+public Period multPeriod(float mult) {
+return Utils.multPeriod(this, mult);	
+}
+
+
 private int years;
 private int months;
 private int days;
