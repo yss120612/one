@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 
 import javax.annotation.PostConstruct;
 
@@ -22,6 +23,7 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
+import com.itextpdf.text.TabStop.Alignment;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.CMYKColor;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -44,54 +46,93 @@ public void init() throws DocumentException, IOException {
 }
 public void makeTest(String mess) throws DocumentException, IOException {
 	Document document = new Document(PageSize.A4, 50, 50, 50, 50);
-    Font font = new Font(baseFont, 14, Font.NORMAL, new CMYKColor(255, 255, 0, 0));
-    Font fontb = new Font(baseFontb, 14, Font.NORMAL, new CMYKColor(255, 255, 0, 0));
-    Font fonti = new Font(baseFonti, 14, Font.NORMAL, new CMYKColor(255, 255, 0, 0));
-    Font font14 = new Font(baseFont, 14, Font.NORMAL, new CMYKColor(0,0, 0, 0));
-    Font font10 = new Font(baseFont, 10, Font.NORMAL, new CMYKColor(0, 0, 0, 0));
-    Font font12 = new Font(baseFont, 12, Font.NORMAL, new CMYKColor(0, 0, 0, 0));
+    //Font font = new Font(baseFont, 14, Font.NORMAL|Font.UNDERLINE, new CMYKColor(255, 255, 0, 0));
+    Font font14b = new Font(baseFontb, 14, Font.NORMAL, new CMYKColor(255, 255, 0, 0));
+    Font font14i = new Font(baseFonti, 14, Font.NORMAL, new CMYKColor(255, 255, 0, 0));
+    Font font14 = new Font(baseFont, 14, Font.NORMAL|Font.UNDERLINE, new CMYKColor(255, 255,  255, 0));
+    Font font12 = new Font(baseFont, 12, Font.NORMAL, new CMYKColor(255, 255, 255, 0));
+    Font font10 = new Font(baseFont, 10, Font.NORMAL, new CMYKColor(255, 255, 255, 0));
+    Font font8 = new Font(baseFont, 8, Font.NORMAL, BaseColor.BLACK);
 	PdfWriter writer = PdfWriter.getInstance(document,new FileOutputStream("d:\\"+mess+".pdf"));
 	document.open();
-	Chapter chapter1= new Chapter(new Paragraph("Глава 1",font),1);
-	 Paragraph paragraph1 = new Paragraph("шрифт 14 Результат расчета пенсии ",font14);
-	paragraph1.setSpacingBefore(50);
-	    document.add(paragraph1);
-	    
+	//Chapter chapter1= new Chapter(new Paragraph("Глава 1",font),1);
+	Paragraph paragraph1 = new Paragraph("ИНФОРМАЦИОННАЯ СПРАВКА",font14);
+	paragraph1.setAlignment(Paragraph.ALIGN_CENTER);
+	//paragraph1.setSpacingBefore(10);
+	document.add(paragraph1);
+	Date dnow=new Date();    
+	paragraph1 = new Paragraph(Utils.getFormattedDate(dnow)+"г.           "+"№"+dnow.getTime()+"            ОПФР по Иркутской области",font12);
+	paragraph1.setAlignment(Paragraph.ALIGN_LEFT);
+    paragraph1.setSpacingBefore(20);
+    document.add(paragraph1);
+    
+	Paragraph paragraph1b = new Paragraph("шрифт 14 bold Результат расчета пенсии ",font14b);
+	//paragraph1.setSpacingBefore(10);
+	document.add(paragraph1b);
+	
+	Paragraph paragraph1i = new Paragraph("шрифт 14 bold Результат расчета пенсии ",font14i);
+	//paragraph1.setSpacingBefore(10);
+	document.add(paragraph1i);
+	
+	
 	    Paragraph paragraph2 = new Paragraph("шрифт 12 Результат расчета пенсии ",font12);
-	    paragraph2.setSpacingBefore(50);
+	    paragraph2.setSpacingBefore(20);
 	    document.add(paragraph2);
 	    
 	    Paragraph paragraph3 = new Paragraph("шрифт 10 Результат расчета пенсии ",font10);
-	    paragraph3.setSpacingBefore(50);
+	    paragraph3.setSpacingBefore(30);
 	    document.add(paragraph3);
 	    
-    chapter1.add(paragraph1);
-    chapter1.add(new Paragraph("русский текст bold",fontb));
-    chapter1.add(new Paragraph("русский текст italic",fonti));
+//    chapter1.add(paragraph1);
+//    chapter1.add(new Paragraph("русский текст bold",fontb));
+//    chapter1.add(new Paragraph("русский текст italic",fonti));
 	
-    PdfPTable table=new PdfPTable(3);
-    table.setSpacingBefore(25);
+	paragraph1 = new Paragraph("Таблица 1",font8);
+	paragraph1.setAlignment(Paragraph.ALIGN_RIGHT);
+	paragraph1.setSpacingBefore(20);
+	document.add(paragraph1);
+	
+    PdfPTable table=new PdfPTable(6);
+    table.setSpacingBefore(3);
     table.setSpacingAfter(25);
-    table.setHeaderRows(1);
-    table.setFooterRows(1);
+    //table.setHeaderRows(1);
+    //table.setFooterRows(1);
     //table.getDefaultCell().se
-    PdfPCell cell= new PdfPCell(new Phrase("заголовок 1",font));
-    cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-    table.addCell(cell);
-    table.addCell(new Phrase("заголовок 2",font));
-    table.addCell(new Phrase("заголовок 3",font));
-    table.addCell(new Phrase("тело 1.1",font));
-    table.addCell(new Phrase("тело 1.2",font));
-    table.addCell(new Phrase("тело 1.3",font));
-    table.addCell(new Phrase("тело 2.1",font));
-    table.addCell(new Phrase("тело 2.2",font));
-    table.addCell(new Phrase("тело 2.3",font));
-    table.addCell(new Phrase("футер 1",font));
-    table.addCell(new Phrase("футер 2",font));
-    table.addCell(new Phrase("футер 3",font));
-    chapter1.add(table);
-	document.add(chapter1);
+    table.setWidths(new float[] {1,6,3,3,8,5});
+    table.setWidthPercentage(100);
+    table.getDefaultCell().setBackgroundColor(BaseColor.LIGHT_GRAY);
+    table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+    table.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
+    table.addCell(new Phrase("№",font10));
+    table.addCell(new Phrase("Работодатель/\nвид деятельности",font10));
+    table.addCell(new Phrase("Начало\nпериода",font10));
+    table.addCell(new Phrase("Конец\nпериода",font10));
+    table.addCell(new Phrase("Характеристика периода",font10));
+    table.addCell(new Phrase("Страховые взносы,\nуплаченные работодателем",font10));
+    table.getDefaultCell().setBackgroundColor(BaseColor.WHITE);
+    table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
+    table.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
+    table.addCell(new Phrase("1.1",font12));
+    table.addCell(new Phrase("тело 1.2",font12));
+    table.addCell(new Phrase("тело 1.3",font12));
+    table.addCell(new Phrase("тело 1.4",font12));
+    table.addCell(new Phrase("тело 1.5",font12));
+    table.addCell(new Phrase("тело 1.6",font12));
+    table.addCell(new Phrase("2.1",font12));
+    table.addCell(new Phrase("2.2",font12));
+    table.addCell(new Phrase("ло 2.3",font12));
+    table.addCell(new Phrase("тело 2.4",font12));
+    table.addCell(new Phrase("тело 2.5",font12));
+    table.addCell(new Phrase("тело 2.6",font12));
+    
+    table.addCell(new Phrase("1",font12));
+    table.addCell(new Phrase("футер 2",font12));
+    table.addCell(new Phrase("футер 3",font12));
+    table.addCell(new Phrase("футер 4",font12));
+    table.addCell(new Phrase("футер 5",font12));
+    table.addCell(new Phrase("футер 6",font12));
+    //chapter1.add(table);
+	document.add(table);
     document.close();
     writer.close();
 }
