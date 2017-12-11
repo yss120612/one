@@ -31,7 +31,7 @@ public class RoleDao {
 		}
 		catch(Exception ex)
 		{
-			System.out.println("findRoleByName error:"+ex.getMessage());
+			
 		}
 		return n;
 	}

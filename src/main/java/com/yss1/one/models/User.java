@@ -43,6 +43,10 @@ public class User implements UserDetails {
 		return res;
 	}
 	
+	public void clearRoles() {
+		roles.clear();
+	}
+
 	public boolean addRole(Role r) {
 		if (!this.hasRole(r)) {
 			roles.add(r);
@@ -50,7 +54,8 @@ public class User implements UserDetails {
 		}
 		return false;
 	}
-
+	
+	
 	public boolean hasRole(Role r) {
 		for (Role ro : roles) {
 			if (ro.getId() == r.getId()) {

@@ -135,7 +135,7 @@ COMMENT ON COLUMN lgota.women_ss IS 'Женщины. Спец. стаж.';
 -- Name: COLUMN lgota.women_pens; Type: COMMENT; Schema: public; Owner: userpp
 --
 
-COMMENT ON COLUMN lgota.women_pens IS 'Женьщины выход на пенсию, если весь спецстаж';
+COMMENT ON COLUMN lgota.women_pens IS 'Женщины выход на пенсию, если весь спецстаж';
 
 
 --

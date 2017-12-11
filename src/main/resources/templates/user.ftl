@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<link rel="stylesheet" href="${springMacroRequestContext.contextPath}/css/bootstrap.min.css">
-<script type="text/javascript" src="${springMacroRequestContext.contextPath}/js/jquery-3.2.1.min.js"></script>
-<script type="text/javascript" src="${springMacroRequestContext.contextPath}/js/bootstrap.min.js"></script>
-<title>Insert title here</title>
+<#include "/inc/incheader.ftl">
+<#if titleform??>
+<title>${titleform}</title>
+</#if>
 </head>
 <body>
 <div class="container">    
@@ -28,7 +27,7 @@
                         <form id="userform" class="form-horizontal" role="form" method="post">
                         
                             <div class="control-group">
-                             <label for="login-password-old">Логин</label>
+                             <label for="username">Логин</label>
                              <div style="margin-bottom: 25px" class="input-group" >
                                         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                                         <#if action?? && action=="edit">
@@ -41,7 +40,7 @@
                             
 							<#if action?? && action=="add">
                             <div class="control-group">
-                             <label for="login-password-new">Пароль</label>
+                             <label for="password">Пароль</label>
                              <div style="margin-bottom: 25px" class="input-group" >
                                     <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
                                     <input id="password" type="password" class="form-control" name="password" placeholder="пароль"  onChange="onCh()">
@@ -49,7 +48,7 @@
                             </div>
                                    
                              <div class="control-group">
-                             <label for="login-password-new2">Пароль повтор</label>
+                             <label for="password2">Пароль повтор</label>
                              <div style="margin-bottom: 25px" class="input-group" >
                                     <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
                                     <input id="password2" type="password" class="form-control" name="password2" placeholder="пароль еще раз"  onChange="onCh()">
@@ -72,7 +71,7 @@
   							 </div>
                             
                              <div class="control-group col-md-6 col-md-offset-1">
-    							<label for="uroles">Роли (Shift+click)</label>
+    							<label for="uroles">Роли (Ctrl+click)</label>
     							<select multiple class="form-control" id="uroles" name="uroles">
     							<#list roles as r>
     							<#if action?? && action=="add">
@@ -88,7 +87,9 @@
                                                         
                             
                                 <div class="col-md-12" style="border-top: 1px solid#888; margin-top:15px; margin-bottom:15px"></div>    
-
+								<#if action?? && action=="edit">
+                                <input name="userid" type="hidden" value="${user.id}"/>
+                                </#if>
 								<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/>
 								
                                 <div style="margin-top:10px;" class="form-group">

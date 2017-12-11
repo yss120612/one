@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html>
-<link rel="stylesheet" href="${springMacroRequestContext.contextPath}/css/bootstrap.min.css">
-<script type="text/javascript" src="${springMacroRequestContext.contextPath}/js/jquery-3.2.1.min.js"></script>
-<script type="text/javascript" src="${springMacroRequestContext.contextPath}/js/bootstrap.min.js"></script>
+<#include "/inc/incheader.ftl">
+
+<#if name??>
+<title>Смена пароля ${name}</title>
+</#if>
+                    
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
 <body>
 <div class="container">    
-        <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">                    
+        <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3">                    
             <div class="panel panel-info" >
                     <div class="panel-heading">
                     <#if name??>
@@ -62,8 +65,9 @@
                                 <div style="margin-top:10px" class="form-group">
                                     <!-- Button -->
 
-                                    <div class="col-sm-4 controls">
-                                      <button type="submit" id="btn-login" class="btn btn-success btn-block"><i class="glyphicon glyphicon-random"></i> Сменить пароль</button>
+                                    <div class="controls col-md-8 col-md-offset-2">
+                                      <button type="submit" id="btn-login"  class="btn btn-success"><i class="glyphicon glyphicon-random"></i> Сменить пароль</button>
+                                      <button type="button" id="btn-cancel" class="btn btn-default" onclick="onClk(3)"><i class="glyphicon glyphicon-remove"></i> Отмена</button>
                                     </div>
                                 </div>
                                 
@@ -79,6 +83,15 @@ function onCh()
 {
 $('#error').hide();
 }
+
+function onClk(v)
+{
+if (v==3)
+ {
+  document.location.href ="${springMacroRequestContext.contextPath}/";
+ }
+}
+
 </script>
 </body>
 </html>

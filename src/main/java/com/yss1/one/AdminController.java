@@ -1,6 +1,8 @@
 package com.yss1.one;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,10 +12,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.yss1.one.dao.RoleDao;
 import com.yss1.one.dao.UserDao;
+import com.yss1.one.models.Role;
 import com.yss1.one.models.User;
 import com.yss1.one.util.WebUtils;
 
 @Controller
+
 public class AdminController {
 
 	@Autowired
@@ -24,14 +28,25 @@ public class AdminController {
 	
 	private String erroradd="";
 	
+	@Secured({"ADMIN"})	
 	@RequestMapping(value= {"/userslist"},method=RequestMethod.GET)
-	public String uList(Model model,@RequestParam(value="error",required=false) String error,@RequestParam(value="logout",required=false) String logout) {
+	public String uList(Model model) {
 		model.addAttribute("name", WebUtils.getLogin());
 		model.addAttribute("rest", "Список пользователей");
 		model.addAttribute("apage","ulist");
 		model.addAttribute("users",ud.getAllUsers());
 		return "start";
 	}
+	
+	@RequestMapping(value= {"/roleslist"},method=RequestMethod.GET)
+	public String gList(Model model) {
+		model.addAttribute("name", WebUtils.getLogin());
+		model.addAttribute("rest", "Список ролей");
+		model.addAttribute("apage","rlist");
+		model.addAttribute("roles",rd.getRoleList());
+		return "start";
+	}
+	
 	
 	@GetMapping(value= {"/useredit"})
 	public String usereditGET(Model model,@RequestParam(value="userid",required=true) int id)
@@ -49,8 +64,42 @@ public class AdminController {
 										   @RequestParam(value="uroles",required=false) String  roles,
 										   @RequestParam(value="access",required=false,defaultValue="false") boolean acc)
 	{
+		User u=ud.getUserById(id);
+		u.setEnabled(acc);
+		ud.setRoles(u,roles);
+		ud.saveUser(u);
 		return "redirect:/userslist";
 	}
+	
+	@GetMapping(value= {"/roleedit"})
+	public String roleeditGET(Model model,@RequestParam(value="roleid",required=true) int id)
+	{
+		Role r= rd.findRoleById((long)id);
+		model.addAttribute("titleform", "Изменение роли");
+		model.addAttribute("action","edit");
+		model.addAttribute("role",r);
+		if (!erroradd.isEmpty()) model.addAttribute("err",erroradd);
+		erroradd="";
+		return "role";
+	}	
+						   		
+	@PostMapping(value= {"/roleedit"})
+	public String roleeditPOST(Model model,@RequestParam(value="roleid",required=true) int id,
+										   @RequestParam(value="rolename",required=false) String  rolename)
+	{
+		if (rolename==null || rolename.length()<3)
+		{
+			erroradd="Длина не менее 3 символов!";
+			return "redirect:/roleedit/"+id;
+		}
+		Role r= rd.findRoleById((long)id);
+		if (!rd.editRole(r, rolename)) {
+		erroradd=rolename+"<br>Такая роль существует!";
+		return "redirect:/roleedit?roleid="+id;
+		}
+		return "redirect:/roleslist";
+	}
+	
 	
 	@GetMapping(value= {"/useradd"})
 	public String useraddGET(Model model)
@@ -84,7 +133,7 @@ public class AdminController {
 			erroradd=(erroradd.isEmpty())?"Пароли менее 4х символов!":erroradd+"<br>Пароли менее 4х символов!";
 		}
 		
-		User us=ud.addUser(username, password, acc,roles.split(","));
+		User us=ud.addUser(username, password, acc,roles);
 		if (us==null) {
 			erroradd=(erroradd.isEmpty())?"Пользователь "+username+" уже существует":erroradd+"<br>Пользователь "+username+" уже существует";
 		}
@@ -97,7 +146,43 @@ public class AdminController {
 	}
 	
 	
-	@PostMapping(value= {"/userdel"})
+	@GetMapping(value= {"/roleadd"})
+	public String roleaddGET(Model model)
+	{
+		model.addAttribute("titleform", "Создание роли");
+		model.addAttribute("action","add");
+		if (!erroradd.isEmpty()) model.addAttribute("err",erroradd);
+		erroradd="";
+		return "role";
+	}
+	
+	@PostMapping(value= {"/roleadd"})
+	public String roleaddPOST(Model model,@RequestParam(value="rolename",required=true) String rolename)
+	{
+
+		erroradd="";
+		
+		if (rolename.length()<3)
+		{
+			erroradd="Имя роли менее 3х символов!";
+		}
+		
+		if (rd.checkExist(rolename)) {
+			erroradd=(erroradd.isEmpty())?"Роль "+rolename+" уже существует":erroradd+"<br>Пользователь "+rolename+" уже существует";
+		}
+		if (erroradd.isEmpty())
+		{
+		  rd.addRole(rolename);
+		}
+		else{
+			return "redirect:/roleadd";
+		}
+		
+    	return "redirect:/roleslist";
+	}
+	
+	
+	@GetMapping(value= {"/userdel"})
 	public String userdelPOST(@RequestParam(value="userid",required=true) int id)
 	{
 		User us = ud.getUserById(id);
@@ -109,5 +194,13 @@ public class AdminController {
 		}
 		return "redirect:/userslist";
 	}
+	
+	@GetMapping(value= {"/roledel"})
+	public String roledelPOST(@RequestParam(value="roleid",required=true) int id)
+	{
+		rd.deleteRole(id);
+		return "redirect:/roleslist";
+	}
+	
 	
 }

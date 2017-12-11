@@ -26,7 +26,7 @@ public class UserService implements UserDetailsService {
 		if (userDao.getAllUsers().isEmpty()) {
 			roleDao.addRole("ADMIN");
 			roleDao.addRole("USER");
-			User u =userDao.addUser("user", "1111",true, new String [] {"ADMIN","USER"});
+			User u =userDao.addUser("user", "1111",true, "ADMIN,USER");
 		}
 	}
 	

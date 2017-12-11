@@ -9,12 +9,9 @@
 </#if>
 
     
-<link rel="stylesheet" href="${springMacroRequestContext.contextPath}/css/bootstrap.min.css">
-<script type="text/javascript" src="${springMacroRequestContext.contextPath}/js/jquery-3.2.1.min.js"></script>
-<script type="text/javascript" src="${springMacroRequestContext.contextPath}/js/bootstrap.min.js"></script>
+<#include "/inc/incheader.ftl">
 
 
-<meta charset="UTF-8">
 <#if title??>
 <title>${title}</title>
 </#if>
@@ -27,12 +24,14 @@
   <div class="container">
 
      <div class="navbar-header">
-     	<a class="navbar-brand <#if page=="home">disabled</#if>" href="${springMacroRequestContext.contextPath}/">Brand</a>
+     	<#if page!="home">
+     		<a class="navbar-brand" href="${springMacroRequestContext.contextPath}/"><i class="glyphicon glyphicon-home" aria-hidden="true" style="color: blue;"></i></a>
+     	</#if>
      </div>
      <div class="navbar-inner">
      <ul class="nav navbar-nav">
         <li ><a href="${springMacroRequestContext.contextPath}/test">Test </a></li>
-        <li <#if page=="calc" || page=="calcres">class="active"</#if> ><a href="${springMacroRequestContext.contextPath}/calc">Run</a></li>
+        <li <#if page=="calc" || page=="calcres">class="active"</#if> ><a href="${springMacroRequestContext.contextPath}/calc">Расчет</a></li>
      </ul>
     
        
@@ -88,6 +87,11 @@
 <#if page=="ulist">
 <#include "/inc/ulist.ftl">
 </#if>
+
+<#if page=="rlist">
+<#include "/inc/rlist.ftl">
+</#if>
+
 
 </div>
 </body>

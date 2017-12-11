@@ -61,7 +61,7 @@ public class UsersController {
 	@RequestMapping("/")
 	public String index(Model model,@RequestParam(value="name", required=false, defaultValue="World") String name) {
 		model.addAttribute("name", WebUtils.getLogin());
-		model.addAttribute("rest", "home");
+		model.addAttribute("rest", WebUtils.myRoles(", "));
 		return "start";
 	}
 	
