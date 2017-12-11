@@ -10,6 +10,8 @@ import java.io.IOException;
 import javax.annotation.PostConstruct;
 
 import org.springframework.stereotype.Service;
+import org.w3c.dom.css.CSSPrimitiveValue;
+import org.w3c.dom.css.RGBColor;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chapter;
@@ -45,12 +47,24 @@ public void makeTest(String mess) throws DocumentException, IOException {
     Font font = new Font(baseFont, 14, Font.NORMAL, new CMYKColor(255, 255, 0, 0));
     Font fontb = new Font(baseFontb, 14, Font.NORMAL, new CMYKColor(255, 255, 0, 0));
     Font fonti = new Font(baseFonti, 14, Font.NORMAL, new CMYKColor(255, 255, 0, 0));
+    Font font14 = new Font(baseFont, 14, Font.NORMAL, new CMYKColor(0,0, 0, 0));
+    Font font10 = new Font(baseFont, 10, Font.NORMAL, new CMYKColor(0, 0, 0, 0));
+    Font font12 = new Font(baseFont, 12, Font.NORMAL, new CMYKColor(0, 0, 0, 0));
 	PdfWriter writer = PdfWriter.getInstance(document,new FileOutputStream("d:\\"+mess+".pdf"));
 	document.open();
 	Chapter chapter1= new Chapter(new Paragraph("Глава 1",font),1);
-	Paragraph paragraph1 = new Paragraph("русский текст setSpacingBefore(150)",font);
-    paragraph1.setSpacingBefore(50);
-    paragraph1.setSpacingAfter(50);
+	 Paragraph paragraph1 = new Paragraph("шрифт 14 Результат расчета пенсии ",font14);
+	paragraph1.setSpacingBefore(50);
+	    document.add(paragraph1);
+	    
+	    Paragraph paragraph2 = new Paragraph("шрифт 12 Результат расчета пенсии ",font12);
+	    paragraph2.setSpacingBefore(50);
+	    document.add(paragraph2);
+	    
+	    Paragraph paragraph3 = new Paragraph("шрифт 10 Результат расчета пенсии ",font10);
+	    paragraph3.setSpacingBefore(50);
+	    document.add(paragraph3);
+	    
     chapter1.add(paragraph1);
     chapter1.add(new Paragraph("русский текст bold",fontb));
     chapter1.add(new Paragraph("русский текст italic",fonti));
@@ -81,7 +95,126 @@ public void makeTest(String mess) throws DocumentException, IOException {
     document.close();
     writer.close();
 }
+
+
+public byte[] makeExplanation(Man man) throws DocumentException, IOException
+{
+	Document document = new Document(PageSize.A4, 50, 50, 50, 50);
+	ByteArrayOutputStream mos= new ByteArrayOutputStream();
 	
+	//PdfWriter writer = PdfWriter.getInstance(document,new FileOutputStream("d:\\"+man.getSNILS()+".pdf"));
+	
+	
+	PdfWriter writer = PdfWriter.getInstance(document,mos);
+	
+	document.open();
+	//BaseFont baseFont = BaseFont.createFont("d:\\times.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+    Font font14 = new Font(baseFont, 14, Font.NORMAL, new CMYKColor(0,0, 0, 0));
+    Font font10 = new Font(baseFont, 10, Font.NORMAL, new CMYKColor(0, 0, 0, 0));
+    Font font12 = new Font(baseFont, 12, Font.NORMAL, new CMYKColor(0, 0, 0, 0));
+    
+	//Font ft=FontFactory.getFont(FontFactory.TIMES, 14, Font.NORMAL, new CMYKColor(0, 0, 0, 0));
+    //Font ft2=FontFactory.getFont(FontFactory.TIMES, 24, Font.NORMAL, new CMYKColor(255, 255, 0, 0));
+	//Anchor anchorTarget = new Anchor("First page of the document.");
+    //anchorTarget.setName("BackToTop");
+    Paragraph paragraph1 = new Paragraph("шрифт 14 Результат расчета пенсии "+man.getSNILS(),font14);
+    paragraph1.setSpacingBefore(50);
+    document.add(paragraph1);
+    
+    Paragraph paragraph2 = new Paragraph("шрифт 12 Результат расчета пенсии "+man.getSNILS(),font12);
+    paragraph2.setSpacingBefore(50);
+    document.add(paragraph2);
+    
+    Paragraph paragraph3 = new Paragraph("шрифт 10 Результат расчета пенсии "+man.getSNILS(),font10);
+    paragraph3.setSpacingBefore(50);
+    document.add(paragraph3);
+    
+    //document.add(new Paragraph("Some more text on the first page with different color and font type.",ft));
+    
+    //document.add(new Paragraph("Another par. Hoihodfh fdsjokfkhds dfjslkjfds dskjfcdsn ds dskljflkdsf dsfdsksjflkdsf dsfckdsjfcldsf flkdsjfn fkljdfskl",ft2));
+//    
+//   Chapter chapter1 = new Chapter(new Paragraph("Chapter1"), 1);
+//    
+//    Section section1 = chapter1.addSection("Section1");
+    
+    PdfPTable table=new PdfPTable(2);
+    table.setSpacingBefore(25);
+    table.setSpacingAfter(25);
+
+    
+//    PdfPCell c1 = new PdfPCell(new Phrase("Параметр",font));
+//    
+//    table.addCell(c1);
+//    PdfPCell c2 = new PdfPCell(new Phrase("Размер",font));
+//    table.addCell(c2);
+//
+//    table.addCell(new Phrase("СНИЛС",font));
+//    table.addCell(new Phrase(man.getSNILS(),font));
+//
+//    table.addCell(new Phrase("ФИО",font));
+//    table.addCell(new Phrase(man.getFamily()+" "+man.getName()+" "+man.getOtch(),font));
+//    
+//    table.addCell(new Phrase("Дата рождения",font));
+//    table.addCell(new Phrase(Utils.getFormattedDate(man.getBirthDayDate()),font));
+//    
+//    table.addCell(new Phrase("Пол",font));
+//    table.addCell(new Phrase(man.getSex(),font));
+//    
+//    table.addCell(new Phrase("Дата права",font));
+//    table.addCell(new Phrase(Utils.getFormattedDate(man.getDatePravDate()),font));
+//    
+//    table.addCell(new Phrase("Стаж всего",font));
+//    table.addCell(new Phrase(man.getPeriodAll().toString(),font));
+//    
+//    table.addCell(new Phrase("Стаж на 01.01.2015",font));
+//    table.addCell(new Phrase(man.getPeriod2015().toString(),font));
+//    
+//    table.addCell(new Phrase("Стаж на 01.01.2002",font));
+//    table.addCell(new Phrase(man.getPeriod2002().toString(),font));
+//    
+//    table.addCell(new Phrase("Стаж на 01.01.1991",font));
+//    table.addCell(new Phrase(man.getPeriod1991().toString(),font));
+//    
+//    table.addCell(new Phrase("Отношение зарплат",font));
+//    table.addCell(new Phrase(String.format("%.3f", man.getkSal()),font));
+//    
+//    table.addCell(new Phrase("ИПК",font));
+//    table.addCell(new Phrase(String.format("%.3f", man.getIpk()),font));
+//    
+//    table.addCell(new Phrase("Страховая пенсия по старости",font));
+//    table.addCell(new Phrase(String.format("%.2f", man.getPensiya()),font));
+//    
+//    table.addCell(new Phrase("Фиксированная выплата",font));
+//    table.addCell(new Phrase(String.format("%.2f", man.getFix()),font));
+//    
+//    table.addCell(new Phrase("Общий размер пенсии",font));
+//    table.addCell(new Phrase(String.format("%.2f", man.getPensiya()+man.getFix()),font));
+    
+    
+
+   // section1.add(table);
+   
+//    List l = new List(false,false, 10);
+//    
+//    l.setListSymbol(new Chunk('*'));
+//    
+//    l.add(new ListItem("First item of list"));
+//     
+//    l.add(new ListItem("Second item of list"));
+//     
+//    section1.add(l);
+    
+    //document.add(chapter1); 
+    document.add(table);
+    document.close();
+    writer.close();
+   // System.out.println(bytes2HexStr(mos.toByteArray()));
+    //SyslogOutputStream(mos.toString());
+    //save2file(mos.toByteArray(),"d:\\aaa.pdf");
+    return mos.toByteArray();
+}
+
+
 public byte[] makeDocument(Man man) throws DocumentException, IOException
 {
 	Document document = new Document(PageSize.A4, 50, 50, 50, 50);
@@ -271,6 +404,8 @@ public byte[] makeErrorDocument(String snils,String err) throws DocumentExceptio
     //save2file(mos.toByteArray(),"d:\\aaa.pdf");
     return mos.toByteArray();
 }
+
+
 
 
 

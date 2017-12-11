@@ -7,13 +7,14 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import com.yss1.one.calc.NpkCalculator;
+import com.yss1.one.calc.PedCalculator;
 import com.yss1.one.calc.RkCalculator;
 import com.yss1.one.calc.UniversalCalculator;
 import com.yss1.one.calc.StajCalculator;
 import com.yss1.one.calc.VsnosCalculator;
 import com.yss1.one.calc.CodeCalculator;
 import com.yss1.one.calc.FinishCalculator;
-
+import com.yss1.one.calc.MedCalculator;
 import com.yss1.one.util.ApplicationContextUtil;
 import com.yss1.one.util.PerfMeter;
 import com.yss1.one.util.Period;
@@ -39,9 +40,20 @@ public class Man {
 	private List<Staj> staj;
 	//Записи о стажах из конвертации
 	private List<Staj> stajKonv;
-	//записи о стаже оригинал с ас400
+	//записи о стаже рабочий вариант
 	private List<Staj> rawStaj;
+	//записи по предприятию
+	private List<Deyatelnost> myDeyatelnost;
+	
 	public String res;
+	public List<Deyatelnost> getMyDeyatelnost() {
+		return myDeyatelnost;
+	}
+
+	public void setMyDeyatelnost(List<Deyatelnost> myDeyatelnost) {
+		this.myDeyatelnost = myDeyatelnost;
+	}
+
 	//коэффициент валоризации
 	private float kVal;
 	//коэффициент стажевый
@@ -96,7 +108,8 @@ public class Man {
 	CodeCalculator codeCalc;
 	VsnosCalculator vsnosCalc;
 	FinishCalculator finCalc;
-	
+	MedCalculator medCalc;
+	PedCalculator pedCalc;
 	PerfMeter meter;
 	
 	
@@ -107,9 +120,11 @@ public class Man {
 		npkCalc=(NpkCalculator)ApplicationContextUtil.getApplicationContext().getBean(NpkCalculator.class);
 		codeCalc=(CodeCalculator)ApplicationContextUtil.getApplicationContext().getBean(CodeCalculator.class);
 		vsnosCalc=(VsnosCalculator)ApplicationContextUtil.getApplicationContext().getBean(VsnosCalculator.class);
+		medCalc=(MedCalculator)ApplicationContextUtil.getApplicationContext().getBean(MedCalculator.class);
+		pedCalc=(PedCalculator)ApplicationContextUtil.getApplicationContext().getBean(PedCalculator.class);
 		finCalc=(FinishCalculator)ApplicationContextUtil.getApplicationContext().getBean(FinishCalculator.class);
 		meter=(PerfMeter)ApplicationContextUtil.getApplicationContext().getBean(PerfMeter.class);
-			}	
+		}	
 	
 	public List<Platej> getPlateg20002001() {
 		return plateg20002001;
@@ -160,32 +175,42 @@ public class Man {
 			return;
 		}
 
+		//сортируем по дате начала стажа
 		sortStaj();
 		
 		
+		//сохраняем стаж, получаем список льгот
 		rawStaj = stCalc.copyStajes(staj,stajKonv);
-		List<Staj> tmp = stCalc.orderStajRecords(staj,stajKonv);
-		res = "";
 		
+		myDeyatelnost=stCalc.getPredprStaj(rawStaj, vsnosy);
+		
+		
+		//расчитываем общий стаж
+		List<Staj> tmp = stCalc.orderStajRecords(staj,stajKonv);
 		period1991 = stCalc.getStajBefore(tmp, Utils.makeDate(1990, 12, 31));
 		period2002 = stCalc.getStajBefore(tmp, Utils.makeDate(2001, 12, 31));
 		period2015 = stCalc.getStajBefore(tmp, Utils.makeDate(2014, 12, 31));
 		periodAll  = stCalc.getStajAll(tmp);
-
-		Period pedPer=stCalc.getPedStaj(rawStaj);
+		
+		Period pedPer=pedCalc.getPedStaj(rawStaj);
 		List<String> med=new ArrayList<>();
 		med.add("27-СМХР");
-		Period medSMHRPer=stCalc.getMedStaj(rawStaj,med);
+		rawStaj = stCalc.copyStajes(staj,stajKonv);
+		Period medSMHRPer=medCalc.getMedStaj(rawStaj,med);
 		med.add("27-ГДХР");
-		Period medGDHRPer=stCalc.getMedStaj(rawStaj,med);
+		rawStaj = stCalc.copyStajes(staj,stajKonv);
+		Period medGDHRPer=medCalc.getMedStaj(rawStaj,med);
 		med.add("27-СМ");
-		Period medSMPer=stCalc.getMedStaj(rawStaj,med);
+		rawStaj = stCalc.copyStajes(staj,stajKonv);
+		Period medSMPer=medCalc.getMedStaj(rawStaj,med);
 		med.add("27-ГД");
-		Period medGDPer=stCalc.getMedStaj(rawStaj,med);
+		rawStaj = stCalc.copyStajes(staj,stajKonv);
+		Period medGDPer=medCalc.getMedStaj(rawStaj,med);
 		med.clear();
 		med.add("27-СМХР");
 		med.add("27-СМ");
-		Period medSeloPer=stCalc.getMedStaj(rawStaj,med);
+		rawStaj = stCalc.copyStajes(staj,stajKonv);
+		Period medSeloPer=medCalc.getMedStaj(rawStaj,med);
 		
 		meter.start();
 		calcKVal();
@@ -237,24 +262,29 @@ public class Man {
 		fix=finCalc.calcFix(datePrav.getTime());
 		meter.measure("pensCalc");
 		
-		
-		
-		
-		res = "МЕД СМХР="+medSMHRPer+" МЕД ГДХР="+medGDHRPer+"МЕД СМ="+medSMPer+"МЕД ГД="+medGDPer+" МЕД СЕЛО="+medSeloPer+" PedPer="+pedPer+"<br>p1991=" + period1991 + " p2002=" + period2002 + " p2015=" + period2015+" KVal="+kVal+" StajK="+stajK+" ponStajK="+dopStajK+" RK="+rk2001+" Зар.К="+kSal+" RP="+rP+" RPK="+rPK+
+		res = "Льготы:";
+		for (String s:stCalc.getLgotes()) {
+		res=res+s+",";	
+		}
+		res=res+"<br>";
+		res = res+"МЕД СМХР="+medSMHRPer+" МЕД ГДХР="+medGDHRPer+"МЕД СМ="+medSMPer+"МЕД ГД="+medGDPer+" МЕД СЕЛО="+medSeloPer+" PedPer="+pedPer+"<br>p1991=" + period1991 + " p2002=" + period2002 + " p2015=" + period2015+" KVal="+kVal+" StajK="+stajK+" ponStajK="+dopStajK+" RK="+rk2001+" Зар.К="+kSal+" RP="+rP+" RPK="+rPK+
 			  " pravo="+Utils.getFormattedDate(datePrav.getTime()) +" NPK="+nPK+" vsnosy02-15="+vsnos0215+" ipk15="+ipk15+" ipk="+ipk+"<br>"+ " Pensya="+pensiya+" Fix vipl="+fix+"<br>"+meter.getIntervals("<br>")+"<br>";
 		
 //		for (Platej pl : plateg20002001) {
 //			res = res + pl.toString() + "<br>";
 //		}
 		
-		for (Vsnos vs : vsnosy) {
-			res = res + vs.toString() + "<br>";
-		}
-		
-//		for (Staj st : rawStaj) {
-//			//periodAll.addPeriod(Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
-//			res = res + st.toString() + "<br>";
+//		for (Vsnos vs : vsnosy) {
+//			res = res + vs.toString() + "<br>";
 //		}
+		
+		
+		//rawStaj = stCalc.copyStajes(staj,stajKonv);
+		for (Deyatelnost de : myDeyatelnost) {
+		//for (Staj st : rawStaj) {
+			//periodAll.addPeriod(Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
+			res = res + de.toString() + "<br>";
+		}
 		
 		
 

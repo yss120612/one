@@ -26,6 +26,7 @@ SET default_with_oids = false;
 -- TOC entry 217 (class 1259 OID 17753)
 -- Name: lgota; Type: TABLE; Schema: public; Owner: userpp
 --
+Drop table lgota;
 
 CREATE TABLE lgota (
     lgota character varying NOT NULL,
@@ -34,13 +35,13 @@ CREATE TABLE lgota (
     man_os real,
     man_ss real,
     man_pens real,
-    women_os real,
-    women_ss real,
-    women_pens real,
+    woman_os real,
+    woman_ss real,
+    woman_pens real,
     man_d real,
-    women_d real,
+    woman_d real,
     man_ds real,
-    women_ds real,
+    woman_ds real,
     lepro real,
     sever real
 );
@@ -114,28 +115,28 @@ COMMENT ON COLUMN lgota.man_pens IS 'Мужчины выход на пенсию
 --
 -- TOC entry 2228 (class 0 OID 0)
 -- Dependencies: 217
--- Name: COLUMN lgota.women_os; Type: COMMENT; Schema: public; Owner: userpp
+-- Name: COLUMN lgota.woman_os; Type: COMMENT; Schema: public; Owner: userpp
 --
 
-COMMENT ON COLUMN lgota.women_os IS 'Женщины. Общий стаж.';
+COMMENT ON COLUMN lgota.woman_os IS 'Женщины. Общий стаж.';
 
 
 --
 -- TOC entry 2229 (class 0 OID 0)
 -- Dependencies: 217
--- Name: COLUMN lgota.women_ss; Type: COMMENT; Schema: public; Owner: userpp
+-- Name: COLUMN lgota.woman_ss; Type: COMMENT; Schema: public; Owner: userpp
 --
 
-COMMENT ON COLUMN lgota.women_ss IS 'Женщины. Спец. стаж.';
+COMMENT ON COLUMN lgota.woman_ss IS 'Женщины. Спец. стаж.';
 
 
 --
 -- TOC entry 2230 (class 0 OID 0)
 -- Dependencies: 217
--- Name: COLUMN lgota.women_pens; Type: COMMENT; Schema: public; Owner: userpp
+-- Name: COLUMN lgota.woman_pens; Type: COMMENT; Schema: public; Owner: userpp
 --
 
-COMMENT ON COLUMN lgota.women_pens IS 'Женщины выход на пенсию, если весь спецстаж';
+COMMENT ON COLUMN lgota.woman_pens IS 'Женщины выход на пенсию, если весь спецстаж';
 
 
 --
@@ -162,53 +163,53 @@ COMMENT ON COLUMN lgota.sever IS 'как влияет эта категория 
 -- Data for Name: lgota; Type: TABLE DATA; Schema: public; Owner: userpp
 --
 
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('27-1', 'cwcext', 2, 20, 10, 50, 15, 7.5, 45, 1, 1, 1, 1, 2, 1.5);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('27-10', 'cwcext', 0, 25, 20, 55, 20, 15, 50, 0, 0, 0, 0, 2, 1.5);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('27-11ВП', 'cspext', 0, 0, 20, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('27-11ГР', 'cspext', 0, 0, 25, 0, 0, 25, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('27-12', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('27-14', 'cspext', 0, 25, 12.5, 55, 20, 10, 50, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('27-15', 'cspext', 0, 25, 20, 55, 20, 15, 50, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('27-2', 'cwcext', 2, 25, 12.5, 55, 20, 10, 50, 2.5, 2, 1, 1, 2, 1.5);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('27-3', 'cwcext', 0, 0, 0, 0, 20, 15, 50, 0, 0, 0, 0, 2, 1.5);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('27-4', 'cwcext', 0, 0, 0, 0, 0, 20, 0, 0, 0, 0, 0, 2, 1.5);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('27-5', 'cwcext', 0, 25, 12.5, 55, 20, 10, 50, 0, 0, 0, 0, 2, 1.5);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('27-6', 'cwcext', 0, 25, 12.5, 55, 20, 10, 50, 0, 0, 0, 0, 2, 1.5);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('27-7', 'cwcext', 0, 25, 12.5, 55, 20, 10, 50, 0, 0, 0, 0, 2, 1.5);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('27-8', 'cwcext', 0, 25, 20, 55, 20, 15, 50, 0, 0, 0, 0, 2, 1.5);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('27-9', 'cwcext', 0, 25, 12.5, 55, 20, 10, 50, 0, 0, 0, 0, 2, 1.5);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('27-ГД', 'cspext', 0, 0, 30, 0, 0, 30, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('27-ГДХР', 'cspext', 0, 0, 30, 0, 0, 30, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('27-ОС', 'cwcext', 0, 25, 15, 55, 20, 10, 50, 0, 0, 0, 0, 2, 1.5);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('27-ПД', 'cspext', 0, 0, 25, 0, 0, 25, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('27-ПДРК', 'cspext', 0, 0, 25, 0, 0, 25, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('27-ПЖ', 'cwcext', 0, 0, 25, 50, 0, 25, 50, 0, 0, 0, 0, 2, 1.5);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('27-СМ', 'cspext', 0, 0, 25, 0, 0, 25, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('27-СМХР', 'cspext', 0, 0, 25, 0, 0, 25, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('27-СП', 'cspext', 0, 0, 15, 40, 0, 15, 40, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('28-СЕВ', 'cwcext', 0, 0, 25, 50, 0, 20, 45, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('ВЫСШПИЛ', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('ЗП12Л', 'cwcext', 0, 0, 15, 40, 0, 15, 40, 0, 0, 0, 0, 2, 1.5);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('ИНСПЕКТ', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('ИСПКЛС1', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('ИТСИСП', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('ИТСМАВ', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('ЛЕТИСП', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('ЛЕТРАБ', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('МКС', 'cggext', 2, 25, 20, 55, 20, 20, 50, 16, 16, 4, 4, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('НОРМАПР', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('НОРМСП', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('ОПЫТИСП', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('РЕАКТИВН', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('РКС', 'cggext', 2, 25, 15, 55, 20, 15, 50, 12, 12, 4, 4, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('САМОЛЕТ', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('СПАСАВ', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('СПЕЦАВ', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('ТВОРЧ15', 'cspext', 0, 0, 15, 0, 0, 15, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('ТВОРЧ20', 'cspext', 0, 0, 20, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('ТВОРЧ25', 'cspext', 0, 0, 25, 0, 0, 25, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('ТВОРЧ30', 'cspext', 0, 0, 30, 0, 0, 30, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, women_os, women_ss, women_pens, man_d, women_d, man_ds, women_ds, lepro, sever) VALUES ('УЧЛЕТ', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('27-1', 'cwcext', 2, 20, 10, 50, 15, 7.5, 45, 1, 1, 1, 1, 2, 1.5);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('27-10', 'cwcext', 0, 25, 20, 55, 20, 15, 50, 0, 0, 0, 0, 2, 1.5);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('27-11ВП', 'cspext', 0, 0, 20, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('27-11ГР', 'cspext', 0, 0, 25, 0, 0, 25, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('27-12', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('27-14', 'cspext', 0, 25, 12.5, 55, 20, 10, 50, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('27-15', 'cspext', 0, 25, 20, 55, 20, 15, 50, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('27-2', 'cwcext', 2, 25, 12.5, 55, 20, 10, 50, 2.5, 2, 1, 1, 2, 1.5);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('27-3', 'cwcext', 0, 0, 0, 0, 20, 15, 50, 0, 0, 0, 0, 2, 1.5);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('27-4', 'cwcext', 0, 0, 0, 0, 0, 20, 0, 0, 0, 0, 0, 2, 1.5);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('27-5', 'cwcext', 0, 25, 12.5, 55, 20, 10, 50, 0, 0, 0, 0, 2, 1.5);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('27-6', 'cwcext', 0, 25, 12.5, 55, 20, 10, 50, 0, 0, 0, 0, 2, 1.5);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('27-7', 'cwcext', 0, 25, 12.5, 55, 20, 10, 50, 0, 0, 0, 0, 2, 1.5);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('27-8', 'cwcext', 0, 25, 20, 55, 20, 15, 50, 0, 0, 0, 0, 2, 1.5);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('27-9', 'cwcext', 0, 25, 12.5, 55, 20, 10, 50, 0, 0, 0, 0, 2, 1.5);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('27-ГД', 'cspext', 0, 0, 30, 0, 0, 30, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('27-ГДХР', 'cspext', 0, 0, 30, 0, 0, 30, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('27-ОС', 'cwcext', 0, 25, 15, 55, 20, 10, 50, 0, 0, 0, 0, 2, 1.5);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('27-ПД', 'cspext', 0, 0, 25, 0, 0, 25, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('27-ПДРК', 'cspext', 0, 0, 25, 0, 0, 25, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('27-ПЖ', 'cwcext', 0, 0, 25, 50, 0, 25, 50, 0, 0, 0, 0, 2, 1.5);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('27-СМ', 'cspext', 0, 0, 25, 0, 0, 25, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('27-СМХР', 'cspext', 0, 0, 25, 0, 0, 25, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('27-СП', 'cspext', 0, 0, 15, 40, 0, 15, 40, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('28-СЕВ', 'cwcext', 0, 0, 25, 50, 0, 20, 45, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('ВЫСШПИЛ', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('ЗП12Л', 'cwcext', 0, 0, 15, 40, 0, 15, 40, 0, 0, 0, 0, 2, 1.5);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('ИНСПЕКТ', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('ИСПКЛС1', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('ИТСИСП', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('ИТСМАВ', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('ЛЕТИСП', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('ЛЕТРАБ', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('МКС', 'cggext', 2, 25, 20, 55, 20, 20, 50, 16, 16, 4, 4, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('НОРМАПР', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('НОРМСП', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('ОПЫТИСП', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('РЕАКТИВН', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('РКС', 'cggext', 2, 25, 15, 55, 20, 15, 50, 12, 12, 4, 4, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('САМОЛЕТ', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('СПАСАВ', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('СПЕЦАВ', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('ТВОРЧ15', 'cspext', 0, 0, 15, 0, 0, 15, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('ТВОРЧ20', 'cspext', 0, 0, 20, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('ТВОРЧ25', 'cspext', 0, 0, 25, 0, 0, 25, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('ТВОРЧ30', 'cspext', 0, 0, 30, 0, 0, 30, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO lgota (lgota, field, half, man_os, man_ss, man_pens, woman_os, woman_ss, woman_pens, man_d, woman_d, man_ds, woman_ds, lepro, sever) VALUES ('УЧЛЕТ', 'cspext', 0, 0, 25, 0, 0, 20, 0, 0, 0, 0, 0, 1, 1);
 
 
 --

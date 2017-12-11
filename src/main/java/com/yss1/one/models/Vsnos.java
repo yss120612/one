@@ -36,6 +36,17 @@ private Date date;
 //учтенная сумма взноса с учетом индексации
 float asrItog;
 
+//рег номер работодателя
+private String regNumb;
+
+
+
+public String getRegNumb() {
+	return regNumb;
+}
+public void setRegNumb(String regNumb) {
+	this.regNumb = regNumb;
+}
 public float getAsrItog() {
 	return asrItog;
 }

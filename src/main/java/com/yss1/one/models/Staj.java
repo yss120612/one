@@ -12,9 +12,19 @@ public class Staj implements Comparable<Staj>{
 		period=Utils.makePeriod(startDate,endDate,addDay);
 //		return "Staj [startDate=" + Utils.getFormattedDate(startDate) + ", endDate=" + Utils.getFormattedDate(endDate) + "\ncggext=" + cggext + ", cwcext=" + cwcext
 //				+ ", ctpext=" + ctpext + ", dopctpext=" + dopctpext + ", cspext=" + cspext + ", vidDeyat=" + vidDeyat + " period="+period.toString()+"]";
-		return "Staj [startDate=" + Utils.getFormattedDate(startDate) + ", endDate=" + Utils.getFormattedDate(endDate) + ", ctpext=" + ctpext + ", dopctpext=" + dopctpext + ", cspext=" + cspext + ", dopcspext="+ dopcspext +", stavka=" + stavka + " period="+period.toString()+"]";
+		return "Staj [startDate=" + Utils.getFormattedDate(startDate) + ", endDate=" + Utils.getFormattedDate(endDate) + ", ctpext=" + ctpext + ", dopctpext=" + dopctpext + ", cspext=" + cspext + ", dopcspext="+ dopcspext +", stavka=" + stavka + " period="+period.toString()+ " <br>VID="+vidDeyat+" ORG="+predprName+"]";
 				
 	}
+
+private String predprName;
+
+public String getPredprName() {
+	return predprName;
+}
+
+public void setPredprName(String predprName) {
+	this.predprName = predprName==null?"":predprName.trim();
+}
 
 private Date startDate;
 private Date endDate;
@@ -46,7 +56,31 @@ private String vidDeyat;
 //день прибавляем?
 private int addDay;
 
+//ставка
 private float stavka;
+
+//служебное поле
+private int flag;
+
+//рег номер работодателя
+private String regNumb;
+
+public String getRegNumb() {
+	return regNumb;
+}
+public void setRegNumb(String regNumb) {
+	this.regNumb = regNumb==null?"":regNumb.trim();
+}
+
+
+
+public int getFlag() {
+	return flag;
+}
+
+public void setFlag(int flag) {
+	this.flag = flag;
+}
 
 public float getStavka() {
 	return stavka;
@@ -82,6 +116,9 @@ public Staj(Staj s) {
 	this.vidDeyat = s.vidDeyat;
 	this.addDay=1;
 	this.stavka=0f;
+	this.predprName=s.predprName;
+	this.flag=s.flag;
+	this.regNumb=s.regNumb;
 }
 
 public static Staj makeCopy(Staj s) {
@@ -98,7 +135,7 @@ public String getVidDeyat() {
 }
 
 public void setVidDeyat(String vidDeyat) {
-	this.vidDeyat = vidDeyat;
+	this.vidDeyat = vidDeyat==null?"":vidDeyat.trim();
 }
 
 public Date getStartDate() {
