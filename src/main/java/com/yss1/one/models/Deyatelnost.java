@@ -1,6 +1,9 @@
 package com.yss1.one.models;
 
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.yss1.one.util.Period;
 import com.yss1.one.util.Utils;
@@ -18,7 +21,7 @@ public class Deyatelnost {
 	// вид деятельности
 	private String vidDeyat;
 	// харрактеристика деятельности
-	private String harDeyat;
+	private Set<String> harDeyat;
 
 	//конструируем деятельность на основе стажа
 	public static Deyatelnost fromStaj(Staj st) {
@@ -28,9 +31,21 @@ public class Deyatelnost {
 		dey.regNumb = st.getRegNumb();
 		dey.predprName = st.getPredprName();
 		dey.vidDeyat = st.getVidDeyat();
+		dey.addHarDeyat(st.getCspext());
+		dey.addHarDeyat(st.getCwcext());
+		dey.addHarDeyat(st.getCggext());
 		return dey;
 	}
 
+	
+	public boolean myVsnos(Vsnos v) {
+		GregorianCalendar cal=new GregorianCalendar();
+		cal.setTime(dStart);
+		int y0=cal.get(GregorianCalendar.YEAR);
+		cal.setTime(dEnd);
+		int y1=cal.get(GregorianCalendar.YEAR);
+		return (v.getYear()>=y0 && v.getYear()<=y1 && v.getRegNumb().equals(regNumb));
+	}
 	
 	
 	@Override
@@ -87,12 +102,19 @@ public class Deyatelnost {
 		this.vidDeyat = vidDeyat;
 	}
 
-	public String getHarDeyat() {
-		return harDeyat;
+	public String getHarDeyatStr() {
+		String res="";
+		for (String s: harDeyat) {
+			if (s.equals("/")) continue;
+			res+=(res.isEmpty()?s:", "+s);
+		}
+		return res;
 	}
 
-	public void setHarDeyat(String harDeyat) {
-		this.harDeyat = harDeyat;
+	public void addHarDeyat(String har) {
+		if (harDeyat==null) harDeyat=new HashSet<>();
+		if (har==null || har.isEmpty() || harDeyat.contains(har)) return;
+		harDeyat.add(har);
 	}
 
 	public float getSumm() {

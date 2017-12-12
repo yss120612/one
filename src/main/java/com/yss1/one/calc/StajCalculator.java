@@ -63,10 +63,18 @@ public Set<String> getLgotes() {
 			for (Staj st : stkl)
 				result.add(new Staj(st));
 		Collections.sort(result);
-		lgtCodesDao.updateCodes(result);// замена кодов на актуальные
+		
+		return result;
+	}
+	
+	public List<Staj> copyAndPrepareStajes(List<Staj> stl, List<Staj> stkl) {
+		lgtCodesDao.updateCodes(stl);// замена кодов на актуальные
+		lgtCodesDao.updateCodes(stkl);// замена кодов на актуальные
+		List<Staj> result = copyStajes(stl,stkl);
 		lgotes=lgotaDao.checkLgotes(result);//получение списка всех льгот
 		return result;
 	}
+	
 
 public List<Deyatelnost> getPredprStaj(List<Staj> stlist, List<Vsnos> vsnosy){
 	List<Deyatelnost> tmp = new ArrayList<>();
@@ -76,7 +84,7 @@ public List<Deyatelnost> getPredprStaj(List<Staj> stlist, List<Vsnos> vsnosy){
 		for (Deyatelnost sp: tmp) {
 			if (st.getPredprName().equals(sp.getPredprName()) && Utils.addDay(sp.getdEnd(),3).after(st.getStartDate()))
 			{
-				if (!st.getRegNumb().isEmpty()) sp.setRegNumb(st.getRegNumb()); 
+				if (st.getRegNumb()!=null && !st.getRegNumb().isEmpty()) sp.setRegNumb(st.getRegNumb()); 
 				if (st.getEndDate().after(sp.getdEnd()))
 				{
 					sp.setdEnd(st.getEndDate());
@@ -96,7 +104,7 @@ public List<Deyatelnost> getPredprStaj(List<Staj> stlist, List<Vsnos> vsnosy){
 	
 	for (Vsnos vs: vsnosy) {
 		for (Deyatelnost sp: tmp) {
-			if (vs.getRegNumb().equals(sp.getRegNumb())) sp.setSumm(sp.getSumm()+vs.getAsr()); 
+			if (sp.myVsnos(vs)) sp.setSumm(sp.getSumm()+vs.getAsr()); 
 		}
 	}
 	return tmp;
@@ -106,41 +114,45 @@ public List<Deyatelnost> getPredprStaj(List<Staj> stlist, List<Vsnos> vsnosy){
 public List<Staj> orderStajRecords(List<Staj> stlist,List<Staj> stklist)
 {
 List<Staj> tmp = new ArrayList<>();
+List<Staj> tmp1 = new ArrayList<>();
+List<Staj> tmp2 = new ArrayList<>();
 Staj last = null;
 Staj end = null;
 Staj st = null;
 
-if (stlist!=null && !stlist.isEmpty()) {
-	end = Staj.makeCopy(stlist.get(stlist.size() - 1));
-}
-for (Staj st1 : stlist) {
-	st=Staj.makeCopy(st1);
-	if (skipThis(st))
-		continue;
+if (stlist!=null) for (Staj s: stlist ) tmp1.add(Staj.makeCopy(s));
+if (stklist!=null) for (Staj s: stklist) tmp2.add(Staj.makeCopy(s));
 
-	if (last == null || last.getEndDate().before(st.getStartDate())) {
+
+if (tmp1!=null && !tmp1.isEmpty()) {
+	end = tmp1.get(tmp1.size() - 1);
+}
+for (Staj st1 : tmp1) {
+	
+	if (skipThis(st1))continue;
+
+	if (last == null || last.getEndDate().before(st1.getStartDate())) {
 		if (last != null)
 			tmp.add(last);
-		last = st;
+		last = st1;
 	} else {
-		mergeStajes(last, st);
+		mergeStajes(last, st1);
 	}
-	if (st == end)
-		tmp.add(last);
+	if (st1 == end)	tmp.add(last);
 }
 
 
-if (stklist!=null && !stklist.isEmpty())
+if (tmp2!=null && !tmp2.isEmpty())
 {
 List<Staj> stkl=new ArrayList<>();
-for (Staj s:stklist) stkl.add(Staj.makeCopy(s));	
-List<Staj> current = new ArrayList<>(stkl);
-stkl.clear();
+//for (Staj s:stklist) stkl.add(Staj.makeCopy(s));	
+List<Staj> current = new ArrayList<>(tmp2);
+tmp2.clear();
 
 while (current.size() > 0) {
-	stkl.addAll(current);
+	tmp2.addAll(current);
 	current.clear();
-	for (Staj stKonv : stkl) {
+	for (Staj stKonv : tmp2) {
 		
 		if (skipThis(stKonv) || !(stKonv.getStartDate().before(stKonv.getEndDate())))
 			continue;
@@ -152,7 +164,7 @@ while (current.size() > 0) {
 	}
 }
 
-for (Staj stKonv : stkl) {
+for (Staj stKonv : tmp2) {
 	if (stKonv.getEndDate().after(stKonv.getStartDate()) && !skipThis(stKonv))
 	{
 		tmp.add(stKonv);
@@ -166,7 +178,7 @@ return tmp;
 
 //Вспомогательные функции
 //то, что не надо учитывать
-private boolean skipThis(Staj s) {
+public boolean skipThis(Staj s) {
 	if (s.getDopctpext() != null && s.getDopctpext().contains("АДМИНИСТР") 
 			&& s.getEndDate().after(Utils.makeDate(2001, 12, 31))) {
 		if (s.getStartDate().before(Utils.makeDate(2002, 1, 1))) {

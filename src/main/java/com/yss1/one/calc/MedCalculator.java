@@ -172,7 +172,7 @@ public class MedCalculator {
 	}
 	if (toadd.isEmpty()) break;
 	cycles+=1;
-	System.out.println("cycles="+cycles+" lgh="+toadd.size());
+//	System.out.println("cycles="+cycles+" lgh="+toadd.size());
 	sttmp.addAll(toadd);
 	Collections.sort(sttmp);
 	}
@@ -180,11 +180,10 @@ public class MedCalculator {
 	sttmp.removeIf(x->(x.getStavka()<0.999f|| !x.getStartDate().before(x.getEndDate())));
 	boolean containsCity=false;
 	for (Staj st: sttmp) {
-		System.out.println(st);
+//		System.out.println(st);
 		if (st.getCspext().contains("ГД")) {
 			containsCity=true;
-			
-			//break;
+			break;
 		}
 		
 	}

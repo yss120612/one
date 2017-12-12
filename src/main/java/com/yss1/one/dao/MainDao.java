@@ -1,10 +1,13 @@
 package com.yss1.one.dao;
 
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Date;
 
 import javax.sql.DataSource;
@@ -43,6 +46,7 @@ private String res;
 		PreparedStatement pst;
 		AS400Dao as400 = new AS400Dao();
 		String res = "";
+		String resr = "";
 		String sql = "";
 		Man man = null;
 		Connection conn = null;
@@ -73,34 +77,57 @@ private String res;
 		 * pravo date, 
 		 * pens numeric(15,2),
 		 */
-		
 		String now = Utils.getFormattedDate4sql(new Date());
+		
+		if (id==0) {
+			sql="insert into public.spravka (vc_client,vc_ins,ts_q,pens) values ('"+ WebUtils.getLogin() + "','" + snils + "','" + now + "',0)";
+			try {
+				Statement st=conn.createStatement();
+				st.execute(sql);
+				sql="select id from public.spravka where vc_client='"+WebUtils.getLogin()+"' and vc_ins='"+snils+"' and ts_q='"+now+"'";
+				ResultSet rs=st.executeQuery(sql);
+				if (rs.next()) {
+					id = rs.getInt(1);
+				}
+				rs.close();
+				st.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
+		
+		
 		if (man == null) {
 			res = Utils.bytes2HexStr(pdfFactory.makeErrorDocument(snils, as400.getErr()));
-			if (id == 0) {
-				sql = "insert into public.spravka (vc_client,vc_ins,ts_q,ts_a,szi_new,raschet,pens) values ('"
-						+ WebUtils.getLogin() + "','" + snils + "','" + now + "','" + now + "',?,?,0)";
-			} else {
-				sql = "update public.spravka set szi_new=?,raschet=?, ts_a=TIMESTAMP '" + now + "', pens=0 where id="
-						+ id;
-			}
+			resr=res;
+//			if (id == 0) {
+//				sql = "insert into public.spravka (vc_client,vc_ins,ts_q,ts_a,szi_new,raschet,pens) values ('"
+//						+ WebUtils.getLogin() + "','" + snils + "','" + now + "','" + now + "',?,?,0)";
+//			} else {
+				sql = "update public.spravka set szi_new=?,raschet=?, ts_a=TIMESTAMP '" + now + "', pens=0 where id="+ id;
+			//}
 		} else {
+			//pdfFactory.makeExplanation(man,id);
+			resr = Utils.bytes2HexStr(pdfFactory.makeExplanation(man,id));
 			res = Utils.bytes2HexStr(pdfFactory.makeDocument(man));
-			if (id == 0) {
-				sql = "insert into public.spravka (vc_client,vc_ins,ts_q,ts_a,szi_new,raschet,pravo,pens) values ('"
-						+ WebUtils.getLogin() + "','" + snils + "','" + now + "','" + now + "',?,?,Date('"
-						+ Utils.getFormattedDate4sql2(man.getDatePravDate()) + "')," + man.getSumm() + ")";
-			} else {
+//			if (id == 0) {
+//				sql = "insert into public.spravka (vc_client,vc_ins,ts_q,ts_a,szi_new,raschet,pravo,pens) values ('"
+//						+ WebUtils.getLogin() + "','" + snils + "','" + now + "','" + now + "',?,?,Date('"
+//						+ Utils.getFormattedDate4sql2(man.getDatePravDate()) + "')," + man.getSumm() + ")";
+//			} else {
 				sql = "update public.spravka set szi_new=?,raschet=?, ts_a=TIMESTAMP '" + now + "', pens="
 						+ man.getSumm() + ",pravo=Date('" + Utils.getFormattedDate4sql2(man.getDatePravDate())
 						+ "') where id=" + id;
-			}
+//			}
 		}
 
 		try {
 			pst = conn.prepareStatement(sql);
 			pst.setBinaryStream(1, new ByteArrayInputStream(res.getBytes()), res.length());
-			pst.setBinaryStream(2, new ByteArrayInputStream(res.getBytes()), res.length());
+			pst.setBinaryStream(2, new ByteArrayInputStream(resr.getBytes()), resr.length());
 			pst.executeUpdate();
 			pst.close();
 		} catch (SQLException e) {

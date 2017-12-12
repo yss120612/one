@@ -59,6 +59,8 @@ public class LgotaDao {
 			lg.setHalf(rs.getFloat("half"));
 			lg.setMan_os(rs.getFloat("man_os"));
 			lg.setWoman_ds(rs.getFloat("woman_os"));
+			lg.setMan_pens(rs.getFloat("man_pens"));
+			lg.setWoman_pens(rs.getFloat("woman_pens"));
 			lg.setMan_ss(rs.getFloat("man_ss"));
 			lg.setWoman_ss(rs.getFloat("woman_ss"));
 			lg.setMan_d(rs.getFloat("man_d"));

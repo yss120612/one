@@ -29,9 +29,15 @@ public class LgtCodesDao {
 	
 	public void updateCodes(List<Staj> ls) {
 		if (dictCodes==null) fillDict();
+		if (ls==null) return;
 		for (Staj st: ls) {
+
 			for (DictCode dc:dictCodes)
 			{
+			if (st.getCggext()!=null && st.getCggext().contains("/")) st.setCggext(st.getCggext().substring(0,st.getCggext().indexOf("/")));	
+			if (st.getCggext()!=null && st.getCwcext().contains("/")) st.setCwcext(st.getCwcext().substring(0,st.getCwcext().indexOf("/")));
+			if (st.getCggext()!=null && st.getCspext().contains("/")) st.setCspext(st.getCspext().substring(0,st.getCspext().indexOf("/")));
+			
 			if (dc.field.equals("cggext") && st.getCggext().contains(dc.getCold())) st.setCggext(dc.getCnew());
 			if (dc.field.equals("cwcext") && st.getCwcext().contains(dc.getCold())) st.setCwcext(dc.getCnew());
 			if (dc.field.equals("cspext") && st.getCspext().contains(dc.getCold())) st.setCspext(dc.getCnew());
