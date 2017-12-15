@@ -49,46 +49,47 @@ public class DbConfig {
 //   }
 	
 	
-	@Primary
-	@Bean(name = "postgressDS")
-	@ConfigurationProperties("app.datasource.postgressdb")
-	public DataSource dataSource1() {
-		DataSource ds= new DriverManagerDataSource();
-		
-	    return ds;
-	}
+//	@Primary
+//	@Bean(name = "postgressDS")
+//	@ConfigurationProperties("app.datasource.postgressdb")
+//	public DataSource dataSource1() {
+//		DataSource ds= new DriverManagerDataSource();
+//		
+//	    return ds;
+//	}
+//	
+//	@Bean(name = "as400DataSource")
+//	@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+//	@Lazy(value = true)
+//	@ConfigurationProperties("app.datasource.as400")
+//	public DataSource dataSource2(){
+//		DataSource dataSource = new SingleConnectionDataSource();
+//        return dataSource;
+//   }
+	
+	
 	
 	@Bean(name = "as400DataSource")
 	@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 	@Lazy(value = true)
 	@ConfigurationProperties("app.datasource.as400")
 	public DataSource dataSource2(){
-		DataSource dataSource = new SingleConnectionDataSource();
+		final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
+		DataSource dataSource = dsLookup.getDataSource("java:/AS400DS");
+		
+		
         return dataSource;
-   }
+  }
 	
-	
-	
-//	@Bean(name = "as400DataSource")
-//	@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-//	@Lazy(value = true)
-//	@ConfigurationProperties("app.datasource.as400")
-//	public DataSource dataSource2(){
-//		final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
-//		DataSource dataSource = dsLookup.getDataSource("java:/AS400DS");
-//		
-//		
-//        return dataSource;
-//  }
-//	
-//	@Primary
-//	@Bean(name = "postgressDS")
-//    public DataSource dataSource1() {
-//        final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
-//        dsLookup.setResourceRef(true);
-//        DataSource dataSource = dsLookup.getDataSource("java:/PostgresDS");
-//        return dataSource;
-//    }
+	@Primary
+	@Bean(name = "postgressDS")
+    public DataSource dataSource1() {
+        final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
+        //dsLookup.getJndi
+     //   dsLookup.setResourceRef(true);
+        DataSource dataSource = dsLookup.getDataSource("java:/PostgresDS");
+        return dataSource;
+    }
 	
 	@Bean(name = "postgressJdbcTemplate")
 	@Qualifier("postgressDS")

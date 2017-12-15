@@ -36,7 +36,7 @@ public class SheduleBaseScan {
 //		pgDS = (DataSource) ctx.getBean("postgressDS");
 //	}
 
-//	@Scheduled(fixedRate = 30000)
+	@Scheduled(fixedRate = 30000)
 	private void run() {
 		try {
 			HashMap<Integer, String> mans = new HashMap<>();
