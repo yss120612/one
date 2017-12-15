@@ -120,7 +120,7 @@ public class OneApplicationTests {
 	@Test
 	public void multPeriodTest() {
 		Period period=new Period(1,1,1);
-		Period res= Utils.multPeriod(period, 1.5f);
+		Period res=Utils.multPeriod(period, 1.5f);
 		//System.out.println("year="+res.getYears()+" month="+res.getMonths()+" day="+res.getDays());
 		assertEquals(res.getYears(),1);
 		assertEquals(res.getMonths(),7);
@@ -135,6 +135,25 @@ public class OneApplicationTests {
 		
 	}
 	
+	@Test
+	public void multPeriodTest2() {
+		Period period=new Period(1,1,1);
+		Period res= new Period(2,2,2);
+		res.diffPeriod(period);
+		//System.out.println("year="+res.getYears()+" month="+res.getMonths()+" day="+res.getDays());
+		assertEquals(res.getYears(),1);
+		assertEquals(res.getMonths(),1);
+		assertEquals(res.getDays(),1);
+		
+		period=new Period(1,11,25);
+		res= new Period(5,6,8);
+		res.diffPeriod(period);
+		
+		assertEquals(res.getYears(),3);
+		assertEquals(res.getMonths(),6);
+		assertEquals(res.getDays(),13);
+		
+	}
 	
 	@Test
 	public void snilsFormat() {

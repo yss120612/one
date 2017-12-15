@@ -16,6 +16,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
+import org.springframework.jdbc.datasource.lookup.SingleDataSourceLookup;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -36,13 +38,57 @@ public class DbConfig {
 		atu.setApplicationContext(ctx);
 	}
 	
+	
+//	@Bean(name = "as400DataSource")
+//	@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+//	@Lazy(value = true)
+//	@ConfigurationProperties("app.datasource.as400")
+//	public DataSource dataSource2(){
+//		SingleConnectionDataSource dataSource = new SingleConnectionDataSource();
+//        return dataSource;
+//   }
+	
+	
 	@Primary
 	@Bean(name = "postgressDS")
 	@ConfigurationProperties("app.datasource.postgressdb")
 	public DataSource dataSource1() {
 		DataSource ds= new DriverManagerDataSource();
+		
 	    return ds;
 	}
+	
+	@Bean(name = "as400DataSource")
+	@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+	@Lazy(value = true)
+	@ConfigurationProperties("app.datasource.as400")
+	public DataSource dataSource2(){
+		DataSource dataSource = new SingleConnectionDataSource();
+        return dataSource;
+   }
+	
+	
+	
+//	@Bean(name = "as400DataSource")
+//	@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+//	@Lazy(value = true)
+//	@ConfigurationProperties("app.datasource.as400")
+//	public DataSource dataSource2(){
+//		final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
+//		DataSource dataSource = dsLookup.getDataSource("java:/AS400DS");
+//		
+//		
+//        return dataSource;
+//  }
+//	
+//	@Primary
+//	@Bean(name = "postgressDS")
+//    public DataSource dataSource1() {
+//        final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
+//        dsLookup.setResourceRef(true);
+//        DataSource dataSource = dsLookup.getDataSource("java:/PostgresDS");
+//        return dataSource;
+//    }
 	
 	@Bean(name = "postgressJdbcTemplate")
 	@Qualifier("postgressDS")
@@ -51,19 +97,6 @@ public class DbConfig {
 		DataSource ds = dataSource1();
 		return new JdbcTemplate(ds);
 	}
-	
-	@Bean(name = "as400DataSource")
-	@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-	@Lazy(value = true)
-	@ConfigurationProperties("app.datasource.as400")
-	public DataSource dataSource2(){
-		SingleConnectionDataSource dataSource = new SingleConnectionDataSource();
-       //dataSource.setDriverClassName("com.ibm.as400.access.AS400JDBCDriver");
-       //dataSource.setUrl("jdbc:as400://10.48.0.14");
-       //dataSource.setUsername("PD485100");
-       //dataSource.setPassword("PD495100");
-       return dataSource;
-   }
 	
 	@Bean
 	public PasswordEncoder passEncoder() {

@@ -1,17 +1,21 @@
 package com.yss1.one;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.Date;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.itextpdf.text.DocumentException;
 import com.yss1.one.dao.AS400Dao;
 import com.yss1.one.dao.MainDao;
+import com.yss1.one.dao.SpravkaDao;
 import com.yss1.one.dao.UserDao;
 import com.yss1.one.models.Man;
 import com.yss1.one.util.ApplicationContextUtil;
@@ -54,9 +59,13 @@ public class UsersController {
 	PdfFactory pdfFactory;
 	
 	
+	
+	
+	@Autowired
+	SpravkaDao sprDao;
+	
 	@Autowired
 	MainDao mainDao;
-	
 	
 	@RequestMapping("/")
 	public String index(Model model,@RequestParam(value="name", required=false, defaultValue="World") String name) {
@@ -66,18 +75,35 @@ public class UsersController {
 	}
 	
 	
-	@RequestMapping("/test")
-	public String test(Model model) throws DocumentException, IOException {
-		String test="";
-		model.addAttribute("name", WebUtils.getLogin());
-		try {
-			pdfFactory.makeTest("Тестовый"+new Date().getTime());	
-		}
-		catch(Exception ex){
-			model.addAttribute("err", ex.getMessage());
-		}
-		model.addAttribute("rest", test);
+	@RequestMapping("/reslist")
+	public String reslist(Model model){
+		String us=WebUtils.getLogin();
+		model.addAttribute("name", us);
+		model.addAttribute("rest", "Список запросов "+us+" за последние 7 дней");
+		model.addAttribute("qlist", sprDao.getResList(7,us));
+		model.addAttribute("apage", "reslist");
 		return "start";
+	}
+	
+	
+	@RequestMapping("/pdf/{vid}/{id}")
+	public String getPdf(@PathVariable("id") int id,
+						 @PathVariable("vid") int vid,
+						  HttpServletResponse response) throws DocumentException, IOException {
+			byte [] ba=vid==1?sprDao.getRasch(id):sprDao.getRasyasn(id);
+				try {
+					response.setHeader("Content-Disposition", "inline;filename=\""+(vid==1?"Rasyasnenya":"Raschet")+".pdf\"");
+					OutputStream out = response.getOutputStream();
+					response.setContentType("application/pdf");
+					out.write(ba);
+					out.flush();
+					out.close();
+				
+				} catch (IOException e) {
+					e.printStackTrace();
+				
+				}
+				return null;
 	}
 	
 	
@@ -97,15 +123,13 @@ public class UsersController {
 		Man man=null;
 		try {
 			man=mainDao.calculate(snils,0);
+			model.addAttribute("userid", mainDao.getId());
 		} catch (DocumentException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+					e.printStackTrace();
 		}
-				//asd.load(snils);
-		//String err=asd.getErr();
+		
 		
 		model.addAttribute("name", WebUtils.getLogin());
-		//model.addAttribute("rest", "OK");
 		if (mainDao.getError().isEmpty())
 		{
 			model.addAttribute("man", man);

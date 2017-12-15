@@ -37,7 +37,11 @@ public class MainDao {
 	}
 
 private String res;
-	
+private long id;	
+	public long getId() {
+	return id;
+}
+
 	public String getRes() {
 		return res;
 	}
@@ -84,7 +88,7 @@ private String res;
 			try {
 				Statement st=conn.createStatement();
 				st.execute(sql);
-				sql="select id from public.spravka where vc_client='"+WebUtils.getLogin()+"' and vc_ins='"+snils+"' and ts_q='"+now+"'";
+				sql="select id from public.spravka where vc_client='"+WebUtils.getLogin()+"' and vc_ins='"+snils+"' and ts_q=TIMESTAMP '"+now+"'";
 				ResultSet rs=st.executeQuery(sql);
 				if (rs.next()) {
 					id = rs.getInt(1);
@@ -97,31 +101,18 @@ private String res;
 			}
 		}
 		
-		
+		this.id=id;
 		
 		
 		if (man == null) {
 			res = Utils.bytes2HexStr(pdfFactory.makeErrorDocument(snils, as400.getErr()));
 			resr=res;
-//			if (id == 0) {
-//				sql = "insert into public.spravka (vc_client,vc_ins,ts_q,ts_a,szi_new,raschet,pens) values ('"
-//						+ WebUtils.getLogin() + "','" + snils + "','" + now + "','" + now + "',?,?,0)";
-//			} else {
-				sql = "update public.spravka set szi_new=?,raschet=?, ts_a=TIMESTAMP '" + now + "', pens=0 where id="+ id;
-			//}
 		} else {
 			//pdfFactory.makeExplanation(man,id);
 			resr = Utils.bytes2HexStr(pdfFactory.makeExplanation(man,id));
 			res = Utils.bytes2HexStr(pdfFactory.makeDocument(man));
-//			if (id == 0) {
-//				sql = "insert into public.spravka (vc_client,vc_ins,ts_q,ts_a,szi_new,raschet,pravo,pens) values ('"
-//						+ WebUtils.getLogin() + "','" + snils + "','" + now + "','" + now + "',?,?,Date('"
-//						+ Utils.getFormattedDate4sql2(man.getDatePravDate()) + "')," + man.getSumm() + ")";
-//			} else {
-				sql = "update public.spravka set szi_new=?,raschet=?, ts_a=TIMESTAMP '" + now + "', pens="
-						+ man.getSumm() + ",pravo=Date('" + Utils.getFormattedDate4sql2(man.getDatePravDate())
-						+ "') where id=" + id;
-//			}
+			sql = "update public.spravka set szi_new=?,raschet=?, ts_a=TIMESTAMP '" + now + "', pens="
+						+ man.getSumm() + ",pravo=Date('" + Utils.getFormattedDate4sql2(man.getDatePravDate())+ "'), fio='"+(man.getFamily()+" "+man.getName()+" "+man.getOtch())+"' where id=" + id;
 		}
 
 		try {

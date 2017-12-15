@@ -115,7 +115,7 @@ public class Utils {
 	
 	
 	public static String getFormattedDate4sql(Date d) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		return sdf.format(d);
 	}
 
@@ -132,6 +132,15 @@ public class Utils {
 		return sb.toString();
 	}
 
+	public static byte[] hexStr2bytes(String sb) {
+		int len = sb.length();
+	    byte[] data = new byte[len / 2];
+	    for (int i = 0; i < len; i += 2) {
+	        data[i / 2] = (byte) ((Character.digit(sb.charAt(i), 16) << 4) + Character.digit(sb.charAt(i+1), 16));
+	    }
+	    return data;
+	}
+	
 	public static void save2file(byte[] ba, String fileName) {
 		FileOutputStream fw;
 		try {

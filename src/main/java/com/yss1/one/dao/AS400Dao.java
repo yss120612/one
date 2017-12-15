@@ -60,7 +60,8 @@ public class AS400Dao {
 		}
 		
 		//sds=(SingleConnectionDataSource)ApplicationContextUtil.getApplicationContext().getBean("as400DataSource");
-		JdbcTemplate jt=new JdbcTemplate((SingleConnectionDataSource)ApplicationContextUtil.getApplicationContext().getBean("as400DataSource"),true);
+		//JdbcTemplate jt=new JdbcTemplate((SingleConnectionDataSource)ApplicationContextUtil.getApplicationContext().getBean("as400DataSource"),true);
+		JdbcTemplate jt=new JdbcTemplate((DataSource)ApplicationContextUtil.getApplicationContext().getBean("as400DataSource"),true);
 		String place="";
 		meter.init();
 		meter.start();

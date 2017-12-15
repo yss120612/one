@@ -1,6 +1,7 @@
 package com.yss1.one.util;
 
 import java.awt.Color;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 import java.io.FileOutputStream;
@@ -28,6 +29,7 @@ import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.CMYKColor;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.yss1.one.models.Deyatelnost;
 import com.yss1.one.models.LgStaj;
@@ -211,14 +213,14 @@ public class PdfFactory {
 		table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
 
 		table.addCell(
-				new Phrase(String.format("Среднемесячная зароботная плата (з/п) за 2000-2001 год - %.2f руб. в месяц",
+				new Phrase(String.format("Среднемесячная заработная плата (з/п) за 2000-2001 год - %.2f руб. в месяц",
 						man.getSal20012002()), font10));
 		table.getDefaultCell().setBorder(Rectangle.BOX);
 		if (man.isMax20002001()) {
 			table.addCell(new Phrase("Средняя з/п максимальна", font8));
 		} else {
 			table.addCell(new Phrase(
-					"Ваш зароботок за 2001-2002 годы не максимально возможный для назначения пенсии. Возможно предоставить з/п за 60 месяцев подряд до 01.01.2002г.",
+					"Ваш заработок за 2001-2002 годы не максимально возможный для назначения пенсии. Возможно предоставить з/п за 60 месяцев подряд до 01.01.2002г.",
 					font8));
 		}
 		document.add(table);
@@ -234,7 +236,7 @@ public class PdfFactory {
 		table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.getDefaultCell().setBorder(Rectangle.BOX);
 		table.addCell(new Phrase(
-				"Проверьте наличие всех периодов (в т.ч. иных периодов деятельности, полный перечент: ст.12 400ФЗ от 28.12.2013г.) В случае отсутствия возможно донести подтверждающие документы в Пенсионный фонд",
+				"Проверьте наличие всех периодов (в т.ч. иных периодов деятельности, полный перечень: ст.12 400ФЗ от 28.12.2013г.) В случае отсутствия возможно донести подтверждающие документы в Пенсионный фонд",
 				font8));
 		table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
 		table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
@@ -259,6 +261,8 @@ public class PdfFactory {
 		table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
 		table.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
 		int counter = 0;
+		if (man.getMyDeyatelnost()!=null) {
+		
 		for (Deyatelnost de : man.getMyDeyatelnost()) {
 			table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
 			table.addCell(new Phrase(++counter + "", font10));
@@ -272,6 +276,8 @@ public class PdfFactory {
 			table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
 			table.addCell(new Phrase(de.getSumm() < 0.1f ? "" : String.format("%,.2f", de.getSumm()), font10));
 		}
+		}
+		
 		document.add(table);
 
 		paragraph1 = new Paragraph("Таблица 2", font8);
@@ -300,7 +306,7 @@ public class PdfFactory {
 
 		PdfPCell cl = new PdfPCell(new Phrase("Льготный стаж", font10));
 		cl.setHorizontalAlignment(Element.ALIGN_LEFT);
-		if (man.getMyLgStaj().size() > 0) {
+		if (man.getMyLgStaj()!=null && man.getMyLgStaj().size() > 0) {
 			cl.setRowspan(man.getMyLgStaj().size());
 			table.addCell(cl);
 			for (LgStaj mls : man.getMyLgStaj()) {
@@ -334,6 +340,18 @@ public class PdfFactory {
 		paragraph1.setSpacingBefore(10);
 		document.add(paragraph1);
 		
+		table = new PdfPTable(3);
+		table.setSpacingBefore(30);
+		table.setWidths(new float[] { 3, 1, 2 });
+		table.setWidthPercentage(100);
+		table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+		table.getDefaultCell().setVerticalAlignment(Element.ALIGN_TOP);
+		table.getDefaultCell().setBorder(Rectangle.TOP);
+		table.addCell(new Phrase("Должность", font8));
+		table.addCell(new Phrase("Подпись", font8));
+		table.addCell(new Phrase("ФИО", font8));
+		document.add(table);
+
 		
 		document.close();
 		//writer.close();
@@ -402,16 +420,21 @@ public class PdfFactory {
 
 		table.addCell(new Phrase("Стаж всего", font));
 		table.addCell(new Phrase(man.getPeriodAll().toString(), font));
+		
 
 		table.addCell(new Phrase("Стаж на 01.01.2015", font));
 		table.addCell(new Phrase(man.getPeriod2015().toString(), font));
+		
+		
 
 		table.addCell(new Phrase("Стаж на 01.01.2002", font));
 		table.addCell(new Phrase(man.getPeriod2002().toString(), font));
-
+		
+		
 		table.addCell(new Phrase("Стаж на 01.01.1991", font));
 		table.addCell(new Phrase(man.getPeriod1991().toString(), font));
-
+		
+		
 		table.addCell(new Phrase("Отношение зарплат", font));
 		table.addCell(new Phrase(String.format("%.3f", man.getkSal()), font));
 
@@ -535,4 +558,10 @@ public class PdfFactory {
 		return mos.toByteArray();
 	}
 
+//	public makeExplanation(byte[] ba) {
+//		ByteArrayInputStream mis = new ByteArrayInputStream(ba);
+//		PdfReader reader = new PdfReader(ba);
+//		
+//		reader.close();
+//}
 }

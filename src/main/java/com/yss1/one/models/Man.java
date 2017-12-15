@@ -163,34 +163,7 @@ public class Man {
 		periodNS=lsCalc.calcNS(rawStaj);
 		
 		myDeyatelnost=stCalc.getPredprStaj(rawStaj, vsnosy);
-		
-		
-//		Period pedPer=pedCalc.getPedStaj(rawStaj);
-//		List<String> med=new ArrayList<>();
-//		med.add("27-СМХР");
-//		rawStaj = stCalc.copyStajes(staj,stajKonv);
-//		Period medSMHRPer=medCalc.getMedStaj(rawStaj,med);
-//		med.add("27-ГДХР");
-//		rawStaj = stCalc.copyStajes(staj,stajKonv);
-//		Period medGDHRPer=medCalc.getMedStaj(rawStaj,med);
-//		med.add("27-СМ");
-//		rawStaj = stCalc.copyStajes(staj,stajKonv);
-//		Period medSMPer=medCalc.getMedStaj(rawStaj,med);
-//		med.add("27-ГД");
-//		rawStaj = stCalc.copyStajes(staj,stajKonv);
-//		Period medGDPer=medCalc.getMedStaj(rawStaj,med);
-//		med.clear();
-//		med.add("27-СМХР");
-//		med.add("27-СМ");
-//		rawStaj = stCalc.copyStajes(staj,stajKonv);
-//		Period medSeloPer=medCalc.getMedStaj(rawStaj,med);
-		
-//		rawStaj = stCalc.copyStajes(staj,stajKonv);
-//		Period mksPer=lsCalc.calcLS(rawStaj, "МКС");
-//		
-//		rawStaj = stCalc.copyStajes(staj,stajKonv);
-//		Period sPer=lsCalc.calcS(rawStaj);
-		
+		myDeyatelnost.removeIf(x->x==null);
 		
 		meter.start();
 		calcKVal();
@@ -274,9 +247,8 @@ public class Man {
 			lst=new LgStaj(s,pedCalc.getPedStaj(rawStaj));
 		}else {
 			lst=new LgStaj(s,lsCalc.calcLS(rawStaj, s));
-		}
 			
-			rawStaj = stCalc.copyStajes(staj,stajKonv);
+		}
 			lst.setMonth(lsCalc.calcLgotMonth(lst.getPeriod(), s, periodAll.getYears(), getSex().contains("М")));
 			maxMonth=Math.max(maxMonth,lst.getMonth());
 			myLgStaj.add(lst);
@@ -285,9 +257,7 @@ public class Man {
 			
 		
 		if (maxMonth>0) {
-			
 			datePrav.add(GregorianCalendar.MONTH,-maxMonth);
-			
 		}
 			
 			
@@ -515,19 +485,27 @@ public class Man {
 	}
 
 	public Period getPeriodAll() {
+		if (periodAll!=null)
 		return periodAll;
+		else return new Period(0,0,0);
 	}
 
 	public Period getPeriod1991() {
+		if (period1991!=null)
 		return period1991;
+		else return new Period(0,0,0);
 	}
 
 	public Period getPeriod2002() {
+		if (period2002!=null)
 		return period2002;
+		else return new Period(0,0,0);
 	}
 
 	public Period getPeriod2015() {
+		if (period2015!=null)
 		return period2015;
+		else return new Period(0,0,0);
 	}
 
 	public float getkVal() {
@@ -614,7 +592,9 @@ public class Man {
 	}
 
 	public Period getPeriodNS() {
+		if (periodNS!=null)
 		return periodNS;
+		else return new Period(0,0,0);
 	}
 
 		

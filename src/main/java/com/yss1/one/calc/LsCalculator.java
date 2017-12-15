@@ -11,6 +11,7 @@ import com.yss1.one.dao.LgotaDao;
 import com.yss1.one.models.Lgota;
 import com.yss1.one.models.Staj;
 import com.yss1.one.util.Period;
+import com.yss1.one.util.Utils;
 
 @Service
 public class LsCalculator {
@@ -134,13 +135,34 @@ public int calcLgotMonth(Period period, String ls, int year, boolean isMan) {
 		os=period.getYears()>=lg.getWoman_ss();
 	}
 	
+	Period p1,p2;
 	//если все норм возвращаем
 	if (os) {
 		if (isMan) {
-			return (int)(60-lg.getMan_pens())*12;
+			if (lg.getMan_pens()>0)
+			{
+				return (int)(60-lg.getMan_pens())*12;
+			}
+			else
+			{
+				p1=new Period((int)lg.getMan_ss(), 0, 0);
+				p2=new Period(period);
+				p2.diffPeriod(p1);
+				return p2.getMonths()+p2.getYears()*12;
+			}
 		}
 		else {
-			return (int)(55-lg.getWoman_pens())*12;
+			if (lg.getMan_pens()>0)
+			{
+				return (int)(55-lg.getWoman_pens())*12;
+			}
+			else
+			{
+				p1=new Period((int)lg.getWoman_ss(), 0, 0);
+				p2=new Period(period);
+				p2.diffPeriod(p1);
+				return p2.getMonths()+p2.getYears()*12;
+			}
 		}
 	}
 		

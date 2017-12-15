@@ -30,7 +30,7 @@
      </div>
      <div class="navbar-inner">
      <ul class="nav navbar-nav">
-        <li ><a href="${springMacroRequestContext.contextPath}/test">Test </a></li>
+        <li ><a href="${springMacroRequestContext.contextPath}/reslist">Запросы </a></li>
         <li <#if page=="calc" || page=="calcres">class="active"</#if> ><a href="${springMacroRequestContext.contextPath}/calc">Расчет</a></li>
      </ul>
     
@@ -92,6 +92,9 @@
 <#include "/inc/rlist.ftl">
 </#if>
 
+<#if page=="reslist">
+<#include "/inc/reslist.ftl">
+</#if>
 
 </div>
 </body>
