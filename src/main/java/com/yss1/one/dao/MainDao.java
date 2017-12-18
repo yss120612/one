@@ -117,8 +117,10 @@ private long id;
 
 		try {
 			pst = conn.prepareStatement(sql);
-			pst.setBinaryStream(1, new ByteArrayInputStream(res.getBytes()), res.length());
-			pst.setBinaryStream(2, new ByteArrayInputStream(resr.getBytes()), resr.length());
+			//pst.setBinaryStream(1, new ByteArrayInputStream(res.getBytes()), res.length());
+			//pst.setBinaryStream(2, new ByteArrayInputStream(resr.getBytes()), resr.length());
+			pst.setBinaryStream(1, new ByteArrayInputStream(res.getBytes()));
+			pst.setBinaryStream(2, new ByteArrayInputStream(resr.getBytes()));
 			pst.executeUpdate();
 			pst.close();
 		} catch (SQLException e) {

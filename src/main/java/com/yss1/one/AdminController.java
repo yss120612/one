@@ -132,8 +132,11 @@ public class AdminController {
 		{
 			erroradd=(erroradd.isEmpty())?"Пароли менее 4х символов!":erroradd+"<br>Пароли менее 4х символов!";
 		}
-		
-		User us=ud.addUser(username, password, acc,roles);
+		User us=null;
+		if (erroradd.isEmpty())
+		{
+			us=ud.addUser(username, password, acc,roles);
+		}
 		if (us==null) {
 			erroradd=(erroradd.isEmpty())?"Пользователь "+username+" уже существует":erroradd+"<br>Пользователь "+username+" уже существует";
 		}
