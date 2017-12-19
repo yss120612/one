@@ -49,9 +49,9 @@ public class SpravkaDao {
 		return ba;
 	}
 	
-	public long insertAndGetId(String dt,String snils) {
-		pgDT.update("insert into public.spravka (vc_client,vc_ins,ts_q,pens) values ('"+ WebUtils.getLogin() + "','" + snils + "','" + dt + "',0)");
-		long result=pgDT.queryForObject("select id from public.spravka where vc_client='"+WebUtils.getLogin()+"' and vc_ins='"+snils+"' and ts_q=TIMESTAMP '"+dt+"'\"", Integer.class);
+	public Long insertAndGetId(String dt,String snils) {
+		pgDT.update("insert into public.spravka (vc_client,vc_ins,ts_q,pens) values ('"+ WebUtils.getLogin() + "','" + snils + "',TIMESTAMP '" + dt + "',0)");
+		Long result=pgDT.queryForObject("select id from public.spravka where vc_client='"+WebUtils.getLogin()+"' and vc_ins='"+snils+"' and ts_q=TIMESTAMP '"+dt+"'", Long.class);
 		return result;
 	}
 	

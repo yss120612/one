@@ -36,24 +36,12 @@ public class DbConfig {
 		atu.setApplicationContext(ctx);
 	}
 	
-	
-//	@Bean(name = "as400DataSource")
-//	@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-//	@Lazy(value = true)
-//	@ConfigurationProperties("app.datasource.as400")
-//	public DataSource dataSource2(){
-//		SingleConnectionDataSource dataSource = new SingleConnectionDataSource();
-//        return dataSource;
-//   }
-	
-	
 //	@Primary
 //	@Bean(name = "postgressDS")
 //	@ConfigurationProperties("app.datasource.postgressdb")
 //	public DataSource dataSource1() {
 //		DataSource ds= new DriverManagerDataSource();
-//		
-//	    return ds;
+//		return ds;
 //	}
 //	
 //	@Bean(name = "as400DataSource")
@@ -89,12 +77,12 @@ public class DbConfig {
 	
 	
 	
-	@Bean(name = "postgressJdbcTemplate")
-	@Qualifier("postgressDS")
-	public JdbcTemplate postgressJdbcTemplate() {
-		DataSource ds = dataSource1();
-		return new JdbcTemplate(ds);
-	}
+//	@Bean(name = "postgressJdbcTemplate")
+//	@Qualifier("postgressDS")
+//	public JdbcTemplate postgressJdbcTemplate() {
+//		DataSource ds = dataSource1();
+//		return new JdbcTemplate(ds);
+//	}
 	
 	@Bean
 	public PasswordEncoder passEncoder() {

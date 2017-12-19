@@ -42,14 +42,14 @@ public class SheduleBaseScan {
 //		pgDS = (DataSource) ctx.getBean("postgressDS");
 //	}
 
-	@Scheduled(fixedRate = 30000)
+	//@Scheduled(fixedRate = 30000)
 	private void run() {
 		try {
 			
 			String sql = "select id,vc_ins from  public.spravka where ts_a is null";
 			List<Twix<Integer,String>> list = pgDT.query(sql, queryRowMapper);
 			for (Twix<Integer,String> pair : list) {
-				System.out.println("Val="+pair.getVal()+" Key="+pair.getKey());
+				//System.out.println("Val="+pair.getVal()+" Key="+pair.getKey());
 				mainDao.calculate(pair.getVal(), pair.getKey());
 			}
 

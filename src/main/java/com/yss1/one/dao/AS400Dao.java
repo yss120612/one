@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -29,8 +30,6 @@ import com.yss1.one.util.Utils;
 
 
 public class AS400Dao {
-	
-	 //private Man man;
 	 private String fieldCsp;
 	 private String fieldCtp;
 	 private int dateSpos;
@@ -42,6 +41,7 @@ public class AS400Dao {
 	 PerfMeter meter;
 	 private List<Twix<String,String>> list1; 
 	 private List<Twix<String,String>> list2;
+	 
 	 
 	public AS400Dao() {
 		meter=(PerfMeter)ApplicationContextUtil.getApplicationContext().getBean(PerfMeter.class);
@@ -213,8 +213,6 @@ public class AS400Dao {
 		
 		
 		man.calcPens();
-		//res=res+man.getPeriod().toString()+"<br>"+"Platejes length="+man.getPlateg20002001().size()+"<br>";
-		//res+=man.res;
 		jt.getDataSource().getConnection().close();
 		return man;
 	}

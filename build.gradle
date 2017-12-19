@@ -42,8 +42,8 @@ dependencies {
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	
 	
-	compile group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
-	compile group: 'net.sf.jt400', name: 'jt400', version: '6.7'
+	//compile group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
+	//compile group: 'net.sf.jt400', name: 'jt400', version: '6.7'
 	compile group: 'com.itextpdf', name: 'itextpdf', version: '5.5.12'
 	
 }

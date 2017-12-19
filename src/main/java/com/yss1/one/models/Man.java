@@ -284,8 +284,9 @@ public class Man {
 				//"MKS="+mksPer+" Staj="+sPer+
 				//" МЕД СМХР="+medSMHRPer+" МЕД ГДХР="+medGDHRPer+"МЕД СМ="+medSMPer+"МЕД ГД="+medGDPer+" МЕД СЕЛО="+medSeloPer+" PedPer="+pedPer+
 				"<br>p1991=" + period1991 + " p2002=" + period2002 + " p2015=" + period2015+" KVal="+kVal+" StajK="+stajK+" ponStajK="+dopStajK+" RK="+rk2001+" Зар.К="+kSal+" RP="+rP+" RPK="+rPK+
-			  " pravo="+Utils.getFormattedDate(datePrav.getTime()) +" NPK="+nPK+" vsnosy02-15="+vsnos0215+" ipk15="+ipk15+" ipk="+ipk+"<br>"+ " Pensya="+pensiya+" Fix vipl="+fix+"<br>"+meter.getIntervals("<br>")+"<br>";
+			    " pravo="+Utils.getFormattedDate(datePrav.getTime()) +" NPK="+nPK+" vsnosy02-15="+vsnos0215+" ipk15="+ipk15+" ipk="+ipk+"<br>"+ " Pensya="+pensiya+" Fix vipl="+fix+"<br>"+meter.getIntervals("<br>")+"<br>";
 		
+		//System.out.println(res);
 //		for (Platej pl : plateg20002001) {
 //			res = res + pl.toString() + "<br>";
 //		}
@@ -480,7 +481,7 @@ public class Man {
 	}
 
 	public void setVsnosy(List<Vsnos> vsnosy) {
-		vsnosy.removeIf(x->x==null);
+		vsnosy.removeIf(x->x==null||x.getCprext()!=null && x.getCprext().trim().equals("БЕЗР"));
 		this.vsnosy = vsnosy;
 	}
 

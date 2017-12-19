@@ -57,8 +57,7 @@ public float calcIPK(List<Vsnos> lv, Date prav) {
 		v.setMaxSumm(tarifDao.getGrVsnos(v.getYear(),v.getCode())*0.16f);
 		v.setIpks(maxIPKDao.getIpks(v.getYear()));
 		v.setIpkn(maxIPKDao.getIpkn(v.getYear()));
-		//if (v.getSumm()>v.getMaxSumm()) v.setSumm(v.getMaxSumm());
-		cs=v.getSumm()/v.getMaxSumm()*10;
+		cs=v.getMaxSumm()==0?0:v.getSumm()/v.getMaxSumm()*10;
 		summa+=cs>v.getIpks()?v.getIpks():cs;
 	}
 

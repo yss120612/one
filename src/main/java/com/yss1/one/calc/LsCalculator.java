@@ -3,7 +3,7 @@ package com.yss1.one.calc;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.postgresql.jdbc2.ArrayAssistantRegistry;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,6 @@ import com.yss1.one.dao.LgotaDao;
 import com.yss1.one.models.Lgota;
 import com.yss1.one.models.Staj;
 import com.yss1.one.util.Period;
-import com.yss1.one.util.Utils;
 
 @Service
 public class LsCalculator {

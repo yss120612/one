@@ -58,52 +58,131 @@ public class ManDao {
 		return count>0;
 	}
 	
-	//сохранение стажа (vid 1-данные работодателя, 2-конвертация)
+	
+//	id bigint NOT NULL, -- Номер запроса справки
+//	vid smallint NOT NULL, -- Тип источника
+//	dstart date NOT NULL, -- Дата с
+//	dend date NOT NULL, -- Дата по
+//	regn character varying(15), -- Рег.номер страхователя
+//	predpr_name character varying(100), -- Наименование страхователя
+//	vid_deyat character varying(40), -- Вид деятельности
+//	cggext character varying(30), -- Территориальные условия
+//	cspext character varying(30), -- Выслуга лет
+//	ctpext character varying(30), -- Исчесляемый стаж
+//	cwcext character varying(30), -- Особые условия
+//	dopctpext character varying(60), -- Доп.параметры к исчесляемому стажу
+//	dopcspext character varying(60) -- Доп. параметры к выслуги лет
+//  сохранение стажа (vid 1-данные работодателя, 2-конвертация)
 	private void saveStaj(long id,List<Staj> stl, int vid) {
 		if (stl==null || stl.isEmpty()) return;
 		for(Staj st:stl) {
-			
+			pgDT.update("insert into public.stag (id,vid,dstart,dend,regn,predpr_name,vid_deyat,cggext,cspext,ctpext,cwcext,dopctpext,dopcspext) values("+
+			id+","+
+			vid+",DATE('"+
+			Utils.getFormattedDate4sql2(st.getStartDate())+"'),DATE('"+
+			Utils.getFormattedDate4sql2(st.getEndDate())+"'),'"+
+			st.getRegNumb()+"','"+
+			st.getPredprName()+"','"+
+			st.getVidDeyat()+"','"+
+			st.getCggext()+"','"+
+			st.getCspext()+"','"+
+			st.getCtpext()+"','"+
+			st.getCwcext()+"','"+
+			st.getDopctpext()+"','"+
+			st.getDopcspext()+"')");
 		}
 	}
 	
 	
-//	  id bigint NOT NULL, -- Номер запроса справки
-//	  datestart date NOT NULL, -- Дата с
-//	  dateend date NOT NULL, -- Дата по
-//	  raion integer, -- Район
-//	  region integer, -- Регион
-//	  summa real -- Сумма
-	//зарплата за 2000-2002 гг. сохранение
+//	id bigint NOT NULL, -- Номер запроса справки
+//	datestart date NOT NULL, -- Дата с
+//	dateend date NOT NULL, -- Дата по
+//	raion integer, -- Район
+//	region integer, -- Регион
+//	summa real -- Сумма
+//	зарплата за 2000-2002 гг. сохранение
 	private void savePlatej(long id,List<Platej> pll) {
 		if (pll==null || pll.isEmpty()) return;
 		for(Platej pl:pll) {
-			pgDT.execute("insert into public.payment (id,datestart,dateend,raion,region,summa)"
-						+ " values()");
+			pgDT.update("insert into public.payment (id,datestart,dateend,raion,region,summa)"
+						+ " values("+
+						id+",DATE('"+
+						Utils.getFormattedDate4sql2(pl.getdStart())+"'), DATE('"+
+						Utils.getFormattedDate4sql2(pl.getdEnd())+"'),"+
+						pl.getRaion()+","+
+						pl.getRegion()+","+
+						pl.getSumma()+")");
 		}
 	}
 	
-	//сохранение взносов
+//	  id bigint NOT NULL, -- Номер запроса справки
+//	  dptcod integer NOT NULL, -- Код района
+//	  dcinmb bigint NOT NULL, -- Входящий номер ПТК СПУ
+//	  year integer, -- Год
+//	  ctmcod character varying(10), -- Период
+//	  asr real, -- Сумма
+//	  cprcod integer, -- Код ЗЛ
+//	  regnum character varying(14) -- Номер
+//	  сохранение взносов
 	private void saveVsnosy(long id,List<Vsnos> vsl) {
 		if (vsl==null || vsl.isEmpty()) return;
 	for(Vsnos vs:vsl) {
-			
+		pgDT.update("insert into public.vznos (id,dptcod,dcinmb,year,ctmcod,asr,cprcod,regnum) values("+id+","+
+				    vs.getDptcod()+","+
+				    vs.getDcinmb()+","+
+				    vs.getYear()+",'"+
+				    vs.getCtmcod()+"',"+
+				    vs.getAsr()+","+
+				    vs.getCprcod()+",'"+
+				    vs.getRegNumb()+"')");
 		}
 	}
 	
 		//загрузка стажа (vid 1-данные работодателя, 2-конвертация)
 		private void loadStaj(long id,Man man, int vid) {
-			
+			if (vid==2) man.setStajKonv(pgDT.query("select * from public.stag where id="+id+" and vid="+vid,stRowMapper ));
+			else man.setStaj(pgDT.query("select * from public.stag where id="+id+" and vid="+vid,stRowMapper ));
 		}
 		
 		//зарплата за 2000-2002 гг. загрузка
-		private void loadPlatej(long id,Man man) {
+		private void loadPlatej(long id, Man man) {
 			man.setPlateg20002001(pgDT.query("select * from public.payment where id="+id,plRowMapper ));
 		}
 		
 		//загрузка взносов взносов
-		private void loadVsnosy(long id,Man man) {
-			
+		private void loadVsnosy(long id, Man man) {
+			man.setVsnosy(pgDT.query("select * from public.vznos where id="+id,vsRowMapper ));
 		}
+		
+//		dstart date NOT NULL, -- Дата с
+//		dend date NOT NULL, -- Дата по
+//		vid_deyat character varying(40), -- Вид деятельности
+//		cggext character varying(30), -- Территориальные условия
+//		cspext character varying(30), -- Выслуга лет
+//		ctpext character varying(30), -- Исчесляемый стаж
+//		cwcext character varying(30), -- Особые условия
+//		dopctpext character varying(60), -- Доп.параметры к исчесляемому стажу
+//		dopcspext character varying(60) -- Доп. параметры к выслуги лет
+		
+		private RowMapper<Staj> stRowMapper = new RowMapper<Staj>() {
+			public Staj mapRow(ResultSet rs, int rowNum) throws SQLException {
+				if (rs.getString("asr")==null || rs.getString("asr").isEmpty()) return null;
+				Staj staj = new Staj();
+				staj.setRegNumb(rs.getString("regn"));
+				staj.setPredprName(rs.getString("predpr_name"));
+				staj.setStartDate(rs.getDate("dstart"));
+				staj.setEndDate(rs.getDate("dend"));
+				staj.setVidDeyat(rs.getString("vid_deyat"));
+				staj.setCggext(rs.getString("cggext"));
+				staj.setCspext(rs.getString("cspext"));
+				staj.setCtpext(rs.getString("ctpext"));
+				staj.setCwcext(rs.getString("cwcext"));
+				staj.setDopctpext(rs.getString("dopctpext"));
+				staj.setDopcspext(rs.getString("dopcspext"));
+				return staj;
+			}
+		};
+		
 		
 		private RowMapper<Vsnos> vsRowMapper = new RowMapper<Vsnos>() {
 			public Vsnos mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -118,12 +197,8 @@ public class ManDao {
 				return vsnos;
 			}
 		};
-		
-		
-		
 
-		  
-		private RowMapper<Platej> plRowMapper = new RowMapper<Platej>() {
+	    private RowMapper<Platej> plRowMapper = new RowMapper<Platej>() {
 			public Platej mapRow(ResultSet rs, int rowNum) throws SQLException {
 				Platej platej = new Platej();
 				platej.setdStart(rs.getDate("datestart"));
@@ -145,5 +220,4 @@ public class ManDao {
 				return m;
 			}
 		};
-	
-}
+	}
