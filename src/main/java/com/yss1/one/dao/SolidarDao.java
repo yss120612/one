@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -18,10 +20,11 @@ import com.yss1.one.util.Twix;
 public class SolidarDao {
 
 	@Autowired
-	private JdbcTemplate pgDT;
+	private DataSource pgDS;
 
 	public void setSolidar(List<Vsnos> vl, boolean before67) {
 		String sql;
+		JdbcTemplate pgDT=new JdbcTemplate(pgDS);
 		if (before67) {
 			sql = "select  period,sld66 from public.solidar order by period";
 		} else {

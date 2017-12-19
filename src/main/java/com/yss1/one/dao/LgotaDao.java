@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -19,11 +21,13 @@ import com.yss1.one.models.Staj;
 @Repository
 public class LgotaDao {
 	@Autowired
-	private JdbcTemplate pgDT;
+	private DataSource pgDS;
+	
 	private List<Lgota> lgotes;
 	
 	private void fillLgotes()
 	{
+		JdbcTemplate pgDT=new JdbcTemplate(pgDS);
 		lgotes=pgDT.query("select * from lgota", lgotaRowMapper);
 	}
 	

@@ -4,6 +4,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,8 +19,15 @@ import com.yss1.one.models.Role;
 public class RoleDao {
 
 	@Autowired
-	private JdbcTemplate pgDT;
+	private DataSource pgDS;
 
+	private JdbcTemplate pgDT;
+	
+	@PostConstruct
+	public void init() {
+		pgDT=new JdbcTemplate(pgDS);
+	}
+	
 	public Role findRoleById(Long id) {
 		Role n = pgDT.queryForObject("select id,rolename from public.roles where id=" + id.toString(), nameRowMapper);
 		return n;

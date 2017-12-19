@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -15,7 +17,7 @@ import com.yss1.one.util.Twix;
 @Repository
 public class MaxIPKDao {
 	@Autowired
-	private JdbcTemplate pgDT;
+	private DataSource pgDS;
 
 	private List<IPKHelper> ipkhl;
 
@@ -48,6 +50,7 @@ public class MaxIPKDao {
 	}
 
 	private void fillList() {
+		JdbcTemplate pgDT=new JdbcTemplate(pgDS);
 		ipkhl = pgDT.query("select * from spripk order by year", ipkRowMapper);
 	}
 

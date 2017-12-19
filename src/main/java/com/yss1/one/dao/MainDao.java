@@ -10,9 +10,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
 
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ParameterizedPreparedStatementSetter;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import com.itextpdf.text.DocumentException;
@@ -27,8 +32,20 @@ public class MainDao {
 	@Autowired
 	private DataSource pgDS;
 
+	
+	private JdbcTemplate pgDT;
+	
+	@PostConstruct
+	public void init() {
+		pgDT=new JdbcTemplate(pgDS);
+	}
+
+	
 	@Autowired
 	PdfFactory pdfFactory;
+	
+	@Autowired
+	SpravkaDao sprDao;
 
 	private String error;
 	
@@ -47,16 +64,16 @@ private long id;
 	}
 	
 	public Man calculate(String snils, long id) throws DocumentException, IOException {
-		PreparedStatement pst;
+		//PreparedStatement pst;
 		AS400Dao as400 = new AS400Dao();
 		String res = "";
 		String resr = "";
-		String sql = "";
+		
 		Man man = null;
-		Connection conn = null;
+		//Connection conn = null;
 		snils=Utils.formatSNILS(snils);
 		try {
-			conn = pgDS.getConnection();
+			//conn = pgDS.getConnection();
 			man = as400.load(snils);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -69,6 +86,10 @@ private long id;
 		{
 			 error = "Некорректный СНИЛС!"; 
 		}
+		
+		
+		
+		
 		
 		/*
 		 * id bigint NOT NULL DEFAULT nextval('spravka_id_seq'::regclass),
@@ -84,24 +105,13 @@ private long id;
 		String now = Utils.getFormattedDate4sql(new Date());
 		
 		if (id==0) {
-			sql="insert into public.spravka (vc_client,vc_ins,ts_q,pens) values ('"+ WebUtils.getLogin() + "','" + snils + "','" + now + "',0)";
-			try {
-				Statement st=conn.createStatement();
-				st.execute(sql);
-				sql="select id from public.spravka where vc_client='"+WebUtils.getLogin()+"' and vc_ins='"+snils+"' and ts_q=TIMESTAMP '"+now+"'";
-				ResultSet rs=st.executeQuery(sql);
-				if (rs.next()) {
-					id = rs.getInt(1);
-				}
-				rs.close();
-				st.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			id=sprDao.insertAndGetId(now, snils);
 		}
 		
 		this.id=id;
+		
+		
+
 		
 		
 		if (man == null) {
@@ -109,23 +119,31 @@ private long id;
 			resr=res;
 		} else {
 			//pdfFactory.makeExplanation(man,id);
-			resr = Utils.bytes2HexStr(pdfFactory.makeExplanation(man,id));
 			res = Utils.bytes2HexStr(pdfFactory.makeDocument(man));
-			sql = "update public.spravka set szi_new=?,raschet=?, ts_a=TIMESTAMP '" + now + "', pens="
-						+ man.getSumm() + ",pravo=Date('" + Utils.getFormattedDate4sql2(man.getDatePravDate())+ "'), fio='"+(man.getFamily()+" "+man.getName()+" "+man.getOtch())+"' where id=" + id;
+			resr = Utils.bytes2HexStr(pdfFactory.makeExplanation(man,id));
+//			sql = "update public.spravka set szi_new=?,raschet=?, ts_a=TIMESTAMP '" + now + "', pens="
+//						+ man.getSumm() + ",pravo=Date('" + Utils.getFormattedDate4sql2(man.getDatePravDate())+ "'), fio='"+(man.getFamily()+" "+man.getName()+" "+man.getOtch())+"' where id=" + id;
 		}
 
-		try {
-			pst = conn.prepareStatement(sql);
-			//pst.setBinaryStream(1, new ByteArrayInputStream(res.getBytes()), res.length());
-			//pst.setBinaryStream(2, new ByteArrayInputStream(resr.getBytes()), resr.length());
-			pst.setBinaryStream(1, new ByteArrayInputStream(res.getBytes()));
-			pst.setBinaryStream(2, new ByteArrayInputStream(resr.getBytes()));
-			pst.executeUpdate();
-			pst.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+//		PreparedStatementCreator psc=new PreparedStatementCreator() {
+//			@Override
+//			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+//				String sql = "update public.spravka set szi_new=?,raschet=?, ts_a=TIMESTAMP '?', pens=? ,pravo=Date('?'), fio='?' where id=?";
+//				PreparedStatement  ps=con.prepareStatement(sql);
+//				
+//				ps.setBinaryStream(1, new ByteArrayInputStream(res.getBytes()));
+//				ps.setBinaryStream(2, new ByteArrayInputStream(resr.getBytes()));
+//				ps.setString(3, now);
+//				ps.setFloat(4, man.getSumm());
+//				ps.setString(5,Utils.getFormattedDate4sql2(man.getDatePravDate()) );
+//				ps.setString(6,man.getFamily()+" "+man.getName()+" "+man.getOtch());
+//				ps.setLong(7, id);
+//				return ps;
+//			}
+//		};
+//		pgDT.update(psc);
+		
+		
 		return man;
 	}
 

@@ -3,6 +3,8 @@ package com.yss1.one.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -12,11 +14,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class DojityeDao {
 	@Autowired
-	private JdbcTemplate pgDT;
+	private DataSource pgDS;
 
 	private MinMax minMax;
 	//получение периода дожития по дате права и наличию отсутствию льгот
 	public int getPeriod(int year, boolean lgot) {
+		JdbcTemplate pgDT=new JdbcTemplate(pgDS);
+		
 		int count = pgDT.queryForObject("select count(*) from public.dojitye where year=?", Integer.class, year);
 
 		String sql = "";

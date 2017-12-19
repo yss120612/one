@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -16,12 +18,13 @@ import com.yss1.one.util.Utils;
 @Repository
 public class CategoryDao {
 	@Autowired
-	private JdbcTemplate pgDT;
+	private DataSource pgDS;
 	
 	private List<CodeHelper> ch=null;
 	// меняем код взноса с буквенного на цифровой
 	
 	public void setCode(List<Vsnos> vl) {
+		JdbcTemplate pgDT=new JdbcTemplate(pgDS);
 		if (ch==null)
 		{
 			ch=pgDT.query("select code,category,dstart,dend from public.category where code>0",codeRowMapper);

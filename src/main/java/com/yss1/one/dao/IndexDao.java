@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -21,10 +23,11 @@ import com.yss1.one.util.Utils;
 public class IndexDao {
 	
 	@Autowired
-	private JdbcTemplate pgDT;
+	private DataSource pgDS;
 	
 	public void indexVsnos(List<Vsnos> lv, Date pravo)
 	{
+		JdbcTemplate pgDT=new JdbcTemplate(pgDS);
 		String sql="select year, koeff from kindex order by year";
 		Map<Integer,Float> map=new HashMap<>();
 		for (Twix<Integer,Float> tw:pgDT.query(sql, idxRowMapper))

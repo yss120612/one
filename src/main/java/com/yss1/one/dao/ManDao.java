@@ -4,6 +4,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -18,7 +21,14 @@ import com.yss1.one.util.Utils;
 @Repository
 public class ManDao {
 	@Autowired
+	private DataSource pgDS;
+	
 	private JdbcTemplate pgDT;
+	
+	@PostConstruct
+	public void init() {
+		pgDT=new JdbcTemplate(pgDS);
+	}
 	
 	public void save(Man man, long id) {
 		if (id==0) return;

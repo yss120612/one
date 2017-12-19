@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -16,7 +18,9 @@ import com.yss1.one.util.Utils;
 @Repository
 public class SPKDao {
 	@Autowired
-	private JdbcTemplate pgDT;
+	private DataSource pgDS;
+	
+	
 	private List<SPKHelper> spkhl;
 	public float getSpk(Date prav)
 	{
@@ -108,6 +112,7 @@ public class SPKDao {
 	}
 	
 	private void fillList() {
+		JdbcTemplate pgDT=new JdbcTemplate(pgDS);
 		spkhl=pgDT.query("select * from sprspk order by date", spkRowMapper);
 	}
 	

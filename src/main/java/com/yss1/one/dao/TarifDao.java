@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -14,7 +16,7 @@ import com.yss1.one.models.Vsnos;
 @Repository
 public class TarifDao {
 	@Autowired
-	private JdbcTemplate pgDT;
+	private DataSource pgDS;
 	
 	List<Tarif> lt;
 	
@@ -35,6 +37,7 @@ public class TarifDao {
 	public void setTarif(List<Vsnos> lv, boolean before67)
 	{
 	// идем за тарифами (процент, отчисляемый из ЗП)
+	JdbcTemplate pgDT=new JdbcTemplate(pgDS);
 	if (lt==null)
 	{
 		lt=pgDT.query("select kod, year,strah2,strah3,nakop2,nakop3,gr_vznos from tarifs order by year,kod",tarifRowMapper);

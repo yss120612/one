@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -17,11 +19,12 @@ import com.yss1.one.util.Utils;
 @Repository
 public class UrDao {
 	@Autowired
-	private JdbcTemplate pgDT;
+	private DataSource pgDS;
 
 	//перемножаем все козффициенты ранее даты права на заданную суммы
 	public float indexSumm(Date dp, float summ) {
 		
+		JdbcTemplate pgDT=new JdbcTemplate(pgDS);
 		String sql = "select datev,k_strah,k_str from public.ur where datev<date(?) order by datev";
 		List<Koeff> lf=pgDT.query(sql,koeffRowMapper, Utils.getFormattedDate4sql2(dp));
 		List<Float> tmp=new ArrayList<Float>(); 

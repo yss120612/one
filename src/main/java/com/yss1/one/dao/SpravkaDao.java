@@ -7,6 +7,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -14,11 +17,19 @@ import org.springframework.stereotype.Repository;
 
 import com.yss1.one.models.ResListItem;
 import com.yss1.one.util.Utils;
+import com.yss1.one.util.WebUtils;
 
 @Repository
 public class SpravkaDao {
 	@Autowired
+	private DataSource pgDS;
+	
 	private JdbcTemplate pgDT;
+	
+	@PostConstruct
+	public void init() {
+		pgDT=new JdbcTemplate(pgDS);
+	}
 	
 	public byte [] getRasch(long id) {
 	
@@ -36,6 +47,12 @@ public class SpravkaDao {
 		String str = new String(pgDT.queryForObject("select szi_new from public.spravka where id=?",byte [].class,id));
 		byte [] ba = Utils.hexStr2bytes(str);
 		return ba;
+	}
+	
+	public long insertAndGetId(String dt,String snils) {
+		pgDT.update("insert into public.spravka (vc_client,vc_ins,ts_q,pens) values ('"+ WebUtils.getLogin() + "','" + snils + "','" + dt + "',0)");
+		long result=pgDT.queryForObject("select id from public.spravka where vc_client='"+WebUtils.getLogin()+"' and vc_ins='"+snils+"' and ts_q=TIMESTAMP '"+dt+"'\"", Integer.class);
+		return result;
 	}
 	
 	//получаем список запросов

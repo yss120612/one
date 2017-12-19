@@ -18,12 +18,13 @@ import com.yss1.one.models.Staj;
 public class LgtCodesDao {
 
 	@Autowired
-	private JdbcTemplate pgDT;
+	private DataSource pgDS;
 	
 	private List<DictCode> dictCodes;
 	
 	private void fillDict()
 	{
+		JdbcTemplate pgDT=new JdbcTemplate(pgDS);
 		dictCodes = pgDT.query("select * from lgotcodes order by old_code", dcRowMapper);
 	}
 	

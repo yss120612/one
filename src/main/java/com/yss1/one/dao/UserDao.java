@@ -5,6 +5,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -17,7 +21,14 @@ import com.yss1.one.models.User;
 @Repository
 public class UserDao {
 	@Autowired
+	private DataSource pgDS;
+
 	private JdbcTemplate pgDT;
+	
+	@PostConstruct
+	public void init() {
+		pgDT=new JdbcTemplate(pgDS);
+	}
 	
 	@Autowired
 	RoleDao roleDao;
