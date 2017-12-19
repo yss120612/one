@@ -110,6 +110,7 @@ private long id;
 				
 		return man;
 	}
+	
 	private class PSC implements PreparedStatementCreator{
 		String sql;
 		String res1;
@@ -127,9 +128,5 @@ private long id;
 			ps.setBinaryStream(2, new ByteArrayInputStream(res2.getBytes()));
 			return ps;
 		}
-		
 	}
-	
-	
-
 }
