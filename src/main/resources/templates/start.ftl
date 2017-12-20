@@ -88,6 +88,10 @@
 <#include "/inc/ulist.ftl">
 </#if>
 
+<#if page=="load" && !err??>
+<#include "/inc/load.ftl">
+</#if>
+
 <#if page=="rlist">
 <#include "/inc/rlist.ftl">
 </#if>

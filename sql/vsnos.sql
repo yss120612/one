@@ -11,7 +11,8 @@ CREATE TABLE public.vznos
   ctmcod character varying(10), -- Период
   asr real, -- Сумма
   cprcod integer, -- Код ЗЛ
-  regnum character varying(14) -- Номер страхователя
+  regnum character varying(14), -- Номер страхователя
+  cprext character varying(10) -- Код вида деятельности
 )
 WITH (
   OIDS=FALSE
@@ -28,6 +29,7 @@ COMMENT ON COLUMN public.vznos.ctmcod IS 'Период';
 COMMENT ON COLUMN public.vznos.asr IS 'Сумма';
 COMMENT ON COLUMN public.vznos.cprcod IS 'Код ЗЛ';
 COMMENT ON COLUMN public.vznos.regnum IS 'Номер страхователя';
+COMMENT ON COLUMN public.vznos.regnum IS 'Код вида деятельности';
 
 
 -- Index: public.vznos_id

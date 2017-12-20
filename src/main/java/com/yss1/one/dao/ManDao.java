@@ -2,6 +2,7 @@ package com.yss1.one.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -30,7 +31,7 @@ public class ManDao {
 		pgDT=new JdbcTemplate(pgDS);
 	}
 	
-	public void save(Man man, long id) {
+	public void backup(Man man, long id) {
 		if (id==0) return;
 		if (checkID(id)) return;
 		pgDT.execute("insert into public.person (id,fio,insnmb,prnsex,prnbrd) values ("+id+",'"
@@ -42,7 +43,7 @@ public class ManDao {
 		saveVsnosy(id,man.getVsnosy());
 	}
 	
-	public Man load(long id) {
+	public Man restore(long id) {
 		if (id==0) return null;
 		if (!checkID(id)) return null;
 		Man man = pgDT.queryForObject("select * from public.person where id="+id,mnRowMapper);
@@ -127,14 +128,15 @@ public class ManDao {
 	private void saveVsnosy(long id,List<Vsnos> vsl) {
 		if (vsl==null || vsl.isEmpty()) return;
 	for(Vsnos vs:vsl) {
-		pgDT.update("insert into public.vznos (id,dptcod,dcinmb,year,ctmcod,asr,cprcod,regnum) values("+id+","+
+		pgDT.update("insert into public.vznos (id,dptcod,dcinmb,year,ctmcod,asr,cprcod,regnum,cprext) values("+id+","+
 				    vs.getDptcod()+","+
 				    vs.getDcinmb()+","+
 				    vs.getYear()+",'"+
 				    vs.getCtmcod()+"',"+
 				    vs.getAsr()+","+
 				    vs.getCprcod()+",'"+
-				    vs.getRegNumb()+"')");
+				    vs.getRegNumb()+"','"+
+				    vs.getCprext()+"')");
 		}
 	}
 	
@@ -149,24 +151,13 @@ public class ManDao {
 			man.setPlateg20002001(pgDT.query("select * from public.payment where id="+id,plRowMapper ));
 		}
 		
-		//загрузка взносов взносов
+		//загрузка взносов
 		private void loadVsnosy(long id, Man man) {
 			man.setVsnosy(pgDT.query("select * from public.vznos where id="+id,vsRowMapper ));
 		}
 		
-//		dstart date NOT NULL, -- Дата с
-//		dend date NOT NULL, -- Дата по
-//		vid_deyat character varying(40), -- Вид деятельности
-//		cggext character varying(30), -- Территориальные условия
-//		cspext character varying(30), -- Выслуга лет
-//		ctpext character varying(30), -- Исчесляемый стаж
-//		cwcext character varying(30), -- Особые условия
-//		dopctpext character varying(60), -- Доп.параметры к исчесляемому стажу
-//		dopcspext character varying(60) -- Доп. параметры к выслуги лет
-		
 		private RowMapper<Staj> stRowMapper = new RowMapper<Staj>() {
 			public Staj mapRow(ResultSet rs, int rowNum) throws SQLException {
-				if (rs.getString("asr")==null || rs.getString("asr").isEmpty()) return null;
 				Staj staj = new Staj();
 				staj.setRegNumb(rs.getString("regn"));
 				staj.setPredprName(rs.getString("predpr_name"));
@@ -182,8 +173,7 @@ public class ManDao {
 				return staj;
 			}
 		};
-		
-		
+	
 		private RowMapper<Vsnos> vsRowMapper = new RowMapper<Vsnos>() {
 			public Vsnos mapRow(ResultSet rs, int rowNum) throws SQLException {
 				if (rs.getString("asr")==null || rs.getString("asr").isEmpty()) return null;
@@ -191,7 +181,7 @@ public class ManDao {
 				vsnos.setDptcod(rs.getInt("dptcod"));
 				vsnos.setDcinmb(rs.getLong("dcinmb"));
 				vsnos.setCtmcod(rs.getString("ctmcod"));
-				vsnos.setRegNumb(rs.getString("entnmb"));
+				vsnos.setRegNumb(rs.getString("regnum"));
 				vsnos.setAsr(Float.parseFloat(rs.getString("asr").replace(",",".")));
 				vsnos.setCprext(rs.getString("cprext"));
 				return vsnos;
@@ -217,6 +207,11 @@ public class ManDao {
 				m.setFio(rs.getString("fio"));
 				m.setSNILS(rs.getString("insnmb"));
 				m.setSex(rs.getString("prnsex"));
+				GregorianCalendar gc=new GregorianCalendar();
+				gc.setTime(m.getBirthDay().getTime());
+				gc.add(GregorianCalendar.YEAR, m.getSex().contains("Ж")?55:60);
+				m.setDatePrav(gc);
+				m.setLgota(0);
 				return m;
 			}
 		};

@@ -22,9 +22,12 @@
 <td>${qi.pravoStr}</td>
 <td>
 <#if qi.pravoStr!="-">
+<a type="button" id="btn_load_${qi.id}" class="btn btn-info btn-mini" href="${springMacroRequestContext.contextPath}/load/${qi.id}" title="загрузить данные"><i class="glyphicon glyphicon-open-file" ></i></a>
 <a type="button" id="btn_edit_${qi.id}" class="btn btn-info btn-mini" target="_blank" href="${springMacroRequestContext.contextPath}/pdf/2/${qi.id}" title="расчеты"><i class="glyphicon glyphicon-list-alt" ></i></a>
-</#if>
 <a type="button" id="btn_del_${qi.id}"  class="btn btn-info btn-mini" target="_blank" href="${springMacroRequestContext.contextPath}/pdf/1/${qi.id}" title="разъяснения"><i class="glyphicon glyphicon-hand-up" ></i></a>
+<#else>
+<a type="button" id="btn_del_${qi.id}"  class="btn btn-danger btn-mini" target="_blank" href="${springMacroRequestContext.contextPath}/pdf/1/${qi.id}" title="разъяснения"><i class="glyphicon glyphicon-hand-up" ></i></a>
+</#if>
 </td>
 </tr>
 </#list>

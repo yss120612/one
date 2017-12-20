@@ -61,8 +61,6 @@ List<Staj> toadd=new ArrayList<Staj>();
 int counter;
 boolean changed;
 
-
-
 //int cycles=0;
 while(true)
 {

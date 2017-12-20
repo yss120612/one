@@ -56,12 +56,9 @@
                     </table>
 </div>
 </div>
-</div>
 <div class="col-md-10 col-md-offset-1">
-<a type="button" class="btn btn-default" target="_blank" href="${springMacroRequestContext.contextPath}/pdf/1/${userid}">Расчет</a>
-<a type="button" class="btn btn-default" target="_blank" href="${springMacroRequestContext.contextPath}/pdf/2/${userid}">Разъяснения</a>
-</div>
+<a type="button" class="btn btn-default" href="${springMacroRequestContext.contextPath}/reslist">К списку</a>
 </div>
 
 <br>
-${res}
+

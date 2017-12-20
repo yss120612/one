@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yss1.one.dao.LgotaDao;
-import com.yss1.one.dao.LgtCodesDao;
+import com.yss1.one.dao.UpdateLgtCodesDao;
 import com.yss1.one.models.Deyatelnost;
 import com.yss1.one.models.Staj;
 import com.yss1.one.models.Vsnos;
@@ -22,7 +22,7 @@ import com.yss1.one.util.Utils;
 public class StajCalculator {
 	
 @Autowired
-LgtCodesDao lgtCodesDao;
+UpdateLgtCodesDao lgtCodesDao;
 
 @Autowired
 LgotaDao lgotaDao;

@@ -13,9 +13,9 @@ import org.springframework.stereotype.Repository;
 
 import com.yss1.one.models.Staj;
 
-
+//замена старых кодов на новые их аналоги
 @Repository
-public class LgtCodesDao {
+public class UpdateLgtCodesDao {
 
 	@Autowired
 	private DataSource pgDS;

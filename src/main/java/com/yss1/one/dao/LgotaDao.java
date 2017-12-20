@@ -16,8 +16,7 @@ import org.springframework.stereotype.Repository;
 import com.yss1.one.models.Lgota;
 import com.yss1.one.models.Staj;
 
-
-
+//Список что дает льгота
 @Repository
 public class LgotaDao {
 	@Autowired

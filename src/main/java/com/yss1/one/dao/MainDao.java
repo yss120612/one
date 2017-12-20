@@ -97,7 +97,7 @@ private long id;
 			resr=res;
 			sql = "update public.spravka set szi_new=?,raschet=?, ts_a=TIMESTAMP '" + now + "', pens=0  where id=" + id;
 		} else {
-			manDao.save(man, id);
+			manDao.backup(man, id);
 			res = Utils.bytes2HexStr(pdfFactory.makeDocument(man));
 			resr = Utils.bytes2HexStr(pdfFactory.makeExplanation(man,id));
 			sql = "update public.spravka set szi_new=?,raschet=?, ts_a=TIMESTAMP '" + now + "', pens="

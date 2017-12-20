@@ -176,7 +176,7 @@ public class PdfFactory {
 		table.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(new Phrase(Utils.getFormattedDate(dnow) + "г.", font12));
 		table.addCell(new Phrase("№" + id, font12));
-		table.addCell(new Phrase("ОПФР по Иркутской области", font12));
+		table.addCell(new Phrase("ОПФР ____________________", font12));
 		document.add(table);
 
 		// личные данные

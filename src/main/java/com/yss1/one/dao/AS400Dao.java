@@ -82,16 +82,7 @@ public class AS400Dao {
 		man=jt.queryForObject("select * FROM QTEMP.R002000018",manRowMapper);
 		meter.measure("AS400 18");
 		
-		int age=60;
-		if (man.getSex().contains("Ж")) {
-			age=55;
-		}
 		
-		GregorianCalendar gc=new GregorianCalendar();
-		gc.setTime(man.getBirthDay().getTime());
-		gc.add(GregorianCalendar.YEAR, age);
-		man.setDatePrav(gc);
-		man.setLgota(0);
 		
 		
 		//получаем стаж по данным работодателя
@@ -325,6 +316,11 @@ public class AS400Dao {
 			m.setFio(rs.getString("fio"));
 			m.setSNILS(rs.getString("insnmb"));
 			m.setSex(rs.getString("prnsex"));
+			GregorianCalendar gc=new GregorianCalendar();
+			gc.setTime(m.getBirthDay().getTime());
+			gc.add(GregorianCalendar.YEAR, m.getSex().contains("Ж")?55:60);
+			m.setDatePrav(gc);
+			m.setLgota(0);
 			return m;
 		}
 	};

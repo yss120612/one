@@ -165,6 +165,49 @@ public class Man {
 		myDeyatelnost=stCalc.getPredprStaj(rawStaj, vsnosy);
 		myDeyatelnost.removeIf(x->x==null);
 		
+		myLgStaj= new ArrayList<>();
+		List<String> med=new ArrayList<>();
+		LgStaj lst;
+		int maxMonth=0;
+		for (String s:stCalc.getLgotes()) {
+			rawStaj = stCalc.copyStajes(staj,stajKonv);
+			med.clear();
+			if (s.equals("27-СМХР"))
+			{
+				med.add("27-СМХР");
+				lst=new LgStaj(s,medCalc.getMedStaj(rawStaj,med));
+			}else if (s.equals("27-ГДХР")){
+				med.add("27-СМХР");
+				med.add("27-ГДХР");
+				lst=new LgStaj(s,medCalc.getMedStaj(rawStaj,med));
+			}else if (s.equals("27-СМ")){
+				med.add("27-СМХР");
+				med.add("27-ГДХР");
+				med.add("27-СМ");
+				lst=new LgStaj(s,medCalc.getMedStaj(rawStaj,med));
+			}else if (s.equals("27-ГД")){
+				med.add("27-СМХР");
+				med.add("27-ГДХР");
+				med.add("27-СМ");
+				med.add("27-ГД");
+				lst=new LgStaj(s,medCalc.getMedStaj(rawStaj,med));
+			}else if (s.equals("27-ПД")||s.equals("27-ПДРК")){
+				lst=new LgStaj(s,pedCalc.getPedStaj(rawStaj));
+		} else {//остальные
+			lst=new LgStaj(s,lsCalc.calcLS(rawStaj, s));
+			
+		}
+			lst.setMonth(lsCalc.calcLgotMonth(lst.getPeriod(), s, periodAll.getYears(), getSex().contains("М")));
+			maxMonth=Math.max(maxMonth,lst.getMonth());
+			myLgStaj.add(lst);
+			res=res+lst.toString()+"<br>";
+		}
+		
+		if (maxMonth>0) {
+			datePrav.add(GregorianCalendar.MONTH,-maxMonth);
+			lgota=1;
+		}
+		
 		meter.start();
 		calcKVal();
 		meter.measure("calcKVal");
@@ -215,71 +258,6 @@ public class Man {
 		fix=finCalc.calcFix(datePrav.getTime());
 		meter.measure("pensCalc");
 		
-		
-		
-		myLgStaj= new ArrayList<>();
-		List<String> med=new ArrayList<>();
-		LgStaj lst;
-		int maxMonth=0;
-		for (String s:stCalc.getLgotes()) {
-			rawStaj = stCalc.copyStajes(staj,stajKonv);
-			med.clear();
-			if (s.equals("27-СМХР"))
-			{
-				med.add("27-СМХР");
-				lst=new LgStaj(s,medCalc.getMedStaj(rawStaj,med));
-			}else if (s.equals("27-ГДХР")){
-				med.add("27-СМХР");
-				med.add("27-ГДХР");
-				lst=new LgStaj(s,medCalc.getMedStaj(rawStaj,med));
-			}else if (s.equals("27-СМ")){
-				med.add("27-СМХР");
-				med.add("27-ГДХР");
-				med.add("27-СМ");
-				lst=new LgStaj(s,medCalc.getMedStaj(rawStaj,med));
-			}else if (s.equals("27-ГД")){
-				med.add("27-СМХР");
-				med.add("27-ГДХР");
-				med.add("27-СМ");
-				med.add("27-ГД");
-				lst=new LgStaj(s,medCalc.getMedStaj(rawStaj,med));
-		}else if (s.equals("27-ПД")||s.equals("27-ПДРК")){
-			lst=new LgStaj(s,pedCalc.getPedStaj(rawStaj));
-		}else {
-			lst=new LgStaj(s,lsCalc.calcLS(rawStaj, s));
-			
-		}
-			lst.setMonth(lsCalc.calcLgotMonth(lst.getPeriod(), s, periodAll.getYears(), getSex().contains("М")));
-			maxMonth=Math.max(maxMonth,lst.getMonth());
-			myLgStaj.add(lst);
-			res=res+lst.toString()+"<br>";
-		}
-			
-		
-		if (maxMonth>0) {
-			datePrav.add(GregorianCalendar.MONTH,-maxMonth);
-		}
-			
-			
-			
-//			med.add("27-СМХР");
-//			rawStaj = stCalc.copyStajes(staj,stajKonv);
-//			Period medSMHRPer=medCalc.getMedStaj(rawStaj,med);
-//			med.add("27-ГДХР");
-//			rawStaj = stCalc.copyStajes(staj,stajKonv);
-//			Period medGDHRPer=medCalc.getMedStaj(rawStaj,med);
-//			med.add("27-СМ");
-//			rawStaj = stCalc.copyStajes(staj,stajKonv);
-//			Period medSMPer=medCalc.getMedStaj(rawStaj,med);
-//			med.add("27-ГД");
-//			rawStaj = stCalc.copyStajes(staj,stajKonv);
-//			Period medGDPer=medCalc.getMedStaj(rawStaj,med);
-//			med.clear();
-//			med.add("27-СМХР");
-//			med.add("27-СМ");
-			
-		
-		
 		res = res+
 				//"MKS="+mksPer+" Staj="+sPer+
 				//" МЕД СМХР="+medSMHRPer+" МЕД ГДХР="+medGDHRPer+"МЕД СМ="+medSMPer+"МЕД ГД="+medGDPer+" МЕД СЕЛО="+medSeloPer+" PedPer="+pedPer+
@@ -302,9 +280,6 @@ public class Man {
 			//periodAll.addPeriod(Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
 			//res = res + de.toString() + "<br>";
 		//}
-		
-		
-
 	}
 
 	public List<LgStaj> getMyLgStaj() {
