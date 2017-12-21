@@ -38,13 +38,13 @@ public class AS400Dao {
 	 private int naimOrg;
 	// SingleConnectionDataSource sds;
 	 private String err;
-	 PerfMeter meter;
+	 //PerfMeter meter;
 	 private List<Twix<String,String>> list1; 
 	 private List<Twix<String,String>> list2;
 	 
 	 
 	public AS400Dao() {
-		meter=(PerfMeter)ApplicationContextUtil.getApplicationContext().getBean(PerfMeter.class);
+		//meter=(PerfMeter)ApplicationContextUtil.getApplicationContext().getBean(PerfMeter.class);
 	}
 	 	 
 	public Man load(String snils) throws SQLException
@@ -63,8 +63,7 @@ public class AS400Dao {
 		//JdbcTemplate jt=new JdbcTemplate((SingleConnectionDataSource)ApplicationContextUtil.getApplicationContext().getBean("as400DataSource"),true);
 		JdbcTemplate jt=new JdbcTemplate((DataSource)ApplicationContextUtil.getApplicationContext().getBean("as400DataSource"),true);
 		String place="";
-		meter.init();
-		meter.start();
+		
 		try
 		{
 		//получаем человека по СНИЛСу	
@@ -80,7 +79,7 @@ public class AS400Dao {
 		}
 
 		man=jt.queryForObject("select * FROM QTEMP.R002000018",manRowMapper);
-		meter.measure("AS400 18");
+		
 		
 		
 		
@@ -93,7 +92,7 @@ public class AS400Dao {
 		naimOrg=4;
 		vidDeyat=0;
 		place="16A";
-		meter.start();
+		//meter.start();
 		jt.update("call OPFRSOFT.PFRBAT0201('R002000016/"+snils+"/')");
 		place="16B";
 		man.setStaj(jt.query("select * FROM QTEMP.R002000016",stajRowMapper));
@@ -101,7 +100,7 @@ public class AS400Dao {
 		//получаем стаж по данным конвертации
 		jt.update("call OPFRSOFT.PFRBAT0201('R002000289/"+snils+"/')");
 		count=jt.queryForObject("select count(*) FROM QTEMP.R002000289", Integer.class);
-		meter.measure("AS400 16");
+		//meter.measure("AS400 16");
 		
 		if (count>0)
 		{
@@ -112,37 +111,37 @@ public class AS400Dao {
 			vidDeyat=7;
 			naimOrg=8;
 			place="291A";
-			meter.start();
+			//meter.start();
 			jt.update("call OPFRSOFT.PFRBAT0201('R002000291/"+snils+"/')");
 			place="291B";
 			man.setStajKonv(jt.query("select * FROM QTEMP.R002000291",stajRowMapper));
-			meter.measure("AS400 291");
+			//meter.measure("AS400 291");
 		}
 		
 		
 		//зарплата за 2000-2002 гг.
 		place="14A";
-		meter.start();
+		//meter.start();
 		jt.update("call OPFRSOFT.PFRBAT0201('R002000014/"+snils+"/')");
 		place="14B";
 		man.setPlateg20002001(jt.query("select * FROM QTEMP.R002000014 where ctmcod like('2000') or ctmcod like('2001')",platejRowMapper));
 		place="14C";
 		list1=jt.query("select entnmb, MAX(entnam) entnam FROM QTEMP.R002000014 GROUP BY entnmb",nameRowMapper);
-		meter.measure("AS400 14");
+		//meter.measure("AS400 14");
 		
 		
 		//взносы
 		place="15A";
-		meter.start();
+		//meter.start();
 		jt.update("call OPFRSOFT.PFRBAT0201('R002000015/"+snils+"/')");
 		place="15B";
 		man.setVsnosy(jt.query("select * FROM QTEMP.R002000015",vsnosRowMapper));
 		place="15C";
 		list2=jt.query("SELECT entnmb, MAX(entnam) entnam FROM QTEMP.R002000015  GROUP BY entnmb",nameRowMapper);
-		meter.measure("AS400 15");
+		//meter.measure("AS400 15");
 		
 		//уточнения по видом деятельности, указанному во взносах
-		meter.start();
+		//meter.start();
 		place="173A";
 		jt.update("call OPFRSOFT.PFRBAT0201('R002000173/"+snils+"/')");
 		place="173B";
@@ -161,7 +160,7 @@ public class AS400Dao {
 				}
 			}
 		}
-		meter.measure("AS400 173");
+		//meter.measure("AS400 173");
 		
 		
 		}

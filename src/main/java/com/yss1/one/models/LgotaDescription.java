@@ -1,7 +1,21 @@
 package com.yss1.one.models;
 
+import java.util.ArrayList;
+
+import java.util.List;
+
+import com.yss1.one.util.Twix;
+
 //Льгота с правилами применения
-public class Lgota {
+public class LgotaDescription {
+public String getFullName() {
+		return fullName;
+	}
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+//наименование льготы в выборке	
+private String fullName;	
 //наименование льготы в выборке	
 private String name;
 //поле в выборке, в котором льгота проставляется
@@ -15,7 +29,13 @@ private float woman_pens;//возраст права для женщин
 //можно ли выработать не полный спецстаж и сколько (делитель)
 private float half;
 
+//с чем суммируется и с каким коэффициентом
+private List<Twix<String,Float>> forSumm;
+
+
+//сколько месяцев неполного стажа
 private float man_d;
+//на сколько месяцев приближают пенсию
 private float man_ds;
 private float woman_d;
 private float woman_ds;

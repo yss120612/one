@@ -10,6 +10,7 @@ import java.util.Date;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.css.CSSPrimitiveValue;
 import org.w3c.dom.css.RGBColor;
@@ -31,8 +32,10 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.yss1.one.dao.LgotaDescrDao;
 import com.yss1.one.models.Deyatelnost;
 import com.yss1.one.models.LgStaj;
+import com.yss1.one.models.LgotaDescription;
 import com.yss1.one.models.Man;
 
 @Service
@@ -41,6 +44,9 @@ public class PdfFactory {
 	private BaseFont baseFontb;
 	private BaseFont baseFonti;
 
+	@Autowired
+	LgotaDescrDao lgotesDao;
+	
 	@PostConstruct
 	public void init() throws DocumentException, IOException {
 		baseFont = BaseFont.createFont("public/fonts/times.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
@@ -229,6 +235,7 @@ public class PdfFactory {
 		table.setWidths(new float[] { 1, 3, 1 });
 		table.setWidthPercentage(100);
 		table.setSpacingBefore(20);
+		table.setSpacingAfter(0);
 		table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
 		table.getDefaultCell().setVerticalAlignment(Element.ALIGN_BOTTOM);
 		table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
@@ -272,14 +279,28 @@ public class PdfFactory {
 			table.addCell(new Phrase(Utils.getFormattedDate(de.getdStart()), font10));
 			table.addCell(new Phrase(Utils.getFormattedDate(de.getdEnd()), font10));
 			table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
-			table.addCell(new Phrase(de.getHarDeyatStr().length() < 3 ? "" : de.getHarDeyatStr(), font10));
+			table.addCell(new Phrase(de.getHarDeyatStr().length() < 3 ? "" : de.getHarDeyatStr()+"*", font10));
 			table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
 			table.addCell(new Phrase(de.getSumm() < 0.1f ? "" : String.format("%,.2f", de.getSumm()), font10));
 		}
 		}
-		
+		String lgt="*";
+		LgotaDescription ld;
+		for (String lg:man.getLgotes())
+		{
+			ld=lgotesDao.getLgota(lg);
+			lgt+=ld.getName()+":"+ld.getFullName()+" ";
+		}
+		if (lgt.length()>1)
+		{
+		table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
+		table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
+		table.getDefaultCell().setColspan(6);
+		table.addCell(new Phrase(lgt, font8));
+		}
 		document.add(table);
-
+		
+				
 		paragraph1 = new Paragraph("Таблица 2", font8);
 		paragraph1.setAlignment(Paragraph.ALIGN_RIGHT);
 		paragraph1.setSpacingBefore(15);

@@ -32,16 +32,15 @@ public class UpdateLgtCodesDao {
 		if (dictCodes==null) fillDict();
 		if (ls==null) return;
 		for (Staj st: ls) {
-
+			if (st.getCggext().contains("/")) st.setCggext(st.getCggext().substring(0,st.getCggext().indexOf("/")));	
+			if (st.getCwcext().contains("/")) st.setCwcext(st.getCwcext().substring(0,st.getCwcext().indexOf("/")));
+			if (st.getCspext().contains("/")) st.setCspext(st.getCspext().substring(0,st.getCspext().indexOf("/")));
+			
 			for (DictCode dc:dictCodes)
 			{
-			if (st.getCggext()!=null && st.getCggext().contains("/")) st.setCggext(st.getCggext().substring(0,st.getCggext().indexOf("/")));	
-			//if (st.getCwcext()!=null && st.getCwcext().contains("/")) st.setCwcext(st.getCwcext().substring(0,st.getCwcext().indexOf("/")));
-			//if (st.getCspext()!=null && st.getCspext().contains("/")) st.setCspext(st.getCspext().substring(0,st.getCspext().indexOf("/")));
-			
-			if (dc.field.equals("cggext") && st.getCggext().contains(dc.getCold())) st.setCggext(dc.getCnew());
-			if (dc.field.equals("cwcext") && st.getCwcext().contains(dc.getCold())) st.setCwcext(dc.getCnew());
-			if (dc.field.equals("cspext") && st.getCspext().contains(dc.getCold())) st.setCspext(dc.getCnew());
+			if (dc.getField().equals("cggext") && st.getCggext().equals(dc.getCold())) {st.setCggext(dc.getCnew());break;}
+			if (dc.getField().equals("cwcext") && st.getCwcext().equals(dc.getCold())) {st.setCwcext(dc.getCnew());break;}
+			if (dc.getField().equals("cspext") && st.getCspext().equals(dc.getCold())) {st.setCspext(dc.getCnew());break;}
 			}
 		}
 	}

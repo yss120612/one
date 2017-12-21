@@ -10,7 +10,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.yss1.one.dao.LgotaDao;
+import com.yss1.one.dao.LgotaDescrDao;
 import com.yss1.one.dao.UpdateLgtCodesDao;
 import com.yss1.one.models.Deyatelnost;
 import com.yss1.one.models.Staj;
@@ -25,7 +25,7 @@ public class StajCalculator {
 UpdateLgtCodesDao lgtCodesDao;
 
 @Autowired
-LgotaDao lgotaDao;
+LgotaDescrDao lgotaDao;
 
 Set<String> lgotes;
 

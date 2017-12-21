@@ -7,15 +7,15 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.yss1.one.dao.LgotaDao;
-import com.yss1.one.models.Lgota;
+import com.yss1.one.dao.LgotaDescrDao;
+import com.yss1.one.models.LgotaDescription;
 import com.yss1.one.models.Staj;
 import com.yss1.one.util.Period;
 
 @Service
 public class LsCalculator {
 @Autowired
-LgotaDao lDao;
+LgotaDescrDao lDao;
 @Autowired
 StajCalculator stCalc;
 
@@ -63,8 +63,9 @@ public Period calcNS(List<Staj> stlist) {
 }
 
 
+//записываем нкжные куски стажа в отдельный массив
 public Period calcLS(List<Staj> stlist, String ls) {
-	Lgota lg=lDao.getLgota(ls);
+	LgotaDescription lg=lDao.getLgota(ls);
 	
 	List<Staj> tmp = new ArrayList<>();
 	Staj current=null;
@@ -114,7 +115,7 @@ public Period calcLS(List<Staj> stlist, String ls) {
 
 public int calcLgotMonth(Period period, String ls, int year, boolean isMan) {
 	int res=0;
-	Lgota lg=lDao.getLgota(ls);
+	LgotaDescription lg=lDao.getLgota(ls);
 	
 	boolean os=false;
 	
@@ -184,23 +185,24 @@ public int calcLgotMonth(Period period, String ls, int year, boolean isMan) {
 		return 0;
 	}
 	
+	res= (int)(Math.floor((period.getYears()*12f+period.getMonths())/lg.getMan_d())*lg.getMan_ds());
 	
-	if (ls.equals("27-1") || ls.equals("27-2")|| ls.equals("ЗП12Б")|| ls.equals("ЗП12А"))
-	{
-		if (isMan) {
-			res=(int)((period.getYears()+period.getMonths()/12f)*lg.getMan_ds()/lg.getMan_d())*12;
-		}else {
-			res=(int)((period.getYears()+period.getMonths()/12f)*lg.getWoman_ds()/lg.getWoman_d())*12;
-		}
-	
-	}
-	else {
-		if (isMan) {
-			res=(int)((period.getYears()+period.getMonths()/12f)*lg.getMan_ds()/lg.getMan_d()*12);
-		}else {
-			res=(int)((period.getYears()+period.getMonths()/12f)*lg.getWoman_ds()/lg.getWoman_d()*12);
-		}	
-	}
+//	if (ls.equals("27-1") || ls.equals("27-2")|| ls.equals("ЗП12Б")|| ls.equals("ЗП12А"))
+//	{
+//		if (isMan) {
+//			res=(int)((period.getYears()+period.getMonths()/12f)*lg.getMan_ds()/lg.getMan_d())*12;
+//		}else {
+//			res=(int)((period.getYears()+period.getMonths()/12f)*lg.getWoman_ds()/lg.getWoman_d())*12;
+//		}
+//	
+//	}
+//	else {
+//		if (isMan) {
+//			res=(int)((period.getYears()+period.getMonths()/12f)*lg.getMan_ds()/lg.getMan_d()*12);
+//		}else {
+//			res=(int)((period.getYears()+period.getMonths()/12f)*lg.getWoman_ds()/lg.getWoman_d()*12);
+//		}	
+//	}
 	return res;
 }
 

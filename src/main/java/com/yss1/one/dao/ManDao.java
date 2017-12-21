@@ -77,20 +77,31 @@ public class ManDao {
 	private void saveStaj(long id,List<Staj> stl, int vid) {
 		if (stl==null || stl.isEmpty()) return;
 		for(Staj st:stl) {
-			pgDT.update("insert into public.stag (id,vid,dstart,dend,regn,predpr_name,vid_deyat,cggext,cspext,ctpext,cwcext,dopctpext,dopcspext) values("+
-			id+","+
-			vid+",DATE('"+
-			Utils.getFormattedDate4sql2(st.getStartDate())+"'),DATE('"+
-			Utils.getFormattedDate4sql2(st.getEndDate())+"'),'"+
-			st.getRegNumb()+"','"+
-			st.getPredprName()+"','"+
-			st.getVidDeyat()+"','"+
-			st.getCggext()+"','"+
-			st.getCspext()+"','"+
-			st.getCtpext()+"','"+
-			st.getCwcext()+"','"+
-			st.getDopctpext()+"','"+
-			st.getDopcspext()+"')");
+//			pgDT.update("insert into public.stag (id,vid,dstart,dend,regn,predpr_name,vid_deyat,cggext,cspext,ctpext,cwcext,dopctpext,dopcspext) values("+
+//			id+","+
+//			vid+",DATE('"+
+//			Utils.getFormattedDate4sql2(st.getStartDate())+"'),DATE('"+
+//			Utils.getFormattedDate4sql2(st.getEndDate())+"'),'"+
+//			st.getRegNumb()+"','"+
+//			st.getPredprName()+"','"+
+//			st.getVidDeyat()+"','"+
+//			st.getCggext()+"','"+
+//			st.getCspext()+"','"+
+//			st.getCtpext()+"','"+
+//			st.getCwcext()+"','"+
+//			st.getDopctpext()+"','"+
+//			st.getDopcspext()+"')");
+			pgDT.update("insert into public.stag (id,vid,dstart,dend,regn,predpr_name,vid_deyat,cggext,cspext,ctpext,cwcext,dopctpext,dopcspext) values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+					id,vid,st.getStartDate(),st.getEndDate(),
+					//Utils.getFormattedDate4sql2(st.getStartDate()),
+					//Utils.getFormattedDate4sql2(st.getEndDate()),
+					st.getRegNumb(),
+					st.getPredprName(),
+					st.getVidDeyat(),
+					st.getCggext(),
+					st.getCspext(),st.getCtpext(),st.getCwcext(),
+					st.getDopctpext(),st.getDopcspext());
+
 		}
 	}
 	

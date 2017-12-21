@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Set;
 
 import com.yss1.one.calc.NpkCalculator;
 import com.yss1.one.calc.PedCalculator;
@@ -112,6 +113,8 @@ public class Man {
 	 //в 2000-2001 году  средняя зп в месяц
 	 float sal20002001;
 	 
+	 private Set<String> lgotes;
+	 
 	//калькуляторы
 	RkCalculator rkCalc;
 	StajCalculator stCalc;
@@ -169,7 +172,8 @@ public class Man {
 		List<String> med=new ArrayList<>();
 		LgStaj lst;
 		int maxMonth=0;
-		for (String s:stCalc.getLgotes()) {
+		lgotes=stCalc.getLgotes();
+		for (String s:lgotes) {
 			rawStaj = stCalc.copyStajes(staj,stajKonv);
 			med.clear();
 			if (s.equals("27-СМХР"))
@@ -280,6 +284,10 @@ public class Man {
 			//periodAll.addPeriod(Utils.calcPeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
 			//res = res + de.toString() + "<br>";
 		//}
+	}
+
+	public Set<String> getLgotes() {
+		return lgotes;
 	}
 
 	public List<LgStaj> getMyLgStaj() {

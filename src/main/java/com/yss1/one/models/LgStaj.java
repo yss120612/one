@@ -7,27 +7,13 @@ import com.yss1.one.util.Period;
 import com.yss1.one.util.Twix;
 
 public class LgStaj {
+
+	
 private String name;
+
 private Period period;
+
 private int month;
-//с чем суммируется и с каким коэффициентом
-private List<Twix<String,Float>> forSumm;
-//нужно ли учитывать пересечение при суммировании
-private boolean intersect;
-//что присваевать просуммированному участку
-private String whatSumm;
-
-//продолжительность общего стажа (если 0 не нужен)
-private float oStaj;
-
-//продолжительность спецстажа
-private float specStaj;
-
-//можно ли использовать не полный спец стаж. если >0 то это делитель спецстажа с которого можно применять льготу 
-private float canNoFull;
-
-//возраст выхода, если 
-private float pravoAge;
 
 @Override
 public String toString() {
@@ -54,7 +40,6 @@ public void setPeriod(Period period) {
 public LgStaj(String name, Period period) {
 	this.name = name;
 	this.period = period;
-	forSumm=new ArrayList<>();
 }
 
 
