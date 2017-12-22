@@ -8,6 +8,7 @@ import com.yss1.one.util.Twix;
 
 //Льгота с правилами применения
 public class LgotaDescription {
+	
 public String getFullName() {
 		return fullName;
 	}
@@ -30,9 +31,15 @@ private float woman_pens;//возраст права для женщин
 private float half;
 
 //с чем суммируется и с каким коэффициентом
-private List<Twix<String,Float>> forSumm;
+private List<LgotaUnion> forSumm;
 
 
+public List<LgotaUnion> getForSumm() {
+	return forSumm;
+}
+public void setForSumm(List<LgotaUnion> forSumm) {
+	this.forSumm = forSumm;
+}
 //сколько месяцев неполного стажа
 private float man_d;
 //на сколько месяцев приближают пенсию

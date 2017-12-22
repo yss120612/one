@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import com.yss1.one.models.LgotaDescription;
+import com.yss1.one.models.LgotaUnion;
 import com.yss1.one.models.Staj;
 
 //Список что дает льгота
@@ -27,7 +28,24 @@ public class LgotaDescrDao {
 	private void fillLgotes()
 	{
 		JdbcTemplate pgDT=new JdbcTemplate(pgDS);
+		Integer count;
 		lgotes=pgDT.query("select * from lgota", lgotaRowMapper);
+		if (lgotes!=null) for (LgotaDescription lgd: lgotes) {
+			count=pgDT.queryForObject("select count(*) from union_lgota where kod1=?",Integer.class,lgd.getName());
+			if (count>0) {
+				lgd.setForSumm(pgDT.query("select * from union_lgota where kod1=?", new Object [] {lgd.getName()}, lgotaUnionRowMapper));
+			}
+		}
+		
+//		String s;
+//		for (LgotaDescription ld: lgotes) {
+//			s=ld.getName()+"union with:";
+//			if (ld.getForSumm()!=null) for (LgotaUnion lu : ld.getForSumm()) {
+//				s+=lu.getCode()+", ";
+//			}
+//			System.out.println(s);
+//		}
+		
 	}
 	
 	public Set<String> checkLgotes(List<Staj> stl){
@@ -79,6 +97,18 @@ public class LgotaDescrDao {
 		}
 	};
 
+	private RowMapper<LgotaUnion> lgotaUnionRowMapper = new RowMapper<LgotaUnion>() {
+		public LgotaUnion mapRow(ResultSet rs, int rowNum) throws SQLException {
+			LgotaUnion lu=new LgotaUnion();
+			lu.setCode(rs.getString("kod2"));
+			lu.setKoeff(rs.getFloat("koef"));
+			lu.setUsl_man(rs.getFloat("usl_m"));
+			lu.setUsl_woman(rs.getFloat("usl_w"));
+			lu.setJoinCode(rs.getString("main"));
+			return lu;
+		}
+	};
+	
 	public LgotaDescription getLgota(String name) {
 		if (lgotes==null) fillLgotes();	
 		for (LgotaDescription lgt:lgotes) {

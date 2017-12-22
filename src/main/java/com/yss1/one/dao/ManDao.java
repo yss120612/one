@@ -34,9 +34,12 @@ public class ManDao {
 	public void backup(Man man, long id) {
 		if (id==0) return;
 		if (checkID(id)) return;
-		pgDT.execute("insert into public.person (id,fio,insnmb,prnsex,prnbrd) values ("+id+",'"
-		+(man.getFamily()+" "+man.getName()+" "+man.getOtch())+"','"+man.getSNILS()+"','"+man.getSex()
-		+"',Date('"+Utils.getFormattedDate4sql2(man.getBirthDayDate())+"'))");
+		pgDT.update("insert into public.person (id,fio,insnmb,prnsex,prnbrd) values (?,?,?,?,?)",
+				id,
+				man.getFamily()+" "+man.getName()+" "+man.getOtch(),
+				man.getSNILS(),
+				man.getSex(),
+				man.getBirthDayDate());
 		saveStaj(id,man.getStaj(),1);
 		saveStaj(id,man.getStajKonv(),2);
 		savePlatej(id,man.getPlateg20002001());
@@ -116,14 +119,13 @@ public class ManDao {
 	private void savePlatej(long id,List<Platej> pll) {
 		if (pll==null || pll.isEmpty()) return;
 		for(Platej pl:pll) {
-			pgDT.update("insert into public.payment (id,datestart,dateend,raion,region,summa)"
-						+ " values("+
-						id+",DATE('"+
-						Utils.getFormattedDate4sql2(pl.getdStart())+"'), DATE('"+
-						Utils.getFormattedDate4sql2(pl.getdEnd())+"'),"+
-						pl.getRaion()+","+
-						pl.getRegion()+","+
-						pl.getSumma()+")");
+			pgDT.update("insert into public.payment (id,datestart,dateend,raion,region,summa) values(?,?,?,?,?,?)",
+						id,
+						pl.getdStart(),
+						pl.getdEnd(),
+						pl.getRaion(),
+						pl.getRegion(),
+						pl.getSumma());
 		}
 	}
 	
@@ -139,15 +141,16 @@ public class ManDao {
 	private void saveVsnosy(long id,List<Vsnos> vsl) {
 		if (vsl==null || vsl.isEmpty()) return;
 	for(Vsnos vs:vsl) {
-		pgDT.update("insert into public.vznos (id,dptcod,dcinmb,year,ctmcod,asr,cprcod,regnum,cprext) values("+id+","+
-				    vs.getDptcod()+","+
-				    vs.getDcinmb()+","+
-				    vs.getYear()+",'"+
-				    vs.getCtmcod()+"',"+
-				    vs.getAsr()+","+
-				    vs.getCprcod()+",'"+
-				    vs.getRegNumb()+"','"+
-				    vs.getCprext()+"')");
+		pgDT.update("insert into public.vznos (id,dptcod,dcinmb,year,ctmcod,asr,cprcod,regnum,cprext) values(?,?,?,?,?,?,?,?,?)",
+					id,
+				    vs.getDptcod(),
+				    vs.getDcinmb(),
+				    vs.getYear(),
+				    vs.getCtmcod(),
+				    vs.getAsr(),
+				    vs.getCprcod(),
+				    vs.getRegNumb(),
+				    vs.getCprext());
 		}
 	}
 	

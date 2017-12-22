@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.yss1.one.dao.LgotaDescrDao;
 import com.yss1.one.models.LgotaDescription;
+import com.yss1.one.models.LgotaUnion;
 import com.yss1.one.models.Staj;
 import com.yss1.one.util.Period;
 
@@ -62,6 +63,15 @@ public Period calcNS(List<Staj> stlist) {
 	return stCalc.getStajAll(tmp);
 }
 
+private boolean inList(LgotaDescription ld, String patt) {
+	
+	if (ld.getName().equals(patt)) return true;
+	if (ld.getForSumm()==null) return false;
+	for (LgotaUnion lu: ld.getForSumm()) {
+		if(lu.getCode().equals(patt)) return true;
+	}
+	return false;
+}
 
 //записываем нкжные куски стажа в отдельный массив
 public Period calcLS(List<Staj> stlist, String ls) {
@@ -70,7 +80,7 @@ public Period calcLS(List<Staj> stlist, String ls) {
 	List<Staj> tmp = new ArrayList<>();
 	Staj current=null;
 	for (Staj st:stlist) {
-		if (lg.getField().equals("cwcext") && st.getCwcext().equals(lg.getName())) {
+		if (lg.getField().equals("cwcext") && inList(lg,st.getCwcext())) {
 			if (current==null) {
 				current=Staj.makeCopy(st);
 			}
@@ -82,7 +92,7 @@ public Period calcLS(List<Staj> stlist, String ls) {
 			else {
 				if (st.getEndDate().after(current.getEndDate())) current.setEndDate(st.getEndDate());
 			}
-		}else if(lg.getField().equals("cspext") && st.getCspext().equals(lg.getName())) {
+		}else if(lg.getField().equals("cspext") && inList(lg,st.getCspext())) {
 			if (current==null) {
 				current=Staj.makeCopy(st);
 			}
@@ -94,7 +104,7 @@ public Period calcLS(List<Staj> stlist, String ls) {
 			else {
 				if (st.getEndDate().after(current.getEndDate())) current.setEndDate(st.getEndDate());
 			}
-		}else if(lg.getField().equals("cggext") && st.getCggext().contains(lg.getName())) {
+		}else if(lg.getField().equals("cggext") && inList(lg,st.getCggext())) {
 			if (current==null) {
 				current=Staj.makeCopy(st);
 			}
