@@ -63,12 +63,16 @@ public Period calcNS(List<Staj> stlist) {
 	return stCalc.getStajAll(tmp);
 }
 
+
 private boolean inList(LgotaDescription ld, String patt) {
 	
 	if (ld.getName().equals(patt)) return true;
 	if (ld.getForSumm()==null) return false;
 	for (LgotaUnion lu: ld.getForSumm()) {
-		if(lu.getCode().equals(patt)) return true;
+		if(lu.getCode().equals(patt)) {
+			ld.setSummUsed(true);
+			return true;
+		}
 	}
 	return false;
 }
@@ -76,7 +80,7 @@ private boolean inList(LgotaDescription ld, String patt) {
 //записываем нкжные куски стажа в отдельный массив
 public Period calcLS(List<Staj> stlist, String ls) {
 	LgotaDescription lg=lDao.getLgota(ls);
-	
+	lg.setSummUsed(false);
 	List<Staj> tmp = new ArrayList<>();
 	Staj current=null;
 	for (Staj st:stlist) {

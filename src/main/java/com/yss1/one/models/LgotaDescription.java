@@ -9,6 +9,14 @@ import com.yss1.one.util.Twix;
 //Льгота с правилами применения
 public class LgotaDescription {
 	
+private boolean summUsed;
+
+public boolean isSummUsed() {
+	return summUsed;
+}
+public void setSummUsed(boolean summUsed) {
+	this.summUsed = summUsed;
+}
 public String getFullName() {
 		return fullName;
 	}
