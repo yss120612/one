@@ -6,7 +6,9 @@ import java.io.ByteArrayOutputStream;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 
@@ -53,7 +55,111 @@ public class PdfFactory {
 		baseFonti = BaseFont.createFont("public/fonts/timesi.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 		baseFontb = BaseFont.createFont("public/fonts/timesbd.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 	}
+	
+	private PdfPCell makeCell(BaseColor bk) {
+		PdfPCell cell = new PdfPCell();
+		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		cell.setBorder(Rectangle.BOX);
+		cell.setBorderColor(BaseColor.WHITE);
+		cell.setBorderWidth(10);
+		cell.setBackgroundColor(bk);
+		cell.setPadding(10);
+		return cell;
+	}
+	
+	public byte[] makeExplanation(Man man) throws DocumentException, IOException {
+		Document document = new Document(PageSize.A4, 50, 50, 50, 50);
+		// Font font = new Font(baseFont, 14, Font.NORMAL|Font.UNDERLINE, new
+		// CMYKColor(255, 255, 0, 0));
+		Font font14b = new Font(baseFontb, 14, Font.NORMAL, new CMYKColor(255, 255, 255, 0));
+		Font font14i = new Font(baseFonti, 14, Font.NORMAL, new CMYKColor(255, 255, 255, 0));
+		Font font14 = new Font(baseFont, 14, Font.NORMAL | Font.UNDERLINE, new CMYKColor(255, 255, 255, 0));
+		Font font12 = new Font(baseFont, 12, Font.NORMAL, new CMYKColor(255, 255, 255, 0));
+		Font font12i = new Font(baseFonti, 12, Font.NORMAL, new CMYKColor(255, 255, 255, 0));
+		Font font12red = new Font(baseFontb, 12, Font.NORMAL, new BaseColor(255, 64, 64));
+		Font font10 = new Font(baseFont, 10, Font.NORMAL, new CMYKColor(255, 255, 255, 0));
+		Font font10i = new Font(baseFonti, 10, Font.NORMAL, new CMYKColor(255, 255, 255, 0));
+		Font font8 = new Font(baseFont, 8, Font.NORMAL, BaseColor.BLACK);
+		
+		ByteArrayOutputStream mos = new ByteArrayOutputStream();
+		PdfWriter writer = PdfWriter.getInstance(document, mos);
+		document.open();
 
+		
+		Paragraph paragraph1 = new Paragraph("Виртуальный прием:", font14);
+		paragraph1.setAlignment(Paragraph.ALIGN_CENTER);
+		// paragraph1.setSpacingBefore(10);
+		document.add(paragraph1);
+		PdfPCell cell;
+		Phrase ph;
+		BaseColor myCol=new BaseColor(190, 190, 255);
+		BaseColor pfrCol=new BaseColor(255, 255, 180);
+		List<Phrase> text=new ArrayList<>(); 
+		
+		PdfPTable table = new PdfPTable(2);
+		table.setSpacingBefore(10);
+		table.setSpacingAfter(25);
+		table.setWidths(new float[] { 1, 2 });
+		table.setWidthPercentage(100);
+				
+		
+		ph=new Phrase("Здравствуйте!", font10);
+		cell = makeCell(myCol);
+		
+		
+		cell.setPadding(10);
+		cell.addElement(ph);
+		table.addCell(cell);
+		
+		text.clear();
+		cell = makeCell(pfrCol);
+		ph=new Phrase("Здравствуйте ", font10);
+		text.add(ph);
+		ph=new Phrase(man.getFamily()+" "+man.getName()+" "+man.getOtch(), font12red);
+		text.add(ph);
+		ph=new Phrase("!", font10);
+		text.add(ph);
+		ph=new Phrase();
+		ph.addAll(text);
+		cell.addElement(ph);
+		table.addCell(cell);
+		
+		ph=new Phrase("Я хочу пойти на пенсию. Какой размер пенсии у меня будет?", font12);
+		cell = makeCell(myCol);
+		cell.addElement(ph);
+		table.addCell(cell);
+		
+		text.clear();
+		cell = makeCell(pfrCol);
+		ph=new Phrase("Давайте рассчитаем предполагаемый размер Вашей пенсии по данным индивидуального (персонифицированного) учета: Пенсия рассчитывается по формуле:", font10);
+		cell.addElement(ph);
+		ph=new Phrase("Пенсия = Баллы × Стоимость балла + Фиксированная выплата",font10i);
+		cell.addElement(ph);
+		ph=new Phrase("Предварительно рассчитанный размер Вашей пенсии составит:",font12red);
+		text.add(ph);
+		
+		
+		
+		//ph=new Phrase(String.format("%.0d", man.getSumm()),font12);
+		//text.add(ph);
+		ph=new Phrase("=",font10);
+		text.add(ph);
+		
+		ph=new Phrase();
+		ph.addAll(text);
+		cell.addElement(ph);
+		table.addCell(cell);
+		
+		
+		
+		document.add(table);
+		document.close();
+	    writer.close();
+		return mos.toByteArray();
+		
+	}
+	
 	public void makeTest(String mess) throws DocumentException, IOException {
 		Document document = new Document(PageSize.A4, 50, 50, 50, 50);
 		// Font font = new Font(baseFont, 14, Font.NORMAL|Font.UNDERLINE, new
@@ -148,7 +254,7 @@ public class PdfFactory {
 		writer.close();
 	}
 
-	public byte[] makeExplanation(Man man, long id) throws DocumentException, IOException {
+	public byte[] makeCalculation(Man man, long id) throws DocumentException, IOException {
 		Document document = new Document(PageSize.A4, 50, 50, 50, 50);
 		ByteArrayOutputStream mos = new ByteArrayOutputStream();
 
@@ -286,11 +392,16 @@ public class PdfFactory {
 		}
 		String lgt="*";
 		LgotaDescription ld;
+		
+		if (man.getLgotes()!=null)
+		{
 		for (String lg:man.getLgotes())
 		{
 			ld=lgotesDao.getLgota(lg);
 			lgt+=ld.getName()+":"+ld.getFullName()+" ";
 		}
+		}
+		
 		if (lgt.length()>1)
 		{
 		table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
@@ -372,7 +483,21 @@ public class PdfFactory {
 		table.addCell(new Phrase("Подпись", font8));
 		table.addCell(new Phrase("ФИО", font8));
 		document.add(table);
-
+		
+		table = new PdfPTable(3);
+		table.setSpacingBefore(30);
+		table.setWidths(new float[] { 3, 1, 1 });
+		table.setWidthPercentage(100);
+		table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
+		table.getDefaultCell().setVerticalAlignment(Element.ALIGN_TOP);
+		table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
+		table.addCell(new Phrase("Согласен с принятием решения о назначении пенсии по имеющимся в распоряжении территориального органа Пенсионного фонда Российской Федерации сведениям индивидуального (персонифицированного) учета без представления дополнительных документов о стаже и заработке", font8));
+		table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+		table.getDefaultCell().setBorder(Rectangle.BOTTOM);
+		table.addCell(new Phrase("", font8));
+		table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
+		table.addCell(new Phrase(man.getFamily()+" "+man.getName().charAt(0)+"."+(man.getOtch().isEmpty()?"":man.getOtch().charAt(0)+"."), font8));
+		document.add(table);
 		
 		document.close();
 		//writer.close();
@@ -382,7 +507,7 @@ public class PdfFactory {
 	public byte[] makeDocument(Man man) throws DocumentException, IOException {
 		Document document = new Document(PageSize.A4, 50, 50, 50, 50);
 		ByteArrayOutputStream mos = new ByteArrayOutputStream();
-
+		
 		// PdfWriter writer = PdfWriter.getInstance(document,new
 		// FileOutputStream("d:\\"+man.getSNILS()+".pdf"));
 
@@ -392,7 +517,8 @@ public class PdfFactory {
 		// BaseFont baseFont = BaseFont.createFont("d:\\times.ttf", BaseFont.IDENTITY_H,
 		// BaseFont.NOT_EMBEDDED);
 		Font font = new Font(baseFont, 14, Font.NORMAL, new CMYKColor(255, 255, 0, 0));
-
+		Font font8 = new Font(baseFont, 8, Font.NORMAL, BaseColor.BLACK);
+		Font font10 = new Font(baseFont, 10, Font.NORMAL, new CMYKColor(255, 255, 255, 0));
 		// Font ft=FontFactory.getFont(FontFactory.TIMES, 14, Font.NORMAL, new
 		// CMYKColor(0, 0, 0, 0));
 		// Font ft2=FontFactory.getFont(FontFactory.TIMES, 24, Font.NORMAL, new
@@ -485,6 +611,77 @@ public class PdfFactory {
 
 		// document.add(chapter1);
 		document.add(table);
+		
+		table = new PdfPTable(3);
+		table.setWidths(new float[] { 1, 3, 1 });
+		table.setWidthPercentage(100);
+		table.setSpacingBefore(20);
+		table.setSpacingAfter(0);
+		table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
+		table.getDefaultCell().setVerticalAlignment(Element.ALIGN_BOTTOM);
+		table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
+		table.addCell(new Phrase("Данные о периодах работы", font8));
+		table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+		table.addCell(new Phrase("",font8));
+		table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
+		table.addCell(new Phrase("Таблица 1", font8));
+		document.add(table);
+
+		table = new PdfPTable(6);
+		table.setSpacingBefore(3);
+		table.setSpacingAfter(25);
+		table.setWidths(new float[] { 1, 10, 3, 3, 4, 3 });
+		table.setWidthPercentage(100);
+		table.getDefaultCell().setBackgroundColor(BaseColor.LIGHT_GRAY);
+		table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+		table.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
+		table.addCell(new Phrase("№", font10));
+		table.addCell(new Phrase("Работодатель/\nвид деятельности", font10));
+		table.addCell(new Phrase("Начало\nпериода", font10));
+		table.addCell(new Phrase("Конец\nпериода", font10));
+		table.addCell(new Phrase("Характеристика периода", font10));
+		table.addCell(new Phrase("Страховые взносы,\nуплаченные работодателем", font10));
+		table.getDefaultCell().setBackgroundColor(BaseColor.WHITE);
+		table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
+		table.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
+		int counter = 0;
+		if (man.getMyDeyatelnost()!=null) {
+		
+		for (Deyatelnost de : man.getMyDeyatelnost()) {
+			table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+			table.addCell(new Phrase(++counter + "", font10));
+			table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
+			table.addCell(new Phrase(de.getPredprName() + "/" + de.getVidDeyat(), font8));
+			table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+			table.addCell(new Phrase(Utils.getFormattedDate(de.getdStart()), font10));
+			table.addCell(new Phrase(Utils.getFormattedDate(de.getdEnd()), font10));
+			table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
+			table.addCell(new Phrase(de.getHarDeyatStr().length() < 3 ? "" : de.getHarDeyatStr()+"*", font10));
+			table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
+			table.addCell(new Phrase(de.getSumm() < 0.1f ? "" : String.format("%,.2f", de.getSumm()), font10));
+		}
+		}
+		String lgt="*";
+		LgotaDescription ld;
+		
+		if (man.getLgotes()!=null)
+		{
+		for (String lg:man.getLgotes())
+		{
+			ld=lgotesDao.getLgota(lg);
+			lgt+=ld.getName()+":"+ld.getFullName()+" ";
+		}
+		}
+		
+		if (lgt.length()>1)
+		{
+		table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
+		table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
+		table.getDefaultCell().setColspan(6);
+		table.addCell(new Phrase(lgt, font8));
+		}
+		document.add(table);
+		
 		document.close();
 		writer.close();
 		// System.out.println(bytes2HexStr(mos.toByteArray()));

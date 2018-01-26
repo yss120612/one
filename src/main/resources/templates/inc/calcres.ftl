@@ -58,8 +58,8 @@
 </div>
 </div>
 <div class="col-md-10 col-md-offset-1">
-<a type="button" class="btn btn-default" target="_blank" href="${springMacroRequestContext.contextPath}/pdf/1/${userid}">Расчет</a>
-<a type="button" class="btn btn-default" target="_blank" href="${springMacroRequestContext.contextPath}/pdf/2/${userid}">Разъяснения</a>
+<a type="button" class="btn btn-default" target="_blank" href="${springMacroRequestContext.contextPath}/pdf/1/${userid?string["0"]}">Расчет</a>
+<a type="button" class="btn btn-default" target="_blank" href="${springMacroRequestContext.contextPath}/pdf/2/${userid?string["0"]}">Разъяснения</a>
 </div>
 </div>
 

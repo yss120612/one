@@ -20,7 +20,7 @@ import com.yss1.one.models.Man;
 import com.yss1.one.util.PdfFactory;
 import com.yss1.one.util.Utils;
 
-//расчет пенсии клиента, занесение в BD расчитанной информации  автора запроса
+//расчет пенсии клиента, занесение в BD расчитанной информации,  автора запроса
 @Repository
 public class MainDao {
 	@Autowired
@@ -98,8 +98,8 @@ private long id;
 			sql = "update public.spravka set szi_new=?,raschet=?, ts_a=TIMESTAMP '" + now + "', pens=0  where id=" + id;
 		} else {
 			manDao.backup(man, id);
-			res = Utils.bytes2HexStr(pdfFactory.makeDocument(man));
-			resr = Utils.bytes2HexStr(pdfFactory.makeExplanation(man,id));
+			res = Utils.bytes2HexStr(pdfFactory.makeExplanation(man));
+			resr = Utils.bytes2HexStr(pdfFactory.makeCalculation(man,id));
 			sql = "update public.spravka set szi_new=?,raschet=?, ts_a=TIMESTAMP '" + now + "', pens="
 					+ man.getSumm() + ",pravo=Date('" + Utils.getFormattedDate4sql2(man.getDatePravDate())+ "'), fio='"+(man.getFamily()+" "+man.getName()+" "+man.getOtch())+"' where id=" + id;
 		}

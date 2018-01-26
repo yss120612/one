@@ -1,5 +1,7 @@
 package com.yss1.one.models;
 
+
+//класс для суммирования льгот
 public class LgotaUnion {
 private String code;
 private float koeff;

@@ -172,33 +172,27 @@ public class Man {
 		List<String> med=new ArrayList<>();
 		LgStaj lst;
 		int maxMonth=0;
+		Period lper;
 		lgotes=stCalc.getLgotes();
+		boolean pedStaj=false;
 		for (String s:lgotes) {
+			if (pedStaj && (s.equals("27-ПД")||s.equals("27-ПДРК"))) continue;
 			rawStaj = stCalc.copyStajes(staj,stajKonv);
 			med.clear();
-			if (s.equals("27-СМХР"))
+			if (s.equals("27-СМХР") || s.equals("27-ГДХР") || s.equals("27-ГД") || s.equals("27-СМ"))
 			{
-				med.add("27-СМХР");
-				lst=new LgStaj(s,medCalc.getMedStaj(rawStaj,med));
-			}else if (s.equals("27-ГДХР")){
-				med.add("27-СМХР");
-				med.add("27-ГДХР");
-				lst=new LgStaj(s,medCalc.getMedStaj(rawStaj,med));
-			}else if (s.equals("27-СМ")){
-				med.add("27-СМХР");
-				med.add("27-ГДХР");
-				med.add("27-СМ");
-				lst=new LgStaj(s,medCalc.getMedStaj(rawStaj,med));
-			}else if (s.equals("27-ГД")){
-				med.add("27-СМХР");
-				med.add("27-ГДХР");
-				med.add("27-СМ");
-				med.add("27-ГД");
-				lst=new LgStaj(s,medCalc.getMedStaj(rawStaj,med));
+				lper=medCalc.getMedStaj(rawStaj,s);
+				lst=new LgStaj(s,lper);
 			}else if (s.equals("27-ПД")||s.equals("27-ПДРК")){
-				lst=new LgStaj(s,pedCalc.getPedStaj(rawStaj));
+				pedStaj=true;
+				s="27-ПД";
+				lper=pedCalc.getPedStaj(rawStaj);
+				lst=new LgStaj(s,lper);
 		} else {//остальные
-			lst=new LgStaj(s,lsCalc.calcLS(rawStaj, s));
+				lper=lsCalc.calcLS(rawStaj, s);
+				lst=new LgStaj(s,lper);
+				lper=lsCalc.calcAbsLS(rawStaj, s);
+				lst.setAbsPeriod(lper);
 			
 		}
 			lst.setMonth(lsCalc.calcLgotMonth(lst.getPeriod(), s, periodAll.getYears(), getSex().contains("М")));
@@ -211,57 +205,33 @@ public class Man {
 			datePrav.add(GregorianCalendar.MONTH,-maxMonth);
 			lgota=1;
 		}
-		
-		meter.start();
 		calcKVal();
-		meter.measure("calcKVal");
 		
-		meter.start();
 		calcStajK();
-		meter.measure("calcStajK");
 		
 		// rk2001 считается до SalK т.к. он его ограничивает
-		meter.start();
 		rk2001=rkCalc.calc(plateg20002001);
-		meter.measure("rk2001");
 		
 		//расчет зарплатного коэффициента
-		meter.start();
 		calcSalK();
-		meter.measure("calcSalK");
 		
-		meter.start();
 		rP=uniCalc.rpCalc(stajK, kSal);
-		meter.measure("CalcRp");
 		
-		meter.start();
 		rPK=uniCalc.rpkCalc(dopStajK, rP,datePrav.get(GregorianCalendar.YEAR),lgota!=0);
-		meter.measure("CalcRpk");
 		
-		meter.start();
 		nPK=npkCalc.calc(rPK, kVal, getDatePravDate());
-		meter.measure("npkCalc");
 		
-		meter.start();
 		codeCalc.calc(vsnosy);
-		meter.measure("codeCalc");
-		
+
 		vsnos0215=vsnosCalc.calc(vsnosy,birthDay, datePrav,meter);
 		
-		meter.start();
 		ipk15=uniCalc.npk15Calc(nPK,vsnos0215,datePrav.get(GregorianCalendar.YEAR),lgota!=0);
-		meter.measure("ipk15Calc");
 		
-		meter.start();
 		ipk=ipk15+finCalc.calcIPK(vsnosy,datePrav.getTime());
-		meter.measure("ipkCalc");
 		
-		
-		meter.start();
 		pensiya=finCalc.calcPens(ipk,datePrav.getTime());
 		fix=finCalc.calcFix(datePrav.getTime());
-		meter.measure("pensCalc");
-		
+			
 		res = res+
 				//"MKS="+mksPer+" Staj="+sPer+
 				//" МЕД СМХР="+medSMHRPer+" МЕД ГДХР="+medGDHRPer+"МЕД СМ="+medSMPer+"МЕД ГД="+medGDPer+" МЕД СЕЛО="+medSeloPer+" PedPer="+pedPer+

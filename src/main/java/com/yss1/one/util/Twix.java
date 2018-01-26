@@ -7,10 +7,10 @@ package com.yss1.one.util;
 			this.key = key;
 			this.val = val;
 		}
-		public T1 getKey() {
+		public T1 getFirst() {
 			return key;
 		}
-		public T2 getVal() {
+		public T2 getSecond() {
 			return val;
 		}
 		private T1 key;

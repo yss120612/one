@@ -127,6 +127,57 @@ public Period calcLS(List<Staj> stlist, String ls) {
 }
 
 
+//записываем нкжные куски стажа в отдельный массив
+public Period calcAbsLS(List<Staj> stlist, String ls) {
+	LgotaDescription lg=lDao.getLgota(ls);
+	lg.setSummUsed(false);
+	List<Staj> tmp = new ArrayList<>();
+	Staj current=null;
+	for (Staj st:stlist) {
+		if (lg.getField().equals("cwcext") && st.getCwcext().equals(lg.getName())) {
+			if (current==null) {
+				current=Staj.makeCopy(st);
+			}
+			else if (current.getEndDate().before(st.getStartDate()))
+			{
+				tmp.add(current);
+				current=Staj.makeCopy(st);
+			}
+			else {
+				if (st.getEndDate().after(current.getEndDate())) current.setEndDate(st.getEndDate());
+			}
+		}else if(lg.getField().equals("cspext") && st.getCspext().equals(lg.getName())) {
+			if (current==null) {
+				current=Staj.makeCopy(st);
+			}
+			else if (current.getEndDate().before(st.getStartDate()))
+			{
+				tmp.add(current);
+				current=Staj.makeCopy(st);
+			}
+			else {
+				if (st.getEndDate().after(current.getEndDate())) current.setEndDate(st.getEndDate());
+			}
+		}else if(lg.getField().equals("cggext") && st.getCggext().equals(lg.getName())) {
+			if (current==null) {
+				current=Staj.makeCopy(st);
+			}
+			else if (current.getEndDate().before(st.getStartDate()))
+			{
+				tmp.add(current);
+				current=Staj.makeCopy(st);
+			}
+			else {
+				if (st.getEndDate().after(current.getEndDate())) current.setEndDate(st.getEndDate());
+			}
+		}
+	}
+	if (current!=null && !tmp.contains(current)) tmp.add(current);
+	return stCalc.getStajAll(tmp);
+}
+
+
+
 public int calcLgotMonth(Period period, String ls, int year, boolean isMan) {
 	int res=0;
 	LgotaDescription lg=lDao.getLgota(ls);

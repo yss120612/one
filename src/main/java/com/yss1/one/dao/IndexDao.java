@@ -32,7 +32,7 @@ public class IndexDao {
 		Map<Integer,Float> map=new HashMap<>();
 		for (Twix<Integer,Float> tw:pgDT.query(sql, idxRowMapper))
 		{
-			map.put(tw.getKey(), tw.getVal());
+			map.put(tw.getFirst(), tw.getSecond());
 		}
 		
 		GregorianCalendar gc=new GregorianCalendar();

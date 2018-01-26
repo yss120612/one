@@ -54,6 +54,15 @@ public class LoginController {
 		return "login";
 	}
 	
+	@RequestMapping(value= {"/forbidden"})
+	public String login1(Model model) {
+		model.addAttribute("name", WebUtils.getLogin());
+		model.addAttribute("rest", "Ошибка подключения");
+		model.addAttribute("err", "Вы не имеете доступа к запрашиваему разделу!");
+		return "start";
+	}
+	
+	
 	
 	
 	
@@ -101,29 +110,5 @@ public class LoginController {
 		}
 		return "start";
 	}
-	
 
-	
-//	@RequestMapping(path="/one/login")
-//	public String login2(Model model,String error,String logout) {
-//		if (error!=null)
-//		{
-//			model.addAttribute("error","Имя или пароль не верны!");
-//		}
-//		if (logout!=null)
-//		{
-//			model.addAttribute("messa","Выход успешно осуществлен!");
-//		}
-//		
-//		//model.addAttribute("name", "Yhhhh");
-//		return "login";
-//	}
-	
-//	
-//	@RequestMapping(path="/login",method = RequestMethod.POST)
-//	public String login2(Model model) {
-//		model.addAttribute("name", "Yhhhh");
-//		return "/";
-//	}
-	
 }

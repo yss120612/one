@@ -18,6 +18,7 @@ import com.yss1.one.util.WebUtils;
 
 @Controller
 
+
 public class AdminController {
 
 	@Autowired
@@ -27,8 +28,6 @@ public class AdminController {
 	RoleDao rd;
 	
 	private String erroradd="";
-	
-	@Secured({"ADMIN"})	
 	@RequestMapping(value= {"/userslist"},method=RequestMethod.GET)
 	public String uList(Model model) {
 		model.addAttribute("name", WebUtils.getLogin());
@@ -90,8 +89,15 @@ public class AdminController {
 		if (rolename==null || rolename.length()<3)
 		{
 			erroradd="Длина не менее 3 символов!";
-			return "redirect:/roleedit/"+id;
+			return "redirect:/roleedit?roleid="+id;
 		}
+		rolename=rolename.trim();
+		if (!rolename.startsWith("ROLE_"))
+		{
+			erroradd="Имя роли должно начинаться с 'ROLE_'";
+			return "redirect:/roleedit?roleid="+id;
+		}
+		
 		Role r= rd.findRoleById((long)id);
 		if (!rd.editRole(r, rolename)) {
 		erroradd=rolename+"<br>Такая роль существует!";
@@ -164,10 +170,22 @@ public class AdminController {
 	{
 
 		erroradd="";
+		if (rolename==null)
+		{
+			erroradd="Пустое имя роли!";
+			rolename="";
+		}
+		
+		rolename=rolename.trim();
 		
 		if (rolename.length()<3)
 		{
 			erroradd="Имя роли менее 3х символов!";
+		}
+		
+		if (!rolename.startsWith("ROLE_"))
+		{
+			erroradd="Имя роли должно начинаться с 'ROLE_'";
 		}
 		
 		if (rd.checkExist(rolename)) {

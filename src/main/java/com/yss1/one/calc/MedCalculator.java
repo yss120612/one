@@ -5,8 +5,12 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.yss1.one.dao.LgotaDescrDao;
+import com.yss1.one.models.LgotaDescription;
+import com.yss1.one.models.LgotaUnion;
 import com.yss1.one.models.Staj;
 import com.yss1.one.util.Period;
 import com.yss1.one.util.Utils;
@@ -14,6 +18,9 @@ import com.yss1.one.util.Utils;
 //Калькулятор расчета медицинского стажа
 @Service
 public class MedCalculator {
+	@Autowired
+	LgotaDescrDao lDao;
+	
 	public Period getMedStajBefore(List<Staj> ls, Date bd, boolean containsCity) {
 		// what=1 ГД,what=2 СМ, what=3 ГДХР, what=4 СМХР
 
@@ -23,7 +30,7 @@ public class MedCalculator {
 			if (st.getStartDate().after(bd))
 				continue;
 			
-			if (st.getCspext().contains("СМХР")) {
+			if ( st.getCspext().contains("СМХР")) {
 				if (containsCity) {
 					if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
 						per.addPeriod(Utils.multPeriod(
@@ -88,10 +95,21 @@ public class MedCalculator {
 		return getMedStajBefore(ls, Utils.makeDate(2100, 1, 1), containsCity);
 	}
 
+	private boolean inList(LgotaDescription ld, String patt) {
+		
+		if (ld.getName().equals(patt)) return true;
+		if (ld.getForSumm()==null) return false;
+		for (LgotaUnion lu: ld.getForSumm()) {
+			if(lu.getCode().equals(patt)) {
+				ld.setSummUsed(true);
+				return true;
+			}
+		}
+		return false;
+	}
 
-
-	public Period getMedStaj(List<Staj> stl,List<String> vidl) {
-	
+	public Period getMedStaj(List<Staj> stl,String vid) {
+	LgotaDescription lg=lDao.getLgota(vid);
 	if (stl==null) return new Period(0,0,0);
 	List<Staj> sttmp=new ArrayList<Staj>();
 	float stavka;
@@ -100,7 +118,7 @@ public class MedCalculator {
 	//отбираем только с нужным кодом которые или имеют ставку или до 10-11-1999г.
 	for (Staj st: stl) {
 		
-		if (vidl.contains(st.getCspext()))
+		if (inList(lg,st.getCspext()))
 		{
 			current=new Staj(st);
 			if (st.getStartDate().before(dfrom)) {
@@ -134,7 +152,7 @@ public class MedCalculator {
 	int counter;
 	boolean changed;
 	
-	int cycles=0;
+	//int cycles=0;
 	
 	while(true)
 	{
@@ -171,7 +189,7 @@ public class MedCalculator {
 		current=st1;
 	}
 	if (toadd.isEmpty()) break;
-	cycles+=1;
+//	cycles+=1;
 //	System.out.println("cycles="+cycles+" lgh="+toadd.size());
 	sttmp.addAll(toadd);
 	Collections.sort(sttmp);

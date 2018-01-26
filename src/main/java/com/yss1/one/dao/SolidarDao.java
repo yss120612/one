@@ -33,7 +33,7 @@ public class SolidarDao {
 
 		Map<String, Float> map = new HashMap<>();
 		for (Twix<String, Float> tw : pgDT.query(sql, solidRowMapper)) {
-			map.put(tw.getKey(), tw.getVal());
+			map.put(tw.getFirst(), tw.getSecond());
 		}
 
 		

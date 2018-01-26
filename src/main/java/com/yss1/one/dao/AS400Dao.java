@@ -177,18 +177,18 @@ public class AS400Dao {
 		
 		if (list1!=null) {
 			for (Twix<String,String> twx: list1) {
-			if(listAll.containsKey(twx.getKey())) {
-				listAll.remove(twx.getKey());
+			if(listAll.containsKey(twx.getFirst())) {
+				listAll.remove(twx.getFirst());
 			}
-			listAll.put(twx.getKey(),twx.getVal());
+			listAll.put(twx.getFirst(),twx.getSecond());
 			}
 		}
 		if (list2!=null) {
 			for (Twix<String,String> twx: list2) {
-			if(listAll.containsKey(twx.getKey())) {
-				listAll.remove(twx.getKey());
+			if(listAll.containsKey(twx.getFirst())) {
+				listAll.remove(twx.getFirst());
 			}
-			listAll.put(twx.getKey(),twx.getVal());
+			listAll.put(twx.getFirst(),twx.getSecond());
 			}
 		}
 		
