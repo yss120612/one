@@ -33,8 +33,14 @@ DojityeDao dojDao;
 	//калькулятор начального пенсионного капиталла на 1 января 2015 г.
 	public float npk15Calc(float npk, float vsnosy, int ydp, boolean lgota)
 	{
-		int doj=dojDao.getPeriod(ydp, lgota);
+		int doj=getDojytie(ydp, lgota);
 		return (npk+vsnosy)/doj/64.1f;
+	}
+
+	public int getDojytie(int ydp, boolean lgota) {
+		// TODO Auto-generated method stub
+		int doj=dojDao.getPeriod(ydp, lgota);
+		return doj;
 	}
 	
 	

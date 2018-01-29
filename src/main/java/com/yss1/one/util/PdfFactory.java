@@ -1,7 +1,5 @@
 package com.yss1.one.util;
 
-import java.awt.Color;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 import java.io.FileOutputStream;
@@ -14,11 +12,7 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.css.CSSPrimitiveValue;
-import org.w3c.dom.css.RGBColor;
-
 import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Chapter;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -27,12 +21,10 @@ import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.TabStop.Alignment;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.CMYKColor;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.yss1.one.dao.LgotaDescrDao;
 import com.yss1.one.models.Deyatelnost;
@@ -45,12 +37,13 @@ public class PdfFactory {
 	private BaseFont baseFont;
 	private BaseFont baseFontb;
 	private BaseFont baseFonti;
-
+	private BaseFont symbolFont;
 	@Autowired
 	LgotaDescrDao lgotesDao;
 	
 	@PostConstruct
 	public void init() throws DocumentException, IOException {
+		symbolFont = BaseFont.createFont("public/fonts/symbol.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 		baseFont = BaseFont.createFont("public/fonts/times.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 		baseFonti = BaseFont.createFont("public/fonts/timesi.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 		baseFontb = BaseFont.createFont("public/fonts/timesbd.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
@@ -80,7 +73,10 @@ public class PdfFactory {
 		Font font12red = new Font(baseFontb, 12, Font.NORMAL, new BaseColor(255, 64, 64));
 		Font font10 = new Font(baseFont, 10, Font.NORMAL, new CMYKColor(255, 255, 255, 0));
 		Font font10i = new Font(baseFonti, 10, Font.NORMAL, new CMYKColor(255, 255, 255, 0));
+		Font font10b = new Font(baseFontb, 10, Font.NORMAL, new CMYKColor(255, 255, 255, 0));
+		Font font14sym = new Font(symbolFont, 14, Font.NORMAL, new CMYKColor(255, 255, 255, 0));
 		Font font8 = new Font(baseFont, 8, Font.NORMAL, BaseColor.BLACK);
+		
 		
 		ByteArrayOutputStream mos = new ByteArrayOutputStream();
 		PdfWriter writer = PdfWriter.getInstance(document, mos);
@@ -125,31 +121,156 @@ public class PdfFactory {
 		cell.addElement(ph);
 		table.addCell(cell);
 		
-		ph=new Phrase("Я хочу пойти на пенсию. Какой размер пенсии у меня будет?", font12);
+		ph=new Phrase("Я хочу пойти на пенсию. Какой размер пенсии у меня будет?", font10);
 		cell = makeCell(myCol);
 		cell.addElement(ph);
 		table.addCell(cell);
 		
 		text.clear();
 		cell = makeCell(pfrCol);
-		ph=new Phrase("Давайте рассчитаем предполагаемый размер Вашей пенсии по данным индивидуального (персонифицированного) учета: Пенсия рассчитывается по формуле:", font10);
+		ph=new Phrase("Давайте рассчитаем предполагаемый размер Вашей пенсии по данным индивидуального (персонифицированного) учета:", font10);
+		cell.addElement(ph);
+		ph=new Phrase("Пенсия рассчитывается по формуле:",font10);
 		cell.addElement(ph);
 		ph=new Phrase("Пенсия = Баллы × Стоимость балла + Фиксированная выплата",font10i);
 		cell.addElement(ph);
-		ph=new Phrase("Предварительно рассчитанный размер Вашей пенсии составит:",font12red);
+		ph=new Phrase("                                            ______^__________________________^________",font8);
+		cell.addElement(ph);  
+		ph=new Phrase("                                               устанавливается Правительством РФ",font8);
+		cell.addElement(ph);
+		ph=new Phrase(man.getIPK(),font12red);
 		text.add(ph);
-		
-		
-		
-		//ph=new Phrase(String.format("%.0d", man.getSumm()),font12);
-		//text.add(ph);
-		ph=new Phrase("=",font10);
+		ph=new Phrase(" * 74,41 + "+man.getFixStr()+" = "+man.getSummStr() +" руб.",font10);
 		text.add(ph);
-		
+		ph=new Phrase(" ",font10);
+		text.add(ph);
 		ph=new Phrase();
 		ph.addAll(text);
 		cell.addElement(ph);
 		table.addCell(cell);
+
+		text.clear();
+		cell = makeCell(myCol);
+		ph=new Phrase("Почему у меня ", font10);
+		text.add(ph);
+		ph=new Phrase(man.getIPK(), font12red);
+		text.add(ph);
+		ph=new Phrase(" баллов?", font10);
+		text.add(ph);
+		ph=new Phrase();
+		ph.addAll(text);
+		cell.addElement(ph);
+		table.addCell(cell);
+		
+		
+		text.clear();
+		cell = makeCell(pfrCol);
+		ph=new Phrase(man.getIPK(),font12red);
+		text.add(ph);
+		ph=new Phrase(" = ",font10);
+		text.add(ph);
+		ph=new Phrase(man.getBall2002(),font12red);
+		text.add(ph);
+		ph=new Phrase(" + ",font10);
+		text.add(ph);
+		ph=new Phrase(man.getBall2014(),font12red);
+		text.add(ph);
+		ph=new Phrase(" + ",font10);
+		text.add(ph);
+		ph=new Phrase(man.getBall2015(),font12red);
+		text.add(ph);
+		ph=new Phrase();
+		ph.addAll(text);
+		cell.addElement(ph);
+		ph=new Phrase("Это сумма баллов, накопленная за разные периоды:", font10);
+		cell.addElement(ph);
+		text.clear();
+		ph=new Phrase("S",font14sym);
+		text.add(ph);
+		ph=new Phrase("баллов",font8);
+		text.add(ph);
+		ph=new Phrase(" = S",font14sym);
+		text.add(ph);
+		ph=new Phrase("баллов до 2002г.",font8);
+		text.add(ph);
+		ph=new Phrase(" + S",font14sym);
+		text.add(ph);
+		ph=new Phrase("баллов с 2002 по 2014г.",font8);
+		text.add(ph);
+		ph=new Phrase(" + S",font14sym);
+		text.add(ph);
+		ph=new Phrase("баллов с 2015г.",font8);
+		text.add(ph);
+		ph=new Phrase();
+		ph.addAll(text);
+		cell.addElement(ph);
+		table.addCell(cell);
+		
+		
+		cell = makeCell(myCol);
+		ph=new Phrase("Почему баллы суммируются за разные периоды?", font10);
+		cell.addElement(ph);
+		table.addCell(cell);
+
+		cell = makeCell(pfrCol);
+		ph=new Phrase("Баллы суммируются за разные периоды в связи с изменением пенсионного законодательства.", font10);
+		cell.addElement(ph);
+		table.addCell(cell);
+		
+		text.clear();
+		cell = makeCell(myCol);
+		ph=new Phrase("Объясниете как насчитали ", font10);
+		text.add(ph);
+		ph=new Phrase(man.getBall2002(), font12red);
+		text.add(ph);
+		ph=new Phrase(" баллов?", font10);
+		text.add(ph);
+		ph=new Phrase();
+		ph.addAll(text);
+		cell.addElement(ph);
+		table.addCell(cell);
+		
+		text.clear();
+		cell = makeCell(pfrCol);
+		ph=new Phrase("Сумма баллов до 2002 года (",font10);
+		text.add(ph);
+		ph=new Phrase("S",font14sym);
+		text.add(ph);
+		ph=new Phrase("баллов до 2002г.",font8);
+		text.add(ph);
+		ph=new Phrase(") расчитывается на основании Вашего накопленного пенсионного капиталла до 2002 года. Размер пенсионного капитала зависит:",font10);
+		text.add(ph);
+		ph=new Phrase();
+		ph.addAll(text);
+		cell.addElement(ph);
+		ph=new Phrase("    * от продолжительности стажа на 01.01.2002 года",font10b);
+		cell.addElement(ph);
+		ph=new Phrase("    * от размера Вашей средней зароботной платы (ЗП) за 2001-2002 годы или любые 60 месяцев подряд до 2002 года",font10b);
+		cell.addElement(ph);
+		
+		text.clear();
+		ph=new Phrase("Ваш трудовой стаж до 2002 года составляет ",font10);
+		text.add(ph);
+		ph=new Phrase(man.getPeriod2002().getYears()+"",font12red);
+		text.add(ph);
+		ph=new Phrase("л. ",font10);
+		text.add(ph);
+		ph=new Phrase(man.getPeriod2002().getMonths()+"",font12red);
+		text.add(ph);
+		ph=new Phrase("мес. ",font10);
+		text.add(ph);
+		ph=new Phrase(man.getPeriod2002().getDays()+"",font12red);
+		text.add(ph);
+		ph=new Phrase("дн. ",font10);
+		text.add(ph);
+		ph=new Phrase();
+		ph.addAll(text);
+		cell.addElement(ph);
+		
+		
+		
+		table.addCell(cell);
+		
 		
 		
 		

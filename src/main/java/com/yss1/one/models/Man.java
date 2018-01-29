@@ -97,12 +97,19 @@ public class Man {
 	
 	//индивидуальный пенсионный коэффициент на 1.01.2015г.
 	 private float ipk15;
+	 
+	 //индивидуальный пенсионный коэффициент c 1.01.2015г.
+	 private float ipkGr15;
 	
 	//индивидуальный пенсионный коэффициент.
 	 private float ipk;
 	
 	 //расчитанная пенсия
 	 float pensiya;
+	 
+	 //период дожития
+	 int dojytiye;
+	 
 	 
 	 //расчитанная фиксированная выплата
 	 float fix;
@@ -225,9 +232,13 @@ public class Man {
 
 		vsnos0215=vsnosCalc.calc(vsnosy,birthDay, datePrav,meter);
 		
+		dojytiye=uniCalc.getDojytie(datePrav.get(GregorianCalendar.YEAR),lgota!=0);
+		
 		ipk15=uniCalc.npk15Calc(nPK,vsnos0215,datePrav.get(GregorianCalendar.YEAR),lgota!=0);
 		
-		ipk=ipk15+finCalc.calcIPK(vsnosy,datePrav.getTime());
+		ipkGr15=finCalc.calcIPK(vsnosy,datePrav.getTime());
+		
+		ipk=ipk15+ipkGr15;
 		
 		pensiya=finCalc.calcPens(ipk,datePrav.getTime());
 		fix=finCalc.calcFix(datePrav.getTime());
@@ -256,6 +267,27 @@ public class Man {
 		//}
 	}
 
+	public String getBall2002(){
+		return String.format("%.2f",nPK/dojytiye/64.1f );
+	}
+	
+	public String getBall2014(){
+		return String.format("%.2f",vsnos0215/dojytiye/64.1f );
+	}
+	
+	public String getBall2015(){
+		return String.format("%.2f",ipkGr15);
+	}
+	
+	public String getDoj(){
+		return String.format("%d",dojytiye);
+	}
+	
+	public String getIPK(){
+		return String.format("%.2f",ipk);
+	}
+	
+	
 	public Set<String> getLgotes() {
 		return lgotes;
 	}
