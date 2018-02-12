@@ -16,7 +16,11 @@
                         </tr>
                         <tr>
                             <td>ФИО</td>
+                            <#if man.otch??>
                             <td>${man.family} ${man.name} ${man.otch}</td>
+                            <#else>
+                            <td>${man.family} ${man.name}</td>
+                            </#if>
                         </tr>
                         <tr>
                             <td>Пол</td>

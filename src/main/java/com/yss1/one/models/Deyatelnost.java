@@ -3,6 +3,7 @@ package com.yss1.one.models;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.yss1.one.util.Period;
@@ -31,12 +32,16 @@ public class Deyatelnost {
 		dey.regNumb = st.getRegNumb();
 		dey.predprName = st.getPredprName();
 		dey.vidDeyat = st.getVidDeyat();
-		dey.addHarDeyat(st.getCspext());
-		dey.addHarDeyat(st.getCwcext());
-		dey.addHarDeyat(st.getCggext());
+		dey.addHarDeyat(st);
 		return dey;
 	}
 
+	//добавляем лготу из стажа, если надо
+	public void addHarDeyat(Staj st) {
+		addHarDeyat(st.getCspext());
+		addHarDeyat(st.getCwcext());
+		addHarDeyat(st.getCggext());
+	}
 	
 	public boolean myVsnos(Vsnos v) {
 		GregorianCalendar cal=new GregorianCalendar();

@@ -95,7 +95,7 @@ public class Utils {
 		day=day+(month-(float)Math.floor(month))*30f;
 		month=(float)Math.floor(month);
 		day=(float)Math.floor(day);
-		System.out.println("before year="+year+ " month="+month+" day="+day);
+		//System.out.println("before year="+year+ " month="+month+" day="+day);
 		while (day>=30 || month>=12f)
 		{
 			if (day>=30) 
@@ -203,7 +203,7 @@ public class Utils {
 		String sn=rawSNILS(snils);
 		if (sn.length()!=9) return "";
 		int cs=calcSNILS(sn);
-		snils=String.format("%s-%s-%s %2d", sn.substring(0,3),sn.substring(3,6),sn.substring(6,9),cs);
+		snils=String.format("%s-%s-%s %2d", sn.substring(0,3),sn.substring(3,6),sn.substring(6,9),cs).trim();
 		return snils;
 	}
 

@@ -84,7 +84,8 @@ public List<Deyatelnost> getPredprStaj(List<Staj> stlist, List<Vsnos> vsnosy){
 		for (Deyatelnost sp: tmp) {
 			if (st.getPredprName().equals(sp.getPredprName()) && Utils.addDay(sp.getdEnd(),3).after(st.getStartDate()))
 			{
-				if (st.getRegNumb()!=null && !st.getRegNumb().isEmpty()) sp.setRegNumb(st.getRegNumb()); 
+				if (st.getRegNumb()!=null && !st.getRegNumb().isEmpty()) sp.setRegNumb(st.getRegNumb());
+				sp.addHarDeyat(st);
 				if (st.getEndDate().after(sp.getdEnd()))
 				{
 					sp.setdEnd(st.getEndDate());
@@ -94,6 +95,8 @@ public List<Deyatelnost> getPredprStaj(List<Staj> stlist, List<Vsnos> vsnosy){
 			}
 		}
 		if (!have) tmp.add(Deyatelnost.fromStaj(st));
+		
+			
 	}
 	//Collections.sort(tmp);
 	Collections.sort(tmp, new Comparator<Deyatelnost>() {

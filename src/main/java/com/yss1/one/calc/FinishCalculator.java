@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yss1.one.dao.MaxIPKDao;
+import com.yss1.one.dao.MinUslDao;
 import com.yss1.one.dao.SPKDao;
 import com.yss1.one.dao.TarifDao;
 import com.yss1.one.models.Vsnos;
@@ -26,6 +27,9 @@ private SPKDao spkDao;
 @Autowired
 private TarifDao tarifDao;
 
+@Autowired
+private MinUslDao minUslDao;
+
 
 private List<vs15> vs15list;
 
@@ -34,11 +38,34 @@ public float calcPens(float f, Date time) {
 	return spkDao.getSpk(time)*f;
 }
 
-public float calcFix(Date time) {
-	// TODO Auto-generated method stub
-	return spkDao.getFixVipl(time);
+public float getSpk(Date time) {
+	return spkDao.getSpk(time);
 }
 
+
+public float calcFix(Date time, int koeffFix, int ijdevency) {
+	float fv=spkDao.getFixVipl(time);
+	if (koeffFix==0 && ijdevency==0) return fv;
+	float fv3=(float)Math.rint(fv*100f/3f)/100f;
+
+	if (ijdevency==1) fv=fv+fv3;
+	else if (ijdevency==2) fv=fv+2*fv3;
+	else if (ijdevency==3) fv=fv+3*fv3;
+	
+	if (koeffFix==1) fv*=1.3f;
+	else if (koeffFix==2) fv*=1.5f;
+	fv=(float)Math.rint(fv*100f)/100f;
+	
+	return fv;
+}
+
+public float getMinBall(int dpYear) {
+	return minUslDao.getMinBall(dpYear);
+}
+
+public int getMinYear(int dpYear) {
+	return minUslDao.getMinYear(dpYear);
+}
 
 public float calcIPK(List<Vsnos> lv, Date prav) {
 	vs15list=new ArrayList<>();

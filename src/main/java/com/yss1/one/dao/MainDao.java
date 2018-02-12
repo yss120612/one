@@ -52,16 +52,19 @@ private long id;
 		return res;
 	}
 	
-	public Man calculate(String snils, long id) throws DocumentException, IOException {
+	public Man calculate(String snils, long id, int ij, int koe) throws DocumentException, IOException {
 		AS400Dao as400 = new AS400Dao();
 		String res = "";
 		String resr = "";
 		String sql;
 		Man man = null;
 		JdbcTemplate pgDT=new JdbcTemplate(pgDS);
+		
+		
+		
 		snils = Utils.formatSNILS(snils);
 		try {
-			man = as400.load(snils);
+			man = as400.load(snils,ij,koe);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

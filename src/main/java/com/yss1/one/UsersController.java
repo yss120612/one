@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.itextpdf.text.DocumentException;
 import com.yss1.one.dao.MainDao;
 import com.yss1.one.dao.ManDao;
+import com.yss1.one.dao.RkDefaultDao;
 import com.yss1.one.dao.SpravkaDao;
 import com.yss1.one.dao.UserDao;
 import com.yss1.one.models.Man;
@@ -25,6 +26,8 @@ import com.yss1.one.util.WebUtils;
 @Controller
 public class UsersController {
 	
+	@Autowired
+	RkDefaultDao rkDefDao;
 	
 	@Autowired
 	UserDao ud;
@@ -41,13 +44,14 @@ public class UsersController {
 	@Autowired
 	MainDao mainDao;
 	
+	
+	
 	@RequestMapping("/")
 	public String index(Model model,@RequestParam(value="name", required=false, defaultValue="World") String name) {
 		model.addAttribute("name", WebUtils.getLogin());
 		model.addAttribute("rest", "Начало");
 		return "start";
 	}
-	
 	
 	@RequestMapping("/reslist")
 	public String reslist(Model model){
@@ -58,7 +62,6 @@ public class UsersController {
 		model.addAttribute("apage", "reslist");
 		return "start";
 	}
-	
 	
 	@GetMapping(value= {"/load/{id}"})
 	public String loadGet(Model model,@PathVariable("id") int id) throws SQLException {
@@ -82,7 +85,7 @@ public class UsersController {
 						  HttpServletResponse response) throws DocumentException, IOException {
 			byte [] ba=vid==1?sprDao.getRasch(id):sprDao.getRasyasn(id);
 				try {
-					response.setHeader("Content-Disposition", "inline;filename=\""+(vid==1?"Rasyasnenya":"Raschet")+".pdf\"");
+					response.setHeader("Content-Disposition", "inline;filename=\""+(vid==1?"Raschet":"Rasyasnenya")+".pdf\"");
 					OutputStream out = response.getOutputStream();
 					response.setContentType("application/pdf");
 					out.write(ba);
@@ -96,21 +99,28 @@ public class UsersController {
 				return null;
 	}
 	
-	
 	@GetMapping(value= {"/calc"})
 	public String calcGet(Model model) throws SQLException {
 		model.addAttribute("name", WebUtils.getLogin());
 		model.addAttribute("apage", "calc");
+		model.addAttribute("koeff", rkDefDao.getDefaultFor(WebUtils.getLogin()));
+		model.addAttribute("ijd", "0");
 		return "start";
 	}
 	
 	
 	@PostMapping(value= {"/calc"})
-	public String calcPost(Model model,@RequestParam(value="snils", required=true) String snils) throws SQLException {
+	public String calcPost(Model model,@RequestParam(value="snils", required=true) String snils,
+									   @RequestParam(value="IJselect", required=true) String ijd,
+									   @RequestParam(value="KOEselect", required=true) String koeff
+			) throws SQLException {
 
+		
+		rkDefDao.setDefaultFor(WebUtils.getLogin(),koeff);
+		
 		Man man=null;
 		try {
-			man=mainDao.calculate(snils,0);
+			man=mainDao.calculate(snils,0,Integer.parseInt(ijd),Integer.parseInt(koeff));
 			model.addAttribute("userid", mainDao.getId());
 		} catch (DocumentException | IOException e) {
 					e.printStackTrace();

@@ -22,7 +22,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-				.antMatchers("/css/**", "/js/**", "/fonts/**").permitAll()
+				.antMatchers("/css/**", "/js/**", "/fonts/**", "/img/**").permitAll()
 				.antMatchers("/user*","/role*").hasRole("ADMIN")
 				.anyRequest().fullyAuthenticated()
 				.and()

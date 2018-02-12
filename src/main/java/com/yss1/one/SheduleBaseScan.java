@@ -50,7 +50,7 @@ public class SheduleBaseScan {
 			List<Twix<Integer,String>> list = pgDT.query(sql, queryRowMapper);
 			for (Twix<Integer,String> pair : list) {
 				//System.out.println("Val="+pair.getVal()+" Key="+pair.getKey());
-				mainDao.calculate(pair.getSecond(), pair.getFirst());
+				mainDao.calculate(pair.getSecond(), pair.getFirst(),0,0);
 			}
 
 		} catch (Exception e) {

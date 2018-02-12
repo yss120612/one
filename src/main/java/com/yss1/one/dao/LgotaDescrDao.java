@@ -79,7 +79,7 @@ public class LgotaDescrDao {
 			lg.setField(rs.getString("field"));
 			lg.setHalf(rs.getFloat("half"));
 			lg.setMan_os(rs.getFloat("man_os"));
-			lg.setWoman_ds(rs.getFloat("woman_os"));
+			lg.setWoman_os(rs.getFloat("woman_os"));
 			lg.setMan_pens(rs.getFloat("man_pens"));
 			lg.setWoman_pens(rs.getFloat("woman_pens"));
 			lg.setMan_ss(rs.getFloat("man_ss"));
@@ -93,6 +93,7 @@ public class LgotaDescrDao {
 			lg.setSever(rs.getFloat("sever"));
 			lg.setLepro(rs.getFloat("lepro"));
 			lg.setFullName(rs.getString("comment"));
+			lg.setNorthPlus(rs.getInt("sevplus")>0);
 			return lg;
 		}
 	};

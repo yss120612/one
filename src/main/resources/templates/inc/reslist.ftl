@@ -23,8 +23,8 @@
 <td>
 <#if qi.pravoStr!="-">
 <a type="button" id="btn_load_${qi.id?string["0"]}" class="btn btn-info btn-mini" href="${springMacroRequestContext.contextPath}/load/${qi.id?string["0"]}" title="загрузить данные"><i class="glyphicon glyphicon-open-file" ></i></a>
-<a type="button" id="btn_edit_${qi.id?string["0"]}" class="btn btn-info btn-mini" target="_blank" href="${springMacroRequestContext.contextPath}/pdf/2/${qi.id?string["0"]}" title="расчеты"><i class="glyphicon glyphicon-list-alt" ></i></a>
-<a type="button" id="btn_del_${qi.id?string["0"]}"  class="btn btn-info btn-mini" target="_blank" href="${springMacroRequestContext.contextPath}/pdf/1/${qi.id?string["0"]}" title="разъяснения"><i class="glyphicon glyphicon-hand-up" ></i></a>
+<a type="button" id="btn_edit_${qi.id?string["0"]}" class="btn btn-info btn-mini" target="_blank" href="${springMacroRequestContext.contextPath}/pdf/2/${qi.id?string["0"]}" title="разъяснения"><i class="glyphicon glyphicon-hand-up" ></i></a>
+<a type="button" id="btn_del_${qi.id?string["0"]}"  class="btn btn-info btn-mini" target="_blank" href="${springMacroRequestContext.contextPath}/pdf/1/${qi.id?string["0"]}" title="расчеты"><i class="glyphicon glyphicon-list-alt" ></i></a>
 <#else>
 <a type="button" id="btn_del_${qi.id?string["0"]}"  class="btn btn-danger btn-mini" target="_blank" href="${springMacroRequestContext.contextPath}/pdf/1/${qi.id?string["0"]}" title="разъяснения"><i class="glyphicon glyphicon-hand-up" ></i></a>
 </#if>

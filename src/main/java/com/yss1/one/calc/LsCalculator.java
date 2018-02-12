@@ -12,6 +12,7 @@ import com.yss1.one.models.LgotaDescription;
 import com.yss1.one.models.LgotaUnion;
 import com.yss1.one.models.Staj;
 import com.yss1.one.util.Period;
+import com.yss1.one.util.Utils;
 
 @Service
 public class LsCalculator {
@@ -77,6 +78,44 @@ private boolean inList(LgotaDescription ld, String patt) {
 	return false;
 }
 
+
+
+public Period calcLS2(List<Staj> stlist, String ls, boolean isMan) {
+	LgotaDescription lg=lDao.getLgota(ls);
+	Period myPeriod=calcAbsLS(stlist, ls);
+	
+	Period padd;
+	if (lg.getForSumm()!=null) {
+	for (LgotaUnion lu : lg.getForSumm()){
+		padd=null;
+		if (lu.getUsl_man()>0.1f)
+		{
+		if (isMan) {
+			if (myPeriod.isMore(lu.getUsl_man())) padd=calcAbsLS(stlist, lu.getCode()); 
+		}
+		else {
+			if (myPeriod.isMore(lu.getUsl_woman())) padd=calcAbsLS(stlist, lu.getCode());
+		}
+		}
+		else
+		{
+			padd=calcAbsLS(stlist, lu.getCode());
+		}
+		
+		if (padd!=null) {
+			System.out.println("mult="+lu.getKoeff()+" main="+lg.getName()+" added="+lu.getCode()+" period="+padd.toString());
+			if (lu.getKoeff()<0.99f || lu.getKoeff()>1.01f) {
+				padd=padd.multPeriod(lu.getKoeff());
+			}
+			myPeriod.addPeriod(padd);
+		}
+		
+	}
+	}
+	return myPeriod;
+}
+
+
 //записываем нкжные куски стажа в отдельный массив
 public Period calcLS(List<Staj> stlist, String ls) {
 	LgotaDescription lg=lDao.getLgota(ls);
@@ -129,36 +168,10 @@ public Period calcLS(List<Staj> stlist, String ls) {
 
 //записываем нкжные куски стажа в отдельный массив
 public Period calcAbsLS(List<Staj> stlist, String ls) {
-	LgotaDescription lg=lDao.getLgota(ls);
-	lg.setSummUsed(false);
 	List<Staj> tmp = new ArrayList<>();
 	Staj current=null;
 	for (Staj st:stlist) {
-		if (lg.getField().equals("cwcext") && st.getCwcext().equals(lg.getName())) {
-			if (current==null) {
-				current=Staj.makeCopy(st);
-			}
-			else if (current.getEndDate().before(st.getStartDate()))
-			{
-				tmp.add(current);
-				current=Staj.makeCopy(st);
-			}
-			else {
-				if (st.getEndDate().after(current.getEndDate())) current.setEndDate(st.getEndDate());
-			}
-		}else if(lg.getField().equals("cspext") && st.getCspext().equals(lg.getName())) {
-			if (current==null) {
-				current=Staj.makeCopy(st);
-			}
-			else if (current.getEndDate().before(st.getStartDate()))
-			{
-				tmp.add(current);
-				current=Staj.makeCopy(st);
-			}
-			else {
-				if (st.getEndDate().after(current.getEndDate())) current.setEndDate(st.getEndDate());
-			}
-		}else if(lg.getField().equals("cggext") && st.getCggext().equals(lg.getName())) {
+		if (st.getCwcext().equals(ls)||st.getCspext().equals(ls)||st.getCggext().equals(ls)) {
 			if (current==null) {
 				current=Staj.makeCopy(st);
 			}
@@ -181,7 +194,7 @@ public Period calcAbsLS(List<Staj> stlist, String ls) {
 public int calcLgotMonth(Period period, String ls, int year, boolean isMan) {
 	int res=0;
 	LgotaDescription lg=lDao.getLgota(ls);
-	
+	//System.out.println("period="+period.toString());
 	boolean os=false;
 	
 	//проверим общий стаж
@@ -191,7 +204,7 @@ public int calcLgotMonth(Period period, String ls, int year, boolean isMan) {
 		os=lg.getWoman_os()<0.1f||year>=lg.getWoman_os();
 	}
 	if (!os) return res;
-	
+	//System.out.println("OS="+year+" nado="+lg.getWoman_os());
 	
 	//проверим спец стаж
 	if (isMan) {
@@ -200,8 +213,9 @@ public int calcLgotMonth(Period period, String ls, int year, boolean isMan) {
 		os=period.getYears()>=lg.getWoman_ss();
 	}
 	
+	
 	Period p1,p2;
-	//если все норм возвращаем
+	//если (полная выработка) все норм возвращаем
 	if (os) {
 		if (isMan) {
 			if (lg.getMan_pens()>0)
@@ -217,7 +231,7 @@ public int calcLgotMonth(Period period, String ls, int year, boolean isMan) {
 			}
 		}
 		else {
-			if (lg.getMan_pens()>0)
+			if (lg.getWoman_pens()>0)
 			{
 				return (int)(55-lg.getWoman_pens())*12;
 			}
@@ -249,26 +263,64 @@ public int calcLgotMonth(Period period, String ls, int year, boolean isMan) {
 	{
 		return 0;
 	}
-	
-	res= (int)(Math.floor((period.getYears()*12f+period.getMonths())/lg.getMan_d())*lg.getMan_ds());
-	
-//	if (ls.equals("27-1") || ls.equals("27-2")|| ls.equals("ЗП12Б")|| ls.equals("ЗП12А"))
-//	{
-//		if (isMan) {
-//			res=(int)((period.getYears()+period.getMonths()/12f)*lg.getMan_ds()/lg.getMan_d())*12;
-//		}else {
-//			res=(int)((period.getYears()+period.getMonths()/12f)*lg.getWoman_ds()/lg.getWoman_d())*12;
-//		}
-//	
-//	}
-//	else {
-//		if (isMan) {
-//			res=(int)((period.getYears()+period.getMonths()/12f)*lg.getMan_ds()/lg.getMan_d()*12);
-//		}else {
-//			res=(int)((period.getYears()+period.getMonths()/12f)*lg.getWoman_ds()/lg.getWoman_d()*12);
-//		}	
-//	}
+	if (isMan)
+	{
+	//res= (int)(Math.floor((period.getYears()*12f+period.getMonths())/lg.getMan_d())*lg.getMan_ds());
+		res= (int)((period.getYears()*12f+period.getMonths())/lg.getMan_d()*lg.getMan_ds());
+	}
+	else
+	{
+		res= (int)((period.getYears()*12f+period.getMonths())/lg.getWoman_d()*lg.getWoman_ds());
+		//res= (int)(Math.floor((period.getYears()*12f+period.getMonths())/lg.getWoman_d())*lg.getWoman_ds());
+	}
+
 	return res;
+}
+
+
+public boolean isNorthPlus(String name) {
+	LgotaDescription lg=lDao.getLgota(name);
+	if (lg!=null && lg.isNorthPlus()) return true;
+	return false;
+}
+
+
+public Period getForNorth(List<Staj> rawStaj, String name) {
+	
+	List<Staj> tmp = new ArrayList<>();
+	Staj current=null;
+	//закидываем периоды с нужным стажем
+	for (Staj st:rawStaj) {
+		if (st.getCwcext().equals(name)||st.getCspext().equals(name)||st.getCggext().equals(name)) {
+			if (current==null) {
+				current=Staj.makeCopy(st);
+			}
+			else if (current.getEndDate().before(st.getStartDate()))
+			{
+				tmp.add(current);
+				current=Staj.makeCopy(st);
+			}
+			else {
+				if (st.getEndDate().after(current.getEndDate())) current.setEndDate(st.getEndDate());
+			}
+		}
+	}
+	if (current!=null && !tmp.contains(current)) tmp.add(current);
+	//вычитаем север
+	for (Staj stg: tmp) {
+		for (Staj st:rawStaj) {
+			if (st.getCggext().equals("РКС")||st.getCggext().equals("МКС")) {
+				if (Utils.between(stg.getStartDate(), st.getStartDate(), st.getEndDate())) {
+					stg.setStartDate(st.getEndDate());
+				}
+				if (Utils.between(stg.getEndDate(), st.getStartDate(), st.getEndDate())) {
+					stg.setEndDate(st.getStartDate());
+				}
+			}
+		}
+	}
+	tmp.removeIf(x->!x.getEndDate().after(x.getStartDate()));
+	return stCalc.getStajAll(tmp);
 }
 
 

@@ -65,6 +65,11 @@ public class Period {
 		days = days % 30;
 	}
 
+	//превышает ли текущий период переданный в годах
+	public boolean isMore(float year) {
+		return (year*12+0.1f)>(years*12+months);
+	}
+	
 	// отнимает от текущего периода другой
 	public void diffPeriod(Period p) {
 		if (p == null) {

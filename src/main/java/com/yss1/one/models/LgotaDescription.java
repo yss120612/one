@@ -38,6 +38,15 @@ private float woman_pens;//возраст права для женщин
 //можно ли выработать не полный спецстаж и сколько (делитель)
 private float half;
 
+//суммировать ли с севером
+private boolean northPlus;
+
+public boolean isNorthPlus() {
+	return northPlus;
+}
+public void setNorthPlus(boolean northPlus) {
+	this.northPlus = northPlus;
+}
 //с чем суммируется и с каким коэффициентом
 private List<LgotaUnion> forSumm;
 
