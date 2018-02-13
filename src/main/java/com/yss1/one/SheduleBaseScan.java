@@ -1,15 +1,8 @@
 package com.yss1.one;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,8 +11,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+
 import com.yss1.one.dao.MainDao;
-import com.yss1.one.util.Twix;
 
 @Service
 @EnableScheduling
@@ -47,10 +40,10 @@ public class SheduleBaseScan {
 		try {
 			
 			String sql = "select id,vc_ins from  public.spravka where ts_a is null";
-			List<Twix<Integer,String>> list = pgDT.query(sql, queryRowMapper);
-			for (Twix<Integer,String> pair : list) {
+			List<ShHelper> list = pgDT.query(sql, queryRowMapper);
+			for (ShHelper pair : list) {
 				//System.out.println("Val="+pair.getVal()+" Key="+pair.getKey());
-				mainDao.calculate(pair.getSecond(), pair.getFirst(),0,0);
+				mainDao.calculate(pair.getSnils(), pair.getId(), pair.getRk(),pair.getIjd());
 			}
 
 		} catch (Exception e) {
@@ -59,12 +52,38 @@ public class SheduleBaseScan {
 		
 	}
 
-	private RowMapper<Twix<Integer,String>> queryRowMapper = new RowMapper<Twix<Integer,String>>() {
-		public Twix<Integer,String> mapRow(ResultSet rs, int rowNum) throws SQLException {
-			Twix<Integer,String> mm = new Twix<Integer,String>(rs.getInt("id"),rs.getString("vc_ins"));
+	private RowMapper<ShHelper> queryRowMapper = new RowMapper<ShHelper>() {
+		public ShHelper mapRow(ResultSet rs, int rowNum) throws SQLException {
+			ShHelper mm = new ShHelper(rs.getInt("id"),rs.getString("vc_ins"),rs.getObject("Rk")==null?0:rs.getInt("Rk"),rs.getObject("Igd")==null?0:rs.getInt("Igd"));
 			return mm;
 		}
 	};
 	
+	private class ShHelper{
+		int id;
+		String snils;
+		int rk;
+		int ijd;
+		public ShHelper(int id, String snils, int rk, int ijd) {
+			super();
+			this.id = id;
+			this.snils = snils;
+			this.rk = rk;
+			this.ijd = ijd;
+		}
+		public int getId() {
+			return id;
+		}
+		public String getSnils() {
+			return snils;
+		}
+		public int getRk() {
+			return rk;
+		}
+		public int getIjd() {
+			return ijd;
+		}
+		
+	}
 	
 }

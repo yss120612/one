@@ -69,6 +69,20 @@ public class Man {
 		this.koeffFix = koeffFix;
 	}
 
+	public String getFixAttr() {
+		String res="(иждивенцев - ";
+		if (ijdevency==0) res+= "нет";
+		else if (ijdevency==1) res+= "один";
+		else if (ijdevency==2) res+= "два";
+		else if (ijdevency==3) res+= "три и более";
+		
+		res+=", коэффициент - ";
+		if (koeffFix==0) res+= "1)";
+		else if (koeffFix==1) res+= "1,3)";
+		else if (koeffFix==2) res+= "1,5)";
+		return res;
+	}
+	
 	//коэффициент для расчета фиксированной части	
 	private int koeffFix;
 	

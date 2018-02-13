@@ -48,7 +48,7 @@
                         </tr>
                         <tr>
                             <td>Фиксированная часть</td>
-                            <td>${man.fixStr}</td>
+                            <td>${man.fixStr} ${man.fixAttr}</td>
                         </tr>
                         
                         <tr>

@@ -34,12 +34,14 @@ public class ManDao {
 	public void backup(Man man, long id) {
 		if (id==0) return;
 		if (checkID(id)) return;
-		pgDT.update("insert into public.person (id,fio,insnmb,prnsex,prnbrd) values (?,?,?,?,?)",
+		pgDT.update("insert into public.person (id,fio,insnmb,prnsex,prnbrd,rk,igd) values (?,?,?,?,?,?,?)",
 				id,
 				man.getFamily()+" "+man.getName()+" "+man.getOtch(),
 				man.getSNILS(),
 				man.getSex(),
-				man.getBirthDayDate());
+				man.getBirthDayDate(),
+				man.getKoeffFix(),
+				man.getIjdevency());
 		saveStaj(id,man.getStaj(),1);
 		saveStaj(id,man.getStajKonv(),2);
 		savePlatej(id,man.getPlateg20002001());
@@ -221,6 +223,8 @@ public class ManDao {
 				m.setFio(rs.getString("fio"));
 				m.setSNILS(rs.getString("insnmb"));
 				m.setSex(rs.getString("prnsex"));
+				m.setKoeffFix(rs.getObject("rk")==null?0:rs.getInt("rk"));
+				m.setIjdevency(rs.getObject("igd")==null?0:rs.getInt("igd"));
 				GregorianCalendar gc=new GregorianCalendar();
 				gc.setTime(m.getBirthDay().getTime());
 				gc.add(GregorianCalendar.YEAR, m.getSex().contains("Ж")?55:60);

@@ -14,10 +14,10 @@
                             </div>
                        </div>
 <div class="panel panel-default">
-<div class="panel-heading">Дла расчета фиксированной части пенсии укажите:</div>
+<div class="panel-heading">Для расчета фиксированной части пенсии укажите:</div>
 <div class="panel-body">
 <div class="form-group col-md-8">
-    <label for="IJselect">Количество иждевенцев</label>
+    <label for="IJselect">Количество иждивенцев</label>
     <select class="form-control" id="IJselect" name="IJselect" >
       <option value="0" <#if ijd=="0">selected</#if> >Нет</option>
       <option value="1" <#if ijd=="1">selected</#if> >Один</option>
