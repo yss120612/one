@@ -39,7 +39,7 @@ public class SheduleBaseScan {
 	private void run() {
 		try {
 			
-			String sql = "select id,vc_ins from  public.spravka where ts_a is null";
+			String sql = "select id,vc_ins,Rk,Igd from  public.spravka where ts_a is null";
 			List<ShHelper> list = pgDT.query(sql, queryRowMapper);
 			for (ShHelper pair : list) {
 				//System.out.println("Val="+pair.getVal()+" Key="+pair.getKey());

@@ -109,6 +109,10 @@ public class Period {
 		return Utils.multPeriod(this, mult);
 	}
 
+	public boolean isEmpty() {
+		return years>0||days>0||months>0;
+	}
+	
 	private int years;
 	private int months;
 	private int days;

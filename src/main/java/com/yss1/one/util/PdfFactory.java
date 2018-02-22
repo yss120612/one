@@ -202,9 +202,7 @@ public class PdfFactory {
 		cell2 = makeCell2(pfrCol);
 		ph=new Phrase("Здравствуйте, ", font10);
 		text.add(ph);
-		ph=new Phrase(man.getName()+" "+man.getOtch()+" "+man.getFamily(), font12red);
-		text.add(ph);
-		ph=new Phrase("!", font10);
+		ph=new Phrase(man.getName()+" "+man.getOtch()+" "+man.getFamily()+"!", font12red);
 		text.add(ph);
 		ph=new Phrase();
 		ph.addAll(text);
@@ -242,7 +240,9 @@ public class PdfFactory {
 		text.add(ph);
 		ph=new Phrase(man.getIPK(),font12red);
 		text.add(ph);
-		ph=new Phrase(String.format(" * %,.2f + %s" , man.getSpk(),man.getFixStr()),font10);
+		ph=new Phrase(String.format(" * %,.2f + " , man.getSpk()),font10);
+		text.add(ph);
+		ph=new Phrase(String.format("%s" ,man.getFixStr()),font12red);
 		text.add(ph);
 		ph=new Phrase();
 		ph.addAll(text);
@@ -389,7 +389,7 @@ public class PdfFactory {
 		text.add(ph);
 		ph=new Phrase(String.format("%,.2f", man.getrPK()),font12red);
 		text.add(ph);
-		ph=new Phrase(". РПК увеличивается на коэффициент валоризации. На 10.01.1991 Ваш стаж составляет ",font10);
+		ph=new Phrase(". РПК увеличивается на коэффициент валоризации. На 01.01.1991 Ваш стаж составляет ",font10);
 		text.add(ph);
 		ph=new Phrase(String.format("%d", man.getPeriod1991().getYears()),font12red);
 		text.add(ph);

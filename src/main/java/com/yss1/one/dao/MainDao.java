@@ -89,7 +89,7 @@ private long id;
 		String now = Utils.getFormattedDate4sql(new Date());
 		
 		if (id==0) {
-			Long idd=sprDao.insertAndGetId(now, snils);
+			Long idd=sprDao.insertAndGetId(now, snils,ij,koe);
 			if (idd!=null && idd>0) id=idd;
 		}
 		
