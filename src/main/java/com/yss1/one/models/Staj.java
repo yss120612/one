@@ -59,8 +59,7 @@ private int addDay;
 //ставка
 private float stavka;
 
-//служебное поле
-private int flag;
+
 
 //рег номер работодателя
 private String regNumb;
@@ -73,6 +72,8 @@ public void setRegNumb(String regNumb) {
 }
 
 
+//служебное поле
+private int flag;
 
 public int getFlag() {
 	return flag;
@@ -81,6 +82,18 @@ public int getFlag() {
 public void setFlag(int flag) {
 	this.flag = flag;
 }
+
+//служебное поле
+private int numb;
+
+public int getNumb() {
+	return numb;
+}
+
+public void setNumb(int numb) {
+	this.numb = numb;
+}
+
 
 public float getStavka() {
 	return stavka;
@@ -119,6 +132,7 @@ public Staj(Staj s) {
 	this.predprName=s.predprName;
 	this.flag=s.flag;
 	this.regNumb=s.regNumb;
+	this.numb=s.numb;
 }
 
 public static Staj makeCopy(Staj s) {

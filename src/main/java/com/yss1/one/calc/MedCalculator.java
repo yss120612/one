@@ -3,7 +3,9 @@ package com.yss1.one.calc;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -92,10 +94,12 @@ public class MedCalculator {
 //		return per;
 //	}
 
+	private Date dfrom=Utils.makeDate(1999,11,1);
+	
 	public Period getMedStajBefore(List<Staj> ls, Date bd, String ms) {
 		Period per = new Period(0, 0, 0);
 		for (Staj st : ls) {
-			if (st.getStartDate().after(bd) ||  !st.getCspext().contains(ms))
+			if (st.getStartDate().after(bd) ||  !st.getCspext().equals(ms))
 				continue;
 			
 			
@@ -113,7 +117,7 @@ public class MedCalculator {
 	public Period getMedStajAfter(List<Staj> ls, Date bd, String ms) {
 		Period per = new Period(0, 0, 0);
 		for (Staj st : ls) {
-			if (st.getEndDate().before(bd) || !st.getCspext().contains(ms))
+			if (st.getEndDate().before(bd) || !st.getCspext().equals(ms))
 				continue;
 			
 					if (Utils.afterOrEqual(st.getStartDate(), bd)) {
@@ -163,7 +167,7 @@ public class MedCalculator {
 		
 		//Period atAll=getMedStajBefore(ls, Utils.makeDate(2100, 1, 1));
 		
-		return getMedStajBefore(ls, Utils.makeDate(2100, 1, 1), containsCity);
+		return getMedStajBefore(ls, Utils.makeDate(2100, 1, 1));
 	}
 
 	private boolean inList(LgotaDescription ld, String patt) {
@@ -185,7 +189,7 @@ public class MedCalculator {
 	List<Staj> sttmp=new ArrayList<Staj>();
 	float stavka;
 	Staj current,stg1=null;
-	Date dfrom=Utils.makeDate(1999,11,1);
+	
 	//отбираем только с нужным кодом которые или имеют ставку или до 01-11-1999г.
 	for (Staj st: stl) {
 		
@@ -219,15 +223,16 @@ public class MedCalculator {
 	}
 	if (sttmp.isEmpty()) return new Period(0,0,0);
 	Collections.sort(sttmp);
+	
 	List<Staj> toadd1=new ArrayList<Staj>();
 	List<Staj> toadd2=new ArrayList<Staj>();
 	List<Staj> toadd3=new ArrayList<Staj>();
-	int counter;
-	boolean st,fn;
+	int counter=0;
 	boolean changed;
+	
+	for (Staj s0:sttmp) s0.setNumb(++counter);;
 	for (Staj s0:sttmp) toadd1.add(Staj.makeCopy(s0));
 	for (Staj s0:sttmp) toadd2.add(Staj.makeCopy(s0));
-	//int cycles=0;
 	
 	while(true)
 	{
@@ -235,127 +240,139 @@ public class MedCalculator {
 	for (Staj s1:toadd1) {
 		toadd3.clear();
 		for (Staj s2:toadd2) {
+			if(s1.getNumb()==s2.getNumb()) continue;
+			current=null;
 			if (Utils.intersect(s1.getStartDate(),s1.getEndDate(),s2.getStartDate(),s2.getEndDate())) {
 				changed=true;
 				current=Staj.makeCopy(s1);
-				st=false;
-				fn=false;
+				current.setNumb(++counter);
+				
 				if (Utils.beforeOrEqual(s1.getStartDate(),s2.getStartDate()))
 				{
 					current.setStartDate(s2.getStartDate());
-					s1.setEndDate(Utils.addDay(s2.getStartDate(),-1));
-					st=true;
-				}
-				
-				if (Utils.beforeOrEqual(s2.getEndDate(),s1.getEndDate())) {
-					current.setEndDate(s2.getEndDate());
-					s1.setStartDate(Utils.addDay(s2.getEndDate(),1));
-					fn=true;
-				}
-				if (!st&&!fn) s1.setStartDate(s1.getEndDate());//если e s1 ничего не обрезалось, он внутри полностью - обнуляем его
-				
-				if (Utils.beforeOrEqual(s2.getStartDate(), current.getStartDate())) {
-					
-				}
-				setLgota(current,s1,s2);
-				toadd3.add(current);
-				}
-			}
-		toadd2.addAll(toadd3);
-		}
-	if (!changed) break;
-	}
-	
-	
-	
-	
-	while(true)
-	
-
-
-	{
-	toadd.clear();
-	counter=0;
-	current=sttmp.get(0);
-	for (Staj st1: sttmp) {
-		counter++;
-		if (counter==1 || !st1.getStartDate().before(st1.getEndDate())) continue;
-		changed=false;
-		
-		if (Utils.intersect(current.getStartDate(),st1.getStartDate(),current.getEndDate(),st1.getEndDate())) {
-			if (Utils.beforeOrEqual(current.getStartDate(),st1.getStartDate())) {
-				if (Utils.beforeOrEqual(current.getEndDate(),st1.getEndDate())){
+					s1.setEndDate(s2.getStartDate());
 					
 				}
 				else {
+					current.setStartDate(s1.getStartDate());
+					s2.setEndDate(s1.getStartDate());
+				}
+				
+				if (Utils.beforeOrEqual(s1.getEndDate(),s2.getEndDate()))
+				{
+					current.setEndDate(s1.getEndDate());
+					s2.setStartDate(s1.getEndDate());
 					
 				}
+				else {
+					current.setStartDate(s2.getEndDate());
+					s1.setStartDate(s2.getStartDate());
+				}
+
+				current.setCspext(s1.getCspext()+","+s2.getCspext());
+				
+				if (current.getStartDate().before(dfrom)) {
+					current.setStavka(s1.getStavka()+s2.getStavka());
+				}
+				else {
+					current.setStavka(1f);
+				}
+				toadd3.add(current);
 			}
-			else {
+				
+				
+//				st=false;
+//				fn=false;
+//				if (Utils.beforeOrEqual(s1.getStartDate(),s2.getStartDate()))
+//				{
+//					current.setStartDate(s2.getStartDate());
+//					s1.setEndDate(Utils.addDay(s2.getStartDate(),-1));
+//					st=true;
+//				}
+//				
+//				if (Utils.beforeOrEqual(s2.getEndDate(),s1.getEndDate())) {
+//					current.setEndDate(s2.getEndDate());
+//					s1.setStartDate(Utils.addDay(s2.getEndDate(),1));
+//					fn=true;
+//				}
+//				if (!st&&!fn) s1.setStartDate(s1.getEndDate());//если e s1 ничего не обрезалось, он внутри полностью - обнуляем его
+//				
+//				if (Utils.beforeOrEqual(s2.getStartDate(), current.getStartDate())) {
+//					
+//				}
+//				setLgota(current,s1,s2);
+//				toadd3.add(current);
+//				}
 				
 			}
+		toadd2.addAll(toadd3);
+		toadd2.removeIf(x->!x.getStartDate().before(x.getEndDate()));
 		}
-		
-		if (Utils.afterOrEqual(current.getEndDate(),st1.getStartDate()))
-		{
-			if (current.getEndDate().before(st1.getEndDate()))
-			{//порождается часть от st
-				stg1=Staj.makeCopy(st1);
-				stg1.setStartDate(Utils.addDay(current.getEndDate(),1));
-				st1.setEndDate(current.getEndDate());
-				st1.setAddDay(0);
-			}
-			else
-			{
-				stg1=Staj.makeCopy(current);
-				stg1.setStartDate(Utils.addDay(st1.getEndDate(),1));
-			}
-			changed=stg1.getStartDate().before(stg1.getEndDate());
-			if (st1.getStavka()<1) selectMedStaj(st1,current);
-			st1.setStavka(st1.getStavka()+current.getStavka());
-			
-			current.setEndDate(Utils.addDay(st1.getStartDate(),-1));
-			current.setAddDay(0);
-		}
-		
-		
-		if (changed) toadd.add(stg1);
-		current=st1;
-	}
-	if (toadd.isEmpty()) break;
-//	cycles+=1;
-//	System.out.println("cycles="+cycles+" lgh="+toadd.size());
-	sttmp.addAll(toadd);
-	Collections.sort(sttmp);
+		toadd1.removeIf(x->!x.getStartDate().before(x.getEndDate()));
+	if (!changed) break;
 	}
 	
-	sttmp.removeIf(x->(x.getStavka()<0.999f|| !x.getStartDate().before(x.getEndDate())));
-//	boolean containsCity=false;
-//	for (Staj st: sttmp) {
-////		System.out.println(st);
-//		if (st.getCspext().contains("ГД")) {
-//			containsCity=true;
-//			break;
-//		}
-//		
-//	}
+	for(Staj s1:toadd2) setLgota(s1);
+	toadd1.removeIf(x->x.getStavka()<0.01f);
+	
+
 	return getMedStajAll(sttmp);
 }
 
 	
-private void setLgota(Staj current, Staj s1, Staj s2) {
+private void setLgota(Staj s1) {
 	// TODO Auto-generated method stub
+	Set<String>  csp= new HashSet();
+	String [] csarr = s1.getCspext().split(",");
+	for (int i=0;i<csarr.length;i++) csp.add(csarr[i]);
+	
+	if (s1.getStartDate().before(dfrom)) {
+		if (csp.contains("27-СМХР")) {s1.setCspext("27-СМХР");} else 
+		if (csp.contains("27-ГДХР")) {s1.setCspext("27-ГДХР");} else			
+		if (csp.contains("27-СМ")) {s1.setCspext("27-СМ");} else
+		{s1.setCspext("27-ГД");}
+		
+	}
+	else {
+
+		if (csp.contains("27-СМХР") && csp.size()==1) {
+			if (s1.getStavka()<0.99f)
+			{
+							s1.setCspext("27-ГДХР");
+							s1.setStavka(1f);
+			}
+		}
+		else if (csp.contains("27-ГДХР")&&csp.contains("27-СМХР") && csp.size()==2) {
+			if (s1.getStavka()<0.99f)
+			{
+				s1.setCspext("27-СМ");
+				s1.setStavka(1f);
+			}
+			else s1.setCspext("27-ГДХР");
+		}
+		else if (csp.contains("27-ГДХР")&&csp.contains("27-СМХР")&&csp.contains("27-СМ") && csp.size()==3) {
+			if (s1.getStavka()<0.99f) { 
+				s1.setCspext("27-ГД");
+				s1.setStavka(1f);
+			}
+			else s1.setCspext("27-СМ");
+		}
+		else {
+			if (s1.getStavka()<0.99f) s1.setStavka(0f);
+			s1.setCspext("27-ГД");
+		}
+	}
 	
 }
 
 
 
-	private String selectMedStaj(Staj a, Staj b) {
-	if (a.getCspext().equals("27-ГД")||b.getCspext().equals("27-ГД")) return "27-ГД";
-	else if (a.getCspext().equals("27-СМ")||b.getCspext().equals("27-СМ")) return "27-СМ";
-	else if (a.getCspext().equals("27-ГДХР")||b.getCspext().equals("27-ГДХР")) return "27-ГДХР";
-	else if (a.getCspext().equals("27-СМХР")||b.getCspext().equals("27-СМХР")) return "27-СМХР";
-	else return "";
-}
+//	private String selectMedStaj(Staj a, Staj b) {
+//	if (a.getCspext().equals("27-ГД")||b.getCspext().equals("27-ГД")) return "27-ГД";
+//	else if (a.getCspext().equals("27-СМ")||b.getCspext().equals("27-СМ")) return "27-СМ";
+//	else if (a.getCspext().equals("27-ГДХР")||b.getCspext().equals("27-ГДХР")) return "27-ГДХР";
+//	else if (a.getCspext().equals("27-СМХР")||b.getCspext().equals("27-СМХР")) return "27-СМХР";
+//	else return "";
+//}
 	
 }
