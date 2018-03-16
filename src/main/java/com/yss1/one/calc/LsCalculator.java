@@ -218,7 +218,7 @@ public int calcLgotMonth(Period period, String ls, int year, boolean isMan) {
 	//если (полная выработка) все норм возвращаем
 	if (os) {
 		if (isMan) {
-			if (lg.getMan_pens()>0)
+			if (lg.getMan_pens()>0.01f)
 			{
 				return (int)(60-lg.getMan_pens())*12;
 			}
@@ -231,16 +231,18 @@ public int calcLgotMonth(Period period, String ls, int year, boolean isMan) {
 			}
 		}
 		else {
-			if (lg.getWoman_pens()>0)
+			if (lg.getWoman_pens()>0.01f)
 			{
 				return (int)(55-lg.getWoman_pens())*12;
 			}
 			else
 			{
 				p1=new Period((int)lg.getWoman_ss(), 0, 0);
+				//p2=Utils.makePeriod(ds, df, ad)
 				p2=new Period(period);
 				p2.diffPeriod(p1);
 				return p2.getMonths()+p2.getYears()*12;
+				
 			}
 		}
 	}

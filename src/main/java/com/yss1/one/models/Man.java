@@ -309,12 +309,16 @@ public class Man {
 					!getSex().contains("Ж")));
 			maxMonth = Math.max(maxMonth, lgs.getMonth());
 		}
-
+		
+		//System.out.println("MaxMonth="+maxMonth+" DPravaBefore="+Utils.getFormattedDate(datePrav.getTime()));
 		if (maxMonth > 0) {
+			
 			datePrav.add(GregorianCalendar.MONTH, -maxMonth);
 			lgota = 1;
+			//System.out.println("MaxMonth="+maxMonth+" DPravaAfter="+Utils.getFormattedDate(datePrav.getTime()));
 		}
-
+		
+		
 		calcKVal();
 
 		calcStajK();

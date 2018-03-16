@@ -167,7 +167,7 @@ public class MedCalculator {
 		
 		//Period atAll=getMedStajBefore(ls, Utils.makeDate(2100, 1, 1));
 		
-		return getMedStajBefore(ls, Utils.makeDate(2100, 1, 1));
+		return getMedStajBefore(ls, Utils.makeDate(2100, 1, 1),what);
 	}
 
 	private boolean inList(LgotaDescription ld, String patt) {
@@ -229,6 +229,7 @@ public class MedCalculator {
 	List<Staj> toadd3=new ArrayList<Staj>();
 	int counter=0;
 	boolean changed;
+	//int aaa=0;
 	
 	for (Staj s0:sttmp) s0.setNumb(++counter);;
 	for (Staj s0:sttmp) toadd1.add(Staj.makeCopy(s0));
@@ -236,13 +237,16 @@ public class MedCalculator {
 	
 	while(true)
 	{
-	changed=false;	
+	changed=false;
+	//System.out.println("counter="+counter++);
 	for (Staj s1:toadd1) {
+		//System.out.println("toadd="+toadd3.size());
 		toadd3.clear();
 		for (Staj s2:toadd2) {
 			if(s1.getNumb()==s2.getNumb()) continue;
 			current=null;
 			if (Utils.intersect(s1.getStartDate(),s1.getEndDate(),s2.getStartDate(),s2.getEndDate())) {
+				//System.out.println("s1s="+s1.getStartDate()+", s1f="+s1.getEndDate()+", s2s="+s2.getStartDate()+", s2f"+s2.getEndDate());
 				changed=true;
 				current=Staj.makeCopy(s1);
 				current.setNumb(++counter);
@@ -250,59 +254,37 @@ public class MedCalculator {
 				if (Utils.beforeOrEqual(s1.getStartDate(),s2.getStartDate()))
 				{
 					current.setStartDate(s2.getStartDate());
-					s1.setEndDate(s2.getStartDate());
+					s1.setEndDate(Utils.addDay(s2.getStartDate(),-1));
 					
 				}
 				else {
 					current.setStartDate(s1.getStartDate());
-					s2.setEndDate(s1.getStartDate());
+					s2.setEndDate(Utils.addDay(s1.getStartDate(),-1));
 				}
 				
 				if (Utils.beforeOrEqual(s1.getEndDate(),s2.getEndDate()))
 				{
 					current.setEndDate(s1.getEndDate());
-					s2.setStartDate(s1.getEndDate());
+					s2.setStartDate(Utils.addDay(s1.getEndDate(),1));
 					
 				}
 				else {
 					current.setStartDate(s2.getEndDate());
-					s1.setStartDate(s2.getStartDate());
+					s1.setStartDate(Utils.addDay(s2.getEndDate(),1));
 				}
 
 				current.setCspext(s1.getCspext()+","+s2.getCspext());
 				
 				if (current.getStartDate().before(dfrom)) {
-					current.setStavka(s1.getStavka()+s2.getStavka());
+					current.setStavka(1f);
 				}
 				else {
-					current.setStavka(1f);
+					current.setStavka(s1.getStavka()+s2.getStavka());
+					
 				}
 				toadd3.add(current);
 			}
-				
-				
-//				st=false;
-//				fn=false;
-//				if (Utils.beforeOrEqual(s1.getStartDate(),s2.getStartDate()))
-//				{
-//					current.setStartDate(s2.getStartDate());
-//					s1.setEndDate(Utils.addDay(s2.getStartDate(),-1));
-//					st=true;
-//				}
-//				
-//				if (Utils.beforeOrEqual(s2.getEndDate(),s1.getEndDate())) {
-//					current.setEndDate(s2.getEndDate());
-//					s1.setStartDate(Utils.addDay(s2.getEndDate(),1));
-//					fn=true;
-//				}
-//				if (!st&&!fn) s1.setStartDate(s1.getEndDate());//если e s1 ничего не обрезалось, он внутри полностью - обнуляем его
-//				
-//				if (Utils.beforeOrEqual(s2.getStartDate(), current.getStartDate())) {
-//					
-//				}
-//				setLgota(current,s1,s2);
-//				toadd3.add(current);
-//				}
+	
 				
 			}
 		toadd2.addAll(toadd3);
@@ -316,13 +298,13 @@ public class MedCalculator {
 	toadd1.removeIf(x->x.getStavka()<0.01f);
 	
 
-	return getMedStajAll(sttmp);
+	return getMedStajAll(sttmp,lg.getName());
 }
 
 	
 private void setLgota(Staj s1) {
 	// TODO Auto-generated method stub
-	Set<String>  csp= new HashSet();
+	Set<String>  csp= new HashSet<String>();
 	String [] csarr = s1.getCspext().split(",");
 	for (int i=0;i<csarr.length;i++) csp.add(csarr[i]);
 	

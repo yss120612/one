@@ -168,7 +168,7 @@ public class Utils {
 
 	public static boolean intersect(Date s1, Date f1, Date s2, Date f2) {// пересекаются ли диапазоны дат s1..f1 и
 																			// s2..f2
-		return (afterOrEqual(s1, f1) && beforeOrEqual(s1, f2)) || (afterOrEqual(s2, f1) && beforeOrEqual(s2, f2));
+		return (afterOrEqual(s1, s2) && beforeOrEqual(s1, f2)) || (afterOrEqual(f1, s2) && beforeOrEqual(f1, f2));
 				//|| included(s1, f1, s2, f2) || included(s2, f2, s1, f1);
 	}
 
