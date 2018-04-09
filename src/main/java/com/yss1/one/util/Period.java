@@ -38,6 +38,8 @@ public class Period {
 		return months;
 	}
 
+	
+	
 	public void setMonths(int months) {
 		this.months = months;
 	}
@@ -70,6 +72,12 @@ public class Period {
 		return (year*12+0.1f)>(years*12+months);
 	}
 	
+	//превышает или равен ли текущий период переданному
+		public boolean isMoreEqual(Period et) {
+			return (years*12*30+months*12+days)>=(et.getYears()*12*30+et.getMonths()*30+et.getDays());
+		}
+		
+	
 	// отнимает от текущего периода другой
 	public void diffPeriod(Period p) {
 		if (p == null) {
@@ -86,8 +94,8 @@ public class Period {
 			this.months--;
 		}
 
-		if (this.days < 0)
-			this.days += 30;
+//		if (this.days < 0)
+//			this.days += 30;
 
 		this.months -= p.getMonths();
 		if (this.months < 0) {
@@ -98,8 +106,8 @@ public class Period {
 			this.months -= 12;
 			this.years--;
 		}
-		if (this.months < 0)
-			this.months += 12;
+//		if (this.months < 0)
+//			this.months += 12;
 		this.years -= p.getYears();
 	}
 
@@ -110,7 +118,7 @@ public class Period {
 	}
 
 	public boolean isEmpty() {
-		return years>0||days>0||months>0;
+		return years==0 && days==0 && months==0;
 	}
 	
 	private int years;

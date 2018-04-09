@@ -47,7 +47,7 @@ public class AS400Dao {
 		//meter=(PerfMeter)ApplicationContextUtil.getApplicationContext().getBean(PerfMeter.class);
 	}
 	 	 
-	public Man load(String snils, int ij, int koe) throws SQLException
+	public Man load(String snils, int ij, int koe, float otn) throws SQLException
 	{
 		setErr("");
 		Man man=new Man();
@@ -203,6 +203,7 @@ public class AS400Dao {
 		
 		man.setIjdevency(ij);
 		man.setKoeffFix(koe);
+		man.setkSal60(otn);
 		man.calcPens();
 		jt.getDataSource().getConnection().close();
 		return man;

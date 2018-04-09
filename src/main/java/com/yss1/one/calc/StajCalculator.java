@@ -36,19 +36,47 @@ public Set<String> getLgotes() {
 
 	//функция расчета стажа на указанную дату	
 	public Period getStajBefore(List<Staj> ls, Date bd) {
-		Period per = new Period(0, 0, 0);
-		for (Staj st : ls) {
-			if (st.getStartDate().after(bd))
-				continue;
-			if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
-				per.addPeriod(Utils.makePeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
-			} else {
-				per.addPeriod(Utils.makePeriod(st.getStartDate(), bd, 0));
-			}
-		}
-		return per;
+		return getSpecStajBefore(ls,bd,"");
 	}
 
+	//функция расчета спец. стажа на указанную дату	
+		public Period getSpecStajBefore(List<Staj> ls, Date bd,String ss) {
+			Period per = new Period(0, 0, 0);
+			for (Staj st : ls) {
+				if (st.getStartDate().after(bd) || (ss!=null && !ss.isEmpty() && !st.getCspext().equals(ss) ))
+					continue;
+				if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
+					per.addPeriod(Utils.makePeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
+				} else {
+					per.addPeriod(Utils.makePeriod(st.getStartDate(), bd, 0));
+				}
+			}
+			return per;
+		}
+
+
+		//функция расчета стажа после указанной даты	
+		public Period getStajAfter(List<Staj> ls, Date bd) {
+			return getSpecStajAfter(ls,bd,"");
+		}
+
+		//функция расчета спец. стажа после указанной даты	
+			public Period getSpecStajAfter(List<Staj> ls, Date bd,String ss) {
+				Period per = new Period(0, 0, 0);
+				for (Staj st : ls) {
+					if (st.getEndDate().before(bd) || (ss!=null && !ss.isEmpty() && !st.getCspext().equals(ss) ))
+						continue;
+					if (Utils.afterOrEqual(st.getStartDate(), bd)) {
+						per.addPeriod(Utils.makePeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
+					} else {
+						per.addPeriod(Utils.makePeriod(bd,st.getEndDate(), 0));
+					}
+				}
+				return per;
+			}
+
+	
+	
 	// функция расчета общего стажа
 	public Period getStajAll(List<Staj> ls) {
 		return getStajBefore(ls, Utils.makeDate(2100, 1, 1));

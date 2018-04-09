@@ -26,7 +26,9 @@ DojityeDao dojDao;
 	public float rpkCalc(float psk, float rp, int yp, boolean lgota)
 
 	{
+		//System.out.println("rp="+rp+" psk="+psk+" doj="+dojDao.getPeriod(yp,lgota)+" yp="+yp+" lgota="+lgota);
 		return (rp-450)*psk*dojDao.getPeriod(yp,lgota);
+		
 	}
 	
 	//на вход начальный пенсионный капитал, взносы с 15 года, год права и лготный стаж

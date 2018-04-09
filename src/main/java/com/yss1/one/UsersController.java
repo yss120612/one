@@ -120,7 +120,7 @@ public class UsersController {
 		
 		Man man=null;
 		try {
-			man=mainDao.calculate(snils,0,Integer.parseInt(ijd),Integer.parseInt(koeff));
+			man=mainDao.calculate(snils,0,Integer.parseInt(ijd),Integer.parseInt(koeff),0);
 			model.addAttribute("userid", mainDao.getId());
 		} catch (DocumentException | IOException e) {
 					e.printStackTrace();

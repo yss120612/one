@@ -1,5 +1,7 @@
 package com.yss1.one.models;
 
+import java.util.Date;
+
 import com.yss1.one.util.Period;
 
 public class LgStaj {

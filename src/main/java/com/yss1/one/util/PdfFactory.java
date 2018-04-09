@@ -368,20 +368,34 @@ public class PdfFactory {
 		cell.addElement(ph);
 		
 		text.clear();
-		ph=new Phrase("При расчете Ваша средняя ЗП ",font10);
+		if (man.getkSal60()>0.01f)
+		{
+		ph=new Phrase("При расчете Ваша средняя ЗП за 60 месяцев подряд сравнивается со средней ЗП по стране за соответствующий период.",font10);
 		text.add(ph);
-		ph=new Phrase(String.format("%,.2f", man.getSal20012002()),font12red);
+		ph=new Phrase(" У Вас отношение заработных плат составляет ",font10);
 		text.add(ph);
-		ph=new Phrase(" руб. сравнивается со средней ЗП по стране 1 494,50 руб за соответствующий период. У Вас отношение заработных плат составляет ",font10);
-		text.add(ph);
-		ph=new Phrase(String.format("%.2f", man.getSal20012002()/1494.50f),font12red);
-		text.add(ph);
-		ph=new Phrase(", при максимально применяемом ",font10);
-		text.add(ph);
-		ph=new Phrase(String.format("%.2f", man.getRk2001()),font12red);
+		ph=new Phrase(String.format("%.2f. ", man.getkSal()),font12red);
 		text.add(ph);
 		ph=new Phrase();
 		ph.addAll(text);
+		}
+		else
+		{
+			ph=new Phrase("При расчете Ваша средняя ЗП ",font10);
+			text.add(ph);
+			ph=new Phrase(String.format("%,.2f", man.getSal20012002()),font12red);
+			text.add(ph);
+			ph=new Phrase(" руб. сравнивается со средней ЗП по стране 1 494,50 руб за соответствующий период. У Вас отношение заработных плат составляет ",font10);
+			text.add(ph);
+			ph=new Phrase(String.format("%.2f", man.getSal20012002()/1494.50f),font12red);
+			text.add(ph);
+			ph=new Phrase(", при максимально применяемом ",font10);
+			text.add(ph);
+			ph=new Phrase(String.format("%.2f", man.getRk2001()),font12red);
+			text.add(ph);
+			ph=new Phrase();
+			ph.addAll(text);	
+		}
 		cell.addElement(ph);
 		
 		text.clear();
@@ -884,6 +898,12 @@ public class PdfFactory {
 		table.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
 
+		if (man.getkSal60()>0.01f) {
+			table.addCell(
+					new Phrase(String.format("Отношение зароботной платы по справке за 5 лет составляет %.2f",man.getkSal60()), font10));
+		}
+		else
+		{
 		table.addCell(
 				new Phrase(String.format("Среднемесячная заработная плата (з/п) за 2000-2001 год - %.2f руб. в месяц",
 						man.getSal20012002()), font10));
@@ -895,6 +915,8 @@ public class PdfFactory {
 					"Ваш заработок за 2001-2002 годы не максимально возможный для назначения пенсии. Возможно предоставить з/п за 60 месяцев подряд до 01.01.2002г.",
 					font8));
 		}
+		}
+		
 		document.add(table);
 
 		table = new PdfPTable(3);

@@ -39,11 +39,11 @@ public class SheduleBaseScan {
 	private void run() {
 		try {
 			
-			String sql = "select id,vc_ins,Rk,Igd from  public.spravka where ts_a is null";
+			String sql = "select id,vc_ins,Rk,Igd,otn_zp from  public.spravka where ts_a is null";
 			List<ShHelper> list = pgDT.query(sql, queryRowMapper);
 			for (ShHelper pair : list) {
 				//System.out.println("Val="+pair.getVal()+" Key="+pair.getKey());
-				mainDao.calculate(pair.getSnils(), pair.getId(), pair.getRk(),pair.getIjd());
+				mainDao.calculate(pair.getSnils(), pair.getId(), pair.getRk(),pair.getIjd(),pair.getOt());
 			}
 
 		} catch (Exception e) {
@@ -54,22 +54,27 @@ public class SheduleBaseScan {
 
 	private RowMapper<ShHelper> queryRowMapper = new RowMapper<ShHelper>() {
 		public ShHelper mapRow(ResultSet rs, int rowNum) throws SQLException {
-			ShHelper mm = new ShHelper(rs.getInt("id"),rs.getString("vc_ins"),rs.getObject("Rk")==null?0:rs.getInt("Rk"),rs.getObject("Igd")==null?0:rs.getInt("Igd"));
+			ShHelper mm = new ShHelper(rs.getInt("id"),rs.getString("vc_ins"),rs.getObject("Rk")==null?0:rs.getInt("Rk"),rs.getObject("Igd")==null?0:rs.getInt("Igd"),rs.getObject("otn_zp")==null?0:rs.getFloat("otn_zp"));
 			return mm;
 		}
 	};
 	
 	private class ShHelper{
+		public float getOt() {
+			return ot;
+		}
 		int id;
 		String snils;
 		int rk;
 		int ijd;
-		public ShHelper(int id, String snils, int rk, int ijd) {
+		float ot;
+		public ShHelper(int id, String snils, int rk, int ijd,float ot) {
 			super();
 			this.id = id;
 			this.snils = snils;
 			this.rk = rk;
 			this.ijd = ijd;
+			this.ot=ot;
 		}
 		public int getId() {
 			return id;

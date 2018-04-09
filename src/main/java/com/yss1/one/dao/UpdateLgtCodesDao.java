@@ -36,6 +36,11 @@ public class UpdateLgtCodesDao {
 			if (st.getCwcext().contains("/")) st.setCwcext(st.getCwcext().substring(0,st.getCwcext().indexOf("/")));
 			if (st.getCspext().contains("/")) st.setCspext(st.getCspext().substring(0,st.getCspext().indexOf("/")));
 			
+			
+			//if (st.getDopcspext().contains("(")) st.setDopcspext(st.getDopcspext().substring(st.getDopcspext().indexOf("(")+1,st.getDopcspext().length()));
+			//if (st.getDopcspext().contains(")")) st.setDopcspext(st.getDopcspext().substring(0,st.getDopcspext().indexOf(")")));
+			//st.setDopcspext(st.getDopcspext().replaceAll(",","."));
+			//System.out.println("st.getDopcspext()="+st.getDopcspext());
 			for (DictCode dc:dictCodes)
 			{
 			if (dc.getField().equals("cggext") && st.getCggext().equals(dc.getCold())) {st.setCggext(dc.getCnew());break;}

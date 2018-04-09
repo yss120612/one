@@ -12,7 +12,8 @@ public class Staj implements Comparable<Staj>{
 		period=Utils.makePeriod(startDate,endDate,addDay);
 //		return "Staj [startDate=" + Utils.getFormattedDate(startDate) + ", endDate=" + Utils.getFormattedDate(endDate) + "\ncggext=" + cggext + ", cwcext=" + cwcext
 //				+ ", ctpext=" + ctpext + ", dopctpext=" + dopctpext + ", cspext=" + cspext + ", vidDeyat=" + vidDeyat + " period="+period.toString()+"]";
-		return "Staj [startDate=" + Utils.getFormattedDate(startDate) + ", endDate=" + Utils.getFormattedDate(endDate) + ", ctpext=" + ctpext + ", dopctpext=" + dopctpext + ", cspext=" + cspext + ", dopcspext="+ dopcspext +", stavka=" + stavka + " period="+period.toString()+ " <br>VID="+vidDeyat+" ORG="+predprName+"]";
+		//return "Staj [startDate=" + Utils.getFormattedDate(startDate) + ", endDate=" + Utils.getFormattedDate(endDate) + ", ctpext=" + ctpext + ", dopctpext=" + dopctpext + ", cspext=" + cspext + ", dopcspext="+ dopcspext +", stavka=" + stavka + " period="+period.toString()+ " <br>VID="+vidDeyat+" ORG="+predprName+"]";
+		return "Staj [startDate=" + Utils.getFormattedDate(startDate) + ", endDate=" + Utils.getFormattedDate(endDate)  + ", Stavka=" + stavka + ", dopcspext="+ dopcspext + ", cspext=" + cspext+ ", VID="+vidDeyat+"]";
 				
 	}
 
@@ -59,10 +60,19 @@ private int addDay;
 //ставка
 private float stavka;
 
-
-
 //рег номер работодателя
 private String regNumb;
+
+private float multiplier;
+
+
+public float getMultiplier() {
+	return multiplier;
+}
+
+public void setMultiplier(float multiplier) {
+	this.multiplier = multiplier;
+}
 
 public String getRegNumb() {
 	return regNumb;
@@ -114,6 +124,7 @@ public void setAddDay(int addDay) {
 public Staj() {
 	addDay=1;
 	stavka=0f;
+	multiplier=1f;
 }
 
 public Staj(Staj s) {
@@ -133,6 +144,7 @@ public Staj(Staj s) {
 	this.flag=s.flag;
 	this.regNumb=s.regNumb;
 	this.numb=s.numb;
+	this.multiplier=s.multiplier;
 }
 
 public static Staj makeCopy(Staj s) {

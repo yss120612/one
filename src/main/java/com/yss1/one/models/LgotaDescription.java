@@ -1,10 +1,6 @@
 package com.yss1.one.models;
 
-import java.util.ArrayList;
-
 import java.util.List;
-
-import com.yss1.one.util.Twix;
 
 //Льгота с правилами применения
 public class LgotaDescription {

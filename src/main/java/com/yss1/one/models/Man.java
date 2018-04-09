@@ -131,8 +131,20 @@ public class Man {
 
 	// Записи о зарплате за 2000-2001 годы
 	private List<Platej> plateg20002001;
+	
 	// коэффициент зарплатный за 2000-2001 годы
 	private float kSal;
+
+	// коэффициент зарплатный за 60 месяцев
+	private float kSal60;
+	
+	public float getkSal60() {
+		return kSal60;
+	}
+
+	public void setkSal60(float kSal60) {
+		this.kSal60 = kSal60;
+	}
 
 	// взносы начисленнве
 	private List<Vsnos> vsnosy;
@@ -240,6 +252,7 @@ public class Man {
 		Period lper;
 		lgotes = stCalc.getLgotes();
 		boolean pedStaj = false;
+		boolean medStaj = false;
 		boolean north = false;
 
 		for (String s : lgotes) {
@@ -248,19 +261,19 @@ public class Man {
 			rawStaj = stCalc.copyStajes(staj, stajKonv);
 			// med.clear();
 			if (s.equals("27-СМХР") || s.equals("27-ГДХР") || s.equals("27-ГД") || s.equals("27-СМ")) {
-				lper = medCalc.getMedStaj(rawStaj, s);
+				lper = medCalc.getMedPeriod(rawStaj, s);
 				lst = new LgStaj(s, lper);
+				medStaj=true;
 			} else if (s.equals("27-ПД") || s.equals("27-ПДРК")) {
 				pedStaj = true;
 				s = "27-ПД";
-				lper = pedCalc.getPedStaj(rawStaj);
+				lper = pedCalc.getPedPeriod(rawStaj);
 				lst = new LgStaj(s, lper);
 			} else {// остальные
-				if (s.equals("МКС") || s.equals("РКС"))
-					north = true;
+				if (s.equals("МКС") || s.equals("РКС"))	north = true;
 				lper = lsCalc.calcLS2(rawStaj, s, !sex.toUpperCase().contains("Ж"));
 				lst = new LgStaj(s, lper);
-				lst.setAbsPeriod(lsCalc.calcAbsLS(rawStaj, s));
+				lst.setAbsPeriod(lsCalc.calcAbsLPeriod(rawStaj, s));
 
 			}
 
@@ -275,10 +288,12 @@ public class Man {
 		for (LgStaj lgs : myLgStaj) {
 			if (north && lsCalc.isNorthPlus(lgs.getName())) {
 				rawStaj = stCalc.copyStajes(staj, stajKonv);
+				//System.out.println("Lgotq="+lgs.getName()+"______________FORNORTH="+lsCalc.getForNorth(rawStaj, lgs.getName()));
 				forNorth.addPeriod(lsCalc.getForNorth(rawStaj, lgs.getName()));
 			}
 		}
 
+		
 		
 		for (LgStaj lgs : myLgStaj) {
 			if (north && (lgs.getName().equals("МКС") || lgs.getName().equals("РКС"))) {
@@ -305,17 +320,38 @@ public class Man {
 				}
 			}
 
-			lgs.setMonth(lsCalc.calcLgotMonth(lgs.getPeriod(), lgs.getName(), periodAll.getYears(),
-					!getSex().contains("Ж")));
+			lgs.setMonth(lsCalc.calcLgotMonth(lgs.getPeriod(), lgs.getName(), periodAll.getYears(),!getSex().contains("Ж"),getDatePravDate()));
 			maxMonth = Math.max(maxMonth, lgs.getMonth());
 		}
 		
 		//System.out.println("MaxMonth="+maxMonth+" DPravaBefore="+Utils.getFormattedDate(datePrav.getTime()));
-		if (maxMonth > 0) {
+		if (maxMonth == 1000) {
+			lgota=1;
+			if (medStaj) {
+				for (LgStaj lgs : myLgStaj)
+				{
+				 if (lgs.getMonth()==1000)
+				 {
+				 setDatePravDate(medCalc.getPravo(rawStaj, lgs.getName(),!sex.toUpperCase().contains("Ж")));
+				 }
+				}
+			} else if (pedStaj) {
+				setDatePravDate(lsCalc.getPravo(pedCalc.getPedStaj(rawStaj),"27-ПД",!sex.toUpperCase().contains("Ж")));
+			}
+			else
+			{
+				for (LgStaj lgs : myLgStaj)
+				{
+				 if (lgs.getMonth()==1000)
+				 {
+				 setDatePravDate(lsCalc.getPravo(lsCalc.calcLS3(rawStaj,lgs.getName(),!sex.toUpperCase().contains("Ж")),lgs.getName(),!sex.toUpperCase().contains("Ж")));
+				 }
+				}
+			}
+		} else if (maxMonth > 0) {
 			
 			datePrav.add(GregorianCalendar.MONTH, -maxMonth);
 			lgota = 1;
-			//System.out.println("MaxMonth="+maxMonth+" DPravaAfter="+Utils.getFormattedDate(datePrav.getTime()));
 		}
 		
 		
@@ -383,9 +419,9 @@ public class Man {
 
 		// rawStaj = stCalc.copyStajes(staj,stajKonv);
 		// for (Deyatelnost de : myDeyatelnost) {
-		// for (Staj st : rawStaj) {
-		// periodAll.addPeriod(Utils.calcPeriod(st.getStartDate(), st.getEndDate(),
-		// st.getAddDay()));
+//		 for (Staj st : rawStaj) {
+//			 System.out.println(st.toString());
+//		 }
 		// res = res + de.toString() + "<br>";
 		// }
 	}
@@ -470,19 +506,31 @@ public class Man {
 		if (mon > 24)
 			mon = 24;
 		sal20002001 = 0;
-		if (plateg20002001 == null || mon == 0)
+		if ((plateg20002001 == null || mon == 0) && kSal60<0.01f)
 			return;
 		for (Platej pl : plateg20002001) {
-			// System.out.println("platej="+pl.getSumma());
 			sal20002001 += pl.getSumma();
 		}
 		sal20002001 = sal20002001 / mon;
+		
+		if (kSal60>0.01f) {
+			kSal = kSal60;
+			if (kSal >= 1.9f) {
+				kSal = 1.9f;
+				isMax20002001 = true;
+			} else {
+				isMax20002001 = false;
+			}
+		}
+		else
+		{
 		kSal = sal20002001 / 1494.5f;
 		if (kSal >= rk2001) {
 			kSal = rk2001;
 			isMax20002001 = true;
 		} else {
 			isMax20002001 = false;
+		}
 		}
 	}
 

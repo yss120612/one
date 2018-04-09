@@ -52,7 +52,7 @@ private long id;
 		return res;
 	}
 	
-	public Man calculate(String snils, long id, int ij, int koe) throws DocumentException, IOException {
+	public Man calculate(String snils, long id, int ij, int koe, float otn) throws DocumentException, IOException {
 		AS400Dao as400 = new AS400Dao();
 		String res = "";
 		String resr = "";
@@ -64,7 +64,7 @@ private long id;
 		
 		snils = Utils.formatSNILS(snils);
 		try {
-			man = as400.load(snils,ij,koe);
+			man = as400.load(snils,ij,koe,otn);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -89,7 +89,7 @@ private long id;
 		String now = Utils.getFormattedDate4sql(new Date());
 		
 		if (id==0) {
-			Long idd=sprDao.insertAndGetId(now, snils,ij,koe);
+			Long idd=sprDao.insertAndGetId(now, snils,ij,koe,otn);
 			if (idd!=null && idd>0) id=idd;
 		}
 		

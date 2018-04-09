@@ -9,7 +9,6 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.yss1.one.dao.LgotaDescrDao;
 import com.yss1.one.models.LgotaDescription;
 import com.yss1.one.models.LgotaUnion;
@@ -20,157 +19,69 @@ import com.yss1.one.util.Utils;
 //Калькулятор расчета медицинского стажа
 @Service
 public class MedCalculator {
-	@Autowired
-	LgotaDescrDao lDao;
 	
-//	public Period getMedStajBefore(List<Staj> ls, Date bd, boolean containsCity) {
-//		// what=1 ГД,what=2 СМ, what=3 ГДХР, what=4 СМХР
-//
-//		Period per = new Period(0, 0, 0);
-//		Date border = Utils.makeDate(1999, 11, 1);
-//		for (Staj st : ls) {
-//			if (st.getStartDate().after(bd))
-//				continue;
-//			
-//			if ( st.getCspext().contains("СМХР")) {
-//				if (containsCity) {
-//					if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
-//						per.addPeriod(Utils.multPeriod(
-//								Utils.makePeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()), 1.75f));
-//					} else {
-//						per.addPeriod(Utils.multPeriod(Utils.makePeriod(st.getStartDate(), bd, 0), 1.75f));
-//					}
-//				} else {
-//					if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
-//						per.addPeriod(Utils.multPeriod(
-//								Utils.makePeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()), 1.5f));
-//					} else {
-//						per.addPeriod(Utils.multPeriod(Utils.makePeriod(st.getStartDate(), bd, 0), 1.5f));
-//					}
-//				}
-//				
-//			} else if (st.getCspext().contains("ГДХР")) {
-//				if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
-//					per.addPeriod(Utils.multPeriod(Utils.makePeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()),1.5f));
-//				} else {
-//					per.addPeriod(Utils.multPeriod(Utils.makePeriod(st.getStartDate(), bd, 0), 1.5f));
-//				}
-//
-//			} else if (st.getCspext().contains("СМ")) {
-//				if (containsCity) {
-//					if (st.getStartDate().before(border)) {
-//						if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
-//							per.addPeriod(Utils.multPeriod(Utils.makePeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()), 1.25f));
-//							//per.addPeriod(Utils.makePeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
-//						} else {
-//							per.addPeriod(Utils.multPeriod(Utils.makePeriod(st.getStartDate(), bd, 0), 1.25f));
-//							//per.addPeriod(Utils.makePeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
-//						}
-//					} else {
-//						if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
-//							per.addPeriod(Utils.makePeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
-//						} else {
-//							per.addPeriod(Utils.makePeriod(st.getStartDate(), bd, 0));
-//						}
-//					}
-//				} else {
-//					if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
-//						per.addPeriod(Utils.multPeriod(
-//								Utils.makePeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()), 1.25f));
-//					} else {
-//						per.addPeriod(Utils.multPeriod(Utils.makePeriod(st.getStartDate(), bd, 0), 1.25f));
-//					}
-//				}
-//				
-//			} else if (st.getCspext().contains("ГД")) {
-//				if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
-//					per.addPeriod(Utils.makePeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
-//				} else {
-//					per.addPeriod(Utils.makePeriod(st.getStartDate(), bd, 0));
-//				}
-//			}
-//
-//		}
-//		return per;
-//	}
+@Autowired
+LgotaDescrDao lDao;
+	
+@Autowired
+StajCalculator stCalc;
+	
 
-	private Date dfrom=Utils.makeDate(1999,11,1);
+private Date dfrom=Utils.makeDate(1999,11,1);
 	
-	public Period getMedStajBefore(List<Staj> ls, Date bd, String ms) {
-		Period per = new Period(0, 0, 0);
-		for (Staj st : ls) {
-			if (st.getStartDate().after(bd) ||  !st.getCspext().equals(ms))
-				continue;
-			
-			
-					if (Utils.beforeOrEqual(st.getEndDate(), bd)) {
-						per.addPeriod(Utils.makePeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
-					} else {
-						per.addPeriod(Utils.makePeriod(st.getStartDate(), bd, 0));
-					}
-			
-		}
-		return per;
-	}
-	
-	
-	public Period getMedStajAfter(List<Staj> ls, Date bd, String ms) {
-		Period per = new Period(0, 0, 0);
-		for (Staj st : ls) {
-			if (st.getEndDate().before(bd) || !st.getCspext().equals(ms))
-				continue;
-			
-					if (Utils.afterOrEqual(st.getStartDate(), bd)) {
-						per.addPeriod(Utils.makePeriod(st.getStartDate(), st.getEndDate(), st.getAddDay()));
-					} else {
-						per.addPeriod(Utils.makePeriod(bd,st.getEndDate(), 0));
-					}
-					}
-		return per;
-	}
-	
-	
-	public Period getMedStajAll(List<Staj> ls,String what) {
+public Period getMedStajAll(List<Staj> ls,String what) {
+		Period st1=stCalc.getSpecStajBefore(ls, dfrom,"27-СМХР");
+		Period st2=stCalc.getSpecStajAfter(ls, dfrom,"27-СМХР");
 		
-		//"СМХР""ГДХР""ГД""СМ"
+		Period st3=stCalc.getSpecStajBefore(ls, dfrom,"27-СМ").multPeriod(1.25f);
+		Period st4=stCalc.getSpecStajAfter(ls, dfrom,"27-СМ");
 		
-		Period st1=getMedStajBefore(ls, Utils.makeDate(1999, 11, 1),"СМХР").multPeriod(1.25f);
-		Period st2=getMedStajAfter(ls, Utils.makeDate(1999, 11, 1),"СМХР");
+		Period st5=stCalc.getSpecStajBefore(ls, dfrom,"27-ГДХР").multPeriod(1.5f);
+		Period st6=stCalc.getSpecStajAfter(ls, dfrom,"27-ГДХР").multPeriod(1.5f);
 		
-		Period st3=getMedStajBefore(ls, Utils.makeDate(1999, 11, 1),"СМ");
-		Period st4=getMedStajAfter(ls, Utils.makeDate(1999, 11, 1),"СМ");
+		Period st7=stCalc.getSpecStajBefore(ls, dfrom,"27-ГД");
+		Period st8=stCalc.getSpecStajAfter(ls, dfrom,"27-ГД");
 		
-		Period st5=getMedStajBefore(ls, Utils.makeDate(1999, 11, 1),"ГДХР").multPeriod(1.5f);
-		Period st6=getMedStajAfter(ls, Utils.makeDate(1999, 11, 1),"ГДХР").multPeriod(1.5f);
-		
-		Period st7=getMedStajBefore(ls, Utils.makeDate(1999, 11, 1),"ГД");
-		Period st8=getMedStajAfter(ls, Utils.makeDate(1999, 11, 1),"ГД");
+		//System.out.println("st1="+st3);
+		//System.out.println("st2="+st4);
 		
 		boolean containsCity=!st5.isEmpty()||!st6.isEmpty()||!st7.isEmpty()||!st8.isEmpty();
-		if (what.equals("СМ")) {
-			if (!containsCity) st4=st4.multPeriod(1.25f);
+		if (what.equals("27-СМ")) {
+			if (containsCity) st4=st4.multPeriod(1.25f);
 		}
 		
-		if (what.equals("СМХР")) {
-			if (!containsCity) {
-			st1=st1.multPeriod(1.5f);
-			st2=st2.multPeriod(1.5f);
+		if (what.equals("27-СМХР")) {
+			if (containsCity) {
+			st1=st1.multPeriod(1.75f);
+			st2=st2.multPeriod(1.75f);
 			}
 			else
 			{
-				st1=st1.multPeriod(1.75f);
-				st2=st2.multPeriod(1.75f);
+				st1=st1.multPeriod(1.5f);
+				st2=st2.multPeriod(1.5f);
 			}
 		}
 		
+		if (what.equals("27-СМХР")) {
+			st1.addPeriod(st2);
+			return st1;
+		}
+		else if (what.equals("27-СМ")){
+			st3.addPeriod(st4);
+			return st3;
+		}
+		else if (what.equals("27-ГДХР")){
+			st5.addPeriod(st6);
+			return st5;
+		}
+		else {
+			st7.addPeriod(st8);
+			return st7;
+		}
 		
-		
-		//Period atAll=getMedStajBefore(ls, Utils.makeDate(2100, 1, 1));
-		
-		return getMedStajBefore(ls, Utils.makeDate(2100, 1, 1),what);
 	}
 
-	private boolean inList(LgotaDescription ld, String patt) {
+private boolean inList(LgotaDescription ld, String patt) {
 		
 		if (ld.getName().equals(patt)) return true;
 		if (ld.getForSumm()==null) return false;
@@ -183,17 +94,76 @@ public class MedCalculator {
 		return false;
 	}
 
-	public Period getMedStaj(List<Staj> stl,String vid) {
-	LgotaDescription lg=lDao.getLgota(vid);
-	if (stl==null) return new Period(0,0,0);
+public Period getMedPeriod(List<Staj> stl,String vid) {
+		LgotaDescription lg=lDao.getLgota(vid);
+		List<Staj> toa=getMedStaj(stl,lg);
+		if (toa!=null) {	
+			return getMedStajAll(toa,vid);
+		}
+		else
+		{
+			return new Period (0,0,0);
+		}
+}
+	
+public Date getPravo(List<Staj> ls, String lgt, boolean isMan) {
+	LgotaDescription lg=lDao.getLgota(lgt);
+	List<Staj> l=getMedStaj(ls, lg);
+	if (l!=null) return getLgotPravo(l,new Period((int)(isMan?lg.getMan_ss():lg.getWoman_ss()),0,0), lgt);
+	else return null;
+}
+
+private Date getLgotPravo(List<Staj> ls, Period lper, String lgt) {	
+	Date d;
+	Staj current=null;
+	Period per=new Period(0,0,0);
+	Period per0=per;
+	boolean stajOK=false;
+	boolean city = false;
+	for (Staj j : ls) {
+		if (j.getCspext().contains("27-ГД")) {
+			city = true;
+			break;
+		}
+	}
+	
+	for (Staj j : ls) {
+		j.setMultiplier(getMultiplier(ls, j, lgt,city));
+	}
+	
+	for (Staj s:ls) {
+		current=s;
+		d=s.getStartDate();
+		per.addPeriod(Utils.makePeriod(s.getStartDate(),s.getEndDate(),s.getAddDay()).multPeriod(s.getMultiplier()));
+		if (per.isMoreEqual(lper)) {
+			stajOK=true;
+			break;
+		}
+		per0=new Period(per);
+	}
+	if (!stajOK) return null;
+	
+	per=new Period(lper);
+	per.diffPeriod(per0);
+	int days=per.getDays()+per.getMonths()*30+per.getYears()*360;
+	if (current!=null) days=(int)(days/current.getMultiplier());
+	d=Utils.addDay(current.getStartDate(),days);
+	return d;
+}
+
+
+private List<Staj> getMedStaj(List<Staj> stl,LgotaDescription vid)
+{
+	
+	if (stl==null) return null;
 	List<Staj> sttmp=new ArrayList<Staj>();
 	float stavka;
-	Staj current,stg1=null;
+	Staj current=null;
 	
 	//отбираем только с нужным кодом которые или имеют ставку или до 01-11-1999г.
 	for (Staj st: stl) {
 		
-		if (inList(lg,st.getCspext()))
+		if (inList(vid,st.getCspext()))
 		{
 			current=new Staj(st);
 			if (st.getStartDate().before(dfrom)) {
@@ -214,74 +184,117 @@ public class MedCalculator {
 				}
 			}
 			stavka=Utils.getFloat(current.getDopcspext());
-			if (stavka>0) {
+			if (stavka>0.01f) {
 				current.setStavka(stavka);
 				sttmp.add(current);
 			}
 		}
 	
 	}
-	if (sttmp.isEmpty()) return new Period(0,0,0);
+	if (sttmp.isEmpty()) return null;
 	Collections.sort(sttmp);
 	
 	List<Staj> toadd1=new ArrayList<Staj>();
 	List<Staj> toadd2=new ArrayList<Staj>();
 	List<Staj> toadd3=new ArrayList<Staj>();
+
 	int counter=0;
 	boolean changed;
-	//int aaa=0;
-	
-	for (Staj s0:sttmp) s0.setNumb(++counter);;
-	for (Staj s0:sttmp) toadd1.add(Staj.makeCopy(s0));
-	for (Staj s0:sttmp) toadd2.add(Staj.makeCopy(s0));
-	
+
+	for (Staj s0:sttmp) {
+		s0.setNumb(++counter);
+		toadd1.add(s0);
+		toadd2.add(s0);
+	}
+
+	boolean s1SL,s1FL,s2SL,s2FL;
 	while(true)
 	{
 	changed=false;
-	//System.out.println("counter="+counter++);
+
 	for (Staj s1:toadd1) {
-		//System.out.println("toadd="+toadd3.size());
 		toadd3.clear();
 		for (Staj s2:toadd2) {
 			if(s1.getNumb()==s2.getNumb()) continue;
 			current=null;
 			if (Utils.intersect(s1.getStartDate(),s1.getEndDate(),s2.getStartDate(),s2.getEndDate())) {
-				//System.out.println("s1s="+s1.getStartDate()+", s1f="+s1.getEndDate()+", s2s="+s2.getStartDate()+", s2f"+s2.getEndDate());
 				changed=true;
 				current=Staj.makeCopy(s1);
 				current.setNumb(++counter);
 				
+				
 				if (Utils.beforeOrEqual(s1.getStartDate(),s2.getStartDate()))
 				{
-					current.setStartDate(s2.getStartDate());
-					s1.setEndDate(Utils.addDay(s2.getStartDate(),-1));
-					
+					s1SL=true;
+					s2SL=false;
 				}
 				else {
-					current.setStartDate(s1.getStartDate());
-					s2.setEndDate(Utils.addDay(s1.getStartDate(),-1));
+					s2SL=true;
+					s1SL=false;
 				}
 				
 				if (Utils.beforeOrEqual(s1.getEndDate(),s2.getEndDate()))
 				{
-					current.setEndDate(s1.getEndDate());
-					s2.setStartDate(Utils.addDay(s1.getEndDate(),1));
-					
+					s2FL=true;
+					s1FL=false;
 				}
 				else {
-					current.setStartDate(s2.getEndDate());
-					s1.setStartDate(Utils.addDay(s2.getEndDate(),1));
+					s1FL=true;
+					s2FL=false;
 				}
 
-				current.setCspext(s1.getCspext()+","+s2.getCspext());
 				
-				if (current.getStartDate().before(dfrom)) {
-					current.setStavka(1f);
-				}
-				else {
+				if (s1SL && s1FL) {
+					current.setStartDate(s2.getStartDate());
+					current.setEndDate(s2.getEndDate());
+					current.setCspext(s1.getCspext()+","+s2.getCspext());
 					current.setStavka(s1.getStavka()+s2.getStavka());
+										
+					s2.setStartDate(Utils.addDay(s2.getEndDate(),1));
+					s2.setEndDate(s1.getEndDate());
+					s1.setEndDate(Utils.addDay(current.getStartDate(),-1));
+										
+					s2.setCspext(s1.getCspext());
+					s2.setStavka(s1.getStavka());
+					s2.setNumb(s1.getNumb());
+				}
+				else if (s2SL && s1FL) {
+					current.setStartDate(s1.getStartDate());
+					current.setEndDate(s2.getEndDate());
+					current.setCspext(s1.getCspext()+","+s2.getCspext());
+					current.setStavka(s1.getStavka()+s2.getStavka());
+										
+					s1.setStartDate(Utils.addDay(current.getEndDate(),1));
+					s2.setEndDate(Utils.addDay(current.getStartDate(),-1));
+					s2.setAddDay(0);
+				}
+				else if (s1SL && s2FL) {
+					current.setStartDate(s2.getStartDate());
+					current.setEndDate(s1.getEndDate());
+					current.setCspext(s1.getCspext()+","+s2.getCspext());
+					current.setStavka(s1.getStavka()+s2.getStavka());
+										
+					s1.setEndDate(Utils.addDay(current.getStartDate(),-1));
+					s2.setStartDate(Utils.addDay(current.getEndDate(),1));
+				}
+				else if (s2SL && s2FL) {
+					current.setStartDate(s1.getStartDate());
+					current.setEndDate(s1.getEndDate());
+					current.setCspext(s1.getCspext()+","+s2.getCspext());
+					current.setStavka(s1.getStavka()+s2.getStavka());
+										
+					s1.setStartDate(Utils.addDay(s1.getEndDate(),1));
+					s1.setEndDate(s2.getEndDate());
+					s2.setEndDate(Utils.addDay(current.getStartDate(),-1));
+										
+					s1.setCspext(s2.getCspext());
+					s1.setStavka(s2.getStavka());
+					s1.setNumb(s2.getNumb());
+					s1.setAddDay(0);
 					
 				}
+				
+				
 				toadd3.add(current);
 			}
 	
@@ -293,21 +306,53 @@ public class MedCalculator {
 		toadd1.removeIf(x->!x.getStartDate().before(x.getEndDate()));
 	if (!changed) break;
 	}
-	
-	for(Staj s1:toadd2) setLgota(s1);
-	toadd1.removeIf(x->x.getStavka()<0.01f);
-	
 
-	return getMedStajAll(sttmp,lg.getName());
+	
+	for(Staj s1:toadd2)
+	{
+		setLgota(s1);
+	}
+	toadd2.removeIf(x->x.getStavka()<0.01f);	
+	Collections.sort(toadd2);
+	return toadd2;
 }
 
+
+
+private float getMultiplier(List<Staj> ls, Staj st, String lgt, boolean city) {
+		if (st==null) return 1f; 
+		if (lgt.equals("27-ГД"))
+			return 1f;
+		else if (lgt.equals("27-ГДХР"))
+			return 1.5f;
+
+		if (lgt.equals("27-СМ")) {
+			if (city) {
+				return 1.25f;
+			} else {
+				if (st.getEndDate().before(dfrom))
+					return 1.25f;
+				else
+					return 1f;
+			}
+		} else if (lgt.equals("27-СМХР")) {
+			if (city) {
+				return 1.75f;
+			} else {
+				return 1.5f;
+			}
+		}
+		return 1f;
+	}
 	
 private void setLgota(Staj s1) {
 	// TODO Auto-generated method stub
 	Set<String>  csp= new HashSet<String>();
 	String [] csarr = s1.getCspext().split(",");
-	for (int i=0;i<csarr.length;i++) csp.add(csarr[i]);
 	
+	for (int i=0;i<csarr.length;i++) csp.add(csarr[i]);
+	String minLgota=getLowLgota(csp);
+			
 	if (s1.getStartDate().before(dfrom)) {
 		if (csp.contains("27-СМХР")) {s1.setCspext("27-СМХР");} else 
 		if (csp.contains("27-ГДХР")) {s1.setCspext("27-ГДХР");} else			
@@ -317,44 +362,29 @@ private void setLgota(Staj s1) {
 	}
 	else {
 
-		if (csp.contains("27-СМХР") && csp.size()==1) {
-			if (s1.getStavka()<0.99f)
-			{
-							s1.setCspext("27-ГДХР");
-							s1.setStavka(1f);
-			}
+		if (s1.getStavka()<0.99f) {
+			if (minLgota.equals("27-СМХР")) {s1.setCspext("27-ГДХР");s1.setStavka(1.0f);}
+			else if (minLgota.equals("27-ГДХР")) {s1.setCspext("27-СМ");s1.setStavka(1.0f);}
+			else if (minLgota.equals("27-СМ")) {s1.setCspext("27-ГД");s1.setStavka(1.0f);}
+			else {s1.setCspext("");s1.setStavka(0.0f);}
 		}
-		else if (csp.contains("27-ГДХР")&&csp.contains("27-СМХР") && csp.size()==2) {
-			if (s1.getStavka()<0.99f)
-			{
-				s1.setCspext("27-СМ");
-				s1.setStavka(1f);
-			}
-			else s1.setCspext("27-ГДХР");
+		else
+		{
+			s1.setCspext(minLgota);
 		}
-		else if (csp.contains("27-ГДХР")&&csp.contains("27-СМХР")&&csp.contains("27-СМ") && csp.size()==3) {
-			if (s1.getStavka()<0.99f) { 
-				s1.setCspext("27-ГД");
-				s1.setStavka(1f);
-			}
-			else s1.setCspext("27-СМ");
-		}
-		else {
-			if (s1.getStavka()<0.99f) s1.setStavka(0f);
-			s1.setCspext("27-ГД");
-		}
+		
+		
 	}
 	
 }
 
+private String getLowLgota(Set<String> lgotes) {
+	if (lgotes.size()<1) return "";
+	if(lgotes.contains("27-ГД")) return "27-ГД";
+	if(lgotes.contains("27-СМ")) return "27-СМ";
+	if(lgotes.contains("27-ГДХР")) return "27-ГДХР";
+	return "27-СМХР";
+}
 
 
-//	private String selectMedStaj(Staj a, Staj b) {
-//	if (a.getCspext().equals("27-ГД")||b.getCspext().equals("27-ГД")) return "27-ГД";
-//	else if (a.getCspext().equals("27-СМ")||b.getCspext().equals("27-СМ")) return "27-СМ";
-//	else if (a.getCspext().equals("27-ГДХР")||b.getCspext().equals("27-ГДХР")) return "27-ГДХР";
-//	else if (a.getCspext().equals("27-СМХР")||b.getCspext().equals("27-СМХР")) return "27-СМХР";
-//	else return "";
-//}
-	
 }

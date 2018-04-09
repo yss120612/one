@@ -93,7 +93,7 @@ public class LgotaDescrDao {
 			lg.setSever(rs.getFloat("sever"));
 			lg.setLepro(rs.getFloat("lepro"));
 			lg.setFullName(rs.getString("comment"));
-			lg.setNorthPlus(rs.getInt("sevplus")>0);
+			lg.setNorthPlus(rs.getInt("sevplus")>0.01f);
 			return lg;
 		}
 	};
