@@ -37,6 +37,8 @@ import com.yss1.one.models.LgStaj;
 import com.yss1.one.models.LgotaDescription;
 import com.yss1.one.models.Man;
 
+import ch.qos.logback.classic.pattern.Util;
+
 @Service
 public class PdfFactory {
 	private BaseFont baseFont;
@@ -224,6 +226,22 @@ public class PdfFactory {
 		
 		text.clear();
 		cell = makeCell(pfrCol);
+		ph=new Phrase("Дата Вашего выхода на пенсию ", font10);
+		text.add(ph);
+		if (man.getLgota()>0) {
+			ph=new Phrase("с учетом льготного стажа: ", font10);
+		}
+		else {
+			ph=new Phrase("на общих основаниях: ", font10);
+		}
+		text.add(ph);
+		ph=new Phrase(Utils.getFormattedDate(man.getDatePravDate()),font12red);
+		text.add(ph);
+		ph=new Phrase();
+		ph.addAll(text);
+		cell.addElement(ph);
+		text.clear();
+		
 		ph=new Phrase("Давайте рассчитаем предполагаемый размер Вашей пенсии по данным индивидуального (персонифицированного) учета:", font10);
 		cell.addElement(ph);
 		ph=new Phrase("Пенсия рассчитывается по формуле:",font10);
